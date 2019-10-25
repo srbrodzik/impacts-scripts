@@ -13,6 +13,7 @@ system($command);
 $ENV{'PATH'} = "/usr/local/bin:/usr/ucb:".$ENV{'PATH'};
 $ENV{'PYTHONPATH'} = "/home/disk/bob/impacts/bin:/home/disk/shear2/brodzik/python:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/lib-tk:".$ENV{'PYTHONPATH'};
 $ENV{'LD_LIBRARY_PATH'} = "/opt/intel/compilers_and_libraries_2019.1.144/linux/compiler/lib/intel64_lin";
+#$ENV{'DISPLAY'} = ":0";
 
 #$binDir = "/home/disk/bob/impacts/bin";
 

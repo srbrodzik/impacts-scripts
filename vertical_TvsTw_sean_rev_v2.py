@@ -13,6 +13,12 @@ vertical T and Tw profiles labeled by the station ID and datetime.
 import os
 import sys
 import numpy as np
+#These next 2 lines allows script to be run from cron without complaining about DISPLAY
+#Otherwise, they are unnecessary
+#--------------------------------------------------------------------------------------
+import matplotlib as mpl
+mpl.use('Agg')
+#--------------------------------------------------------------------------------------
 import matplotlib.pyplot as plt
 
 KM2FEET = 3280.84
