@@ -85,7 +85,8 @@ open (HASH, '>'.$output_file_new);
 	     ["dpr","gmi"],
 	     ["ALB","BUF","CHH","GYX","IAD","OKX","PIT","RNK","WAL"],
 	     ["ALB","BUF","CHH","GYX","IAD","OKX","PIT","RNK","WAL"],
-             ["kwal","korf","kric","kdca","kged","kbwi","kacy","kphl","kavp","khwv","kalb","khfd","kbos","kcon","kpwm"],
+             #["kwal","korf","kric","kdca","kged","kbwi","kacy","kphl","kavp","kalb","kbos","kcon","kpwm","khfd","khwv","kisp"],
+             ["kwal","korf","kric","kdca","kged","kbwi","kacy","kphl","kavp","kalb","kbos","kcon","kpwm"],
 	     ['addi','ande','bata','beac','beld','bell','belm']);
 #print "products = @{products[0]}\n";
 #print "nproducts = $#(products[0])\n";
