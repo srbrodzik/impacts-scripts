@@ -1,8 +1,4 @@
-
 # coding: utf-8
-
-# In[60]:
-
 
 #!/usr/bin/env python3
 """
@@ -38,27 +34,29 @@ from matplotlib.dates import DayLocator, HourLocator, DateFormatter
 matplotlib.use('Agg') 
 import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt 
-
-
-# In[65]:
+import pickle
 
 #define access token, sitelist, sitetitles, and directories to save files 
 # Mason token
 #token = '554c724392de446cb9f915fc14c1e8ce' #given to specific user after making account with synopticdata.com, Mason in this case
 # Brodzik token
 token = '8c150f37a5ba47ad929c0a24180e877c'
+pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar/'
+infile = open(pickle_jar + "sitelist.pkl",'rb')
+sitelist = pickle.load(infile)
+infile.close()
 
-sitelist = ['KALB','KACY','KBOS','KHWV','KBWI','KCON','KGED','KHFD','KISP','KORF','KPHL','KPWM','KDCA','KRIC','KAVP','KWAL']
-sitetitles = ['Albany International Airport (NY)','Atlantic City International Airport (NJ)','Logan International Airport (Boston, MA)','Brookhaven Airport (NY)','Baltimore/Washington International Airport (MD)','Concord Municipal Airport (NH)','Delaware Coastal Airport (DE)','Hartford-Brainard Airport (CT)','Long Island MacArthur Airport (NY)','Norfolk International Airport (VA)','Philadelphia International Airport (PA)','Portland International Jetport (ME)','Ronald Reagan Washington National Airport (VA)','Richmond International Airport (VA)','Wilkes-Barre/Scranton International Airport (PA)','Wallops Flight Facility (VA)']
+infile2 = open(pickle_jar + 'sitetitles.pkl','rb')
+sitetitles = pickle.load(infile2)
+infile.close()
+
 #sitelist = ['KALB'] #for testing
 #sitetitles = ['Albany International Airport (NY)'] #for testing
 
 csv_dir = '/home/disk/funnel/impacts/data_archive/asos'
 plot_dir = '/home/disk/funnel/impacts/archive/ops/asos'
-#csv_dir = '/home/disk/meso-home/masonf3/IMPACTS/asos_data'  #for testing
-#plot_dir = '/home/disk/meso-home/masonf3/IMPACTS/asos_plots' #for testing
-
-# In[66]:
+#csv_dir = '/home/disk/p/broneil/Documents/Impacts/ASOS_map/ASOS_CSV'
+#plot_dir = '/home/disk/p/broneil/Documents/Impacts/ASOS_map/ASOS_plots'
 
 def load_and_save_station_data(site):
     '''Given a site station ID, returns 3-day DataFrame of specified weather variables. Also saves a each day's
@@ -140,15 +138,43 @@ def load_and_save_station_data(site):
         'units':'temp|C,speed|kts,alti|inhg,pres|mb,precip|mm',
         'token':token
     }   #other vars that may be useful: alti, rh, wx_cond_code, wx_cond, past_wx_code
-    
+ 
     apiString = urllib.parse.urlencode(args)
     url = "http://api.mesowest.net/v2/stations/timeseries"
     fullUrl = '{}?{}'.format(url,apiString)
     response = urllib.request.urlopen(fullUrl).read()
     responseDict = json.loads(response.decode('utf-8'))
-    new_data = pd.DataFrame(responseDict['STATION'][0]['OBSERVATIONS'])
+    if len(responseDict['STATION']) == 0: #Checks for non reporting stations
+        return 0 #Exits the function
+    try:
+        new_data = pd.DataFrame(responseDict['STATION'][0]['OBSERVATIONS'])
+    except:
+        return 0
     new_data['date_time'] = pd.to_datetime(new_data['date_time'])
     new_data = new_data.set_index('date_time')
+
+    try: #Will standaradize the format of all the ASOS csv files
+        new_data = new_data[['air_temp_set_1','dew_point_temperature_set_1','dew_point_temperature_set_1d',
+                             'precip_accumulated_set_1d','precip_intervals_set_1d',
+                             'sea_level_pressure_set_1','sea_level_pressure_set_1d',
+                             'wind_direction_set_1','wind_gust_set_1','wind_speed_set_1']]
+    #Catches non reported fields and enters a set of "NaNs" in their place                    
+    except KeyError as keyErr:
+
+        #Edits the key error into a string which has only the missing fields with spaces inbetween
+        keyErr = str(keyErr)[3:].replace("] not in index\"","")
+        keyErr = keyErr.replace("\'","")
+        keyErr = keyErr.replace("\\n","")
+
+        #Splits the missing fields into a list
+        missing_items = keyErr.split()
+        for item in missing_items: #Adds a column of NaNs corrected for the length of the data
+            new_data[item] = [float('NaN') for x in np.arange(new_data.shape[0])] 
+        #Standardizes the format
+        new_data = new_data[['air_temp_set_1','dew_point_temperature_set_1','dew_point_temperature_set_1d',
+                             'precip_accumulated_set_1d','precip_intervals_set_1d',
+                             'sea_level_pressure_set_1','sea_level_pressure_set_1d',
+                             'wind_direction_set_1','wind_gust_set_1','wind_speed_set_1']]
     '''
     ## ONLY USE THIS SECTION IF GRABBING A SPECIFIC DATE RANGE, OTHERWISE COMMENT OUT & USE ALL CODE ABOVE API CALL
     #definining dates in YYYYmmdd format (for saving and finding files)
@@ -218,51 +244,51 @@ def load_and_save_station_data(site):
             
         #check if yesterday's data exists, makes file for it if not
         if not os.path.exists(path1_dir):
-            os.mkdir(path1_dir)
+            os.makedirs(path1_dir)
         if not os.path.exists(path1_file):  
             yesterday_data = df[yesterday_date_dt_format]
             yesterday_data.to_csv(path1_file)
         
         #either add to or create today's data file
         if not os.path.exists(path0_dir):
-            os.mkdir(path0_dir)
+            os.makedirs(path0_dir)
         if os.path.exists(path0_file):
             today_data = df[today_date_dt_format]
             today_data.to_csv(path0_file)
     
     else:
         #if no 3-day data exists yet in os as .csv files, grab it all using API instead
-        df_extra = new_data  
+        df_extra = new_data
         df = df_extra[begin_offset_dt_format:] #delete extra data from beginning
         df['dt'] = df.index
         df = df.drop_duplicates()
         df = df.drop(labels='dt',axis=1)
         
         if not os.path.exists(path3_dir): 
-            os.mkdir(path3_dir)
-        three_days_ago_data = df_extra[three_days_ago_date_dt_format]
+            os.makedirs(path3_dir)
+        try:
+            three_days_ago_data = df_extra[three_days_ago_date_dt_format]
+        except:
+            return 0
         three_days_ago_data.to_csv(path3_file)
         if not os.path.exists(path2_dir):
-            os.mkdir(path2_dir)
+            os.makedirs(path2_dir)
         two_days_ago_data = df[two_days_ago_date_dt_format]
         two_days_ago_data.to_csv(path2_file)
         if not os.path.exists(path1_dir):
-            os.mkdir(path1_dir)
+            os.makedirs(path1_dir)
         yesterday_data = df[yesterday_date_dt_format]
         yesterday_data.to_csv(path1_file)
         if not os.path.exists(path0_dir):
-            os.mkdir(path0_dir)
+            os.makedirs(path0_dir)
         
         #prevent problem when script is run first time in a new day when no data for that day exists yet
         if today_date == df.index[-1].strftime('%Y%m%d'):
             today_data = df[today_date_dt_format]
             today_data.to_csv(path0_file)
         
-    print(data_type + ' data')
+    #print(data_type + ' data')
     return df
-
-
-# In[67]:
 
 def plot_station_data(site,sitetitle,df):
     '''Given site station ID, the title of that site, and a dataframe of ASOS observation data from the last 3 days,
@@ -278,6 +304,9 @@ def plot_station_data(site,sitetitle,df):
     
     *saves plots to plot_dir listed near top of script*
     '''
+    if isinstance(df, int): #Returns if the station is not reporting
+        return
+    
     lower_site = site.lower()
     timestamp_end=str(df.index[-1].strftime('%Y%m%d%H%M'))
     dt = df.index[:]
@@ -290,7 +319,7 @@ def plot_station_data(site,sitetitle,df):
     
     #make figure and axes
     fig = plt.figure()
-    fig.set_size_inches(10,10)
+    fig.set_size_inches(18,10)
     if 'snow_depth_set_1' in df.keys():          #six axes if snow depth 
         ax1 = fig.add_subplot(6,1,1)
         ax2 = fig.add_subplot(6,1,2,sharex=ax1)
@@ -307,6 +336,7 @@ def plot_station_data(site,sitetitle,df):
         ax5 = fig.add_subplot(5,1,5,sharex=ax1)
         ax5.set_xlabel('Time (UTC)')
     
+    #ax1.set_title(site+' '+sitetitle+' '+graphtimestamp_start+' - '+graphtimestamp+' '+now.strftime("%H:%MZ"))
     ax1.set_title(site+' '+sitetitle+' '+graphtimestamp_start+' - '+graphtimestamp)
     #plot airT and dewT
     if 'air_temp_set_1' in df.keys():
@@ -427,6 +457,7 @@ def plot_station_data(site,sitetitle,df):
         ax.spines["bottom"].set_visible(False)
         ax.tick_params(axis='x',which='both',bottom='on',top='off')     #add ticks at labeled times
         ax.tick_params(axis='y',which='both',left='on',right='off') 
+
         ax.xaxis.set_major_locator( DayLocator() )
         ax.xaxis.set_major_formatter( DateFormatter('%b-%d') )
         ax.xaxis.set_minor_locator( HourLocator(np.linspace(6,18,3)) )
@@ -437,21 +468,14 @@ def plot_station_data(site,sitetitle,df):
        
     plot_path = plot_dir+'/'+today_date
     if not os.path.exists(plot_path):
-            os.mkdir(plot_path)
-    plt.savefig(plot_path+'/ops.asos.'+timestamp_end+'.'+lower_site+'.png',bbox_inches='tight')
+            os.makedirs(plot_path)
+    try:
+        plt.savefig(plot_path+'/ops.asos.'+timestamp_end+'.'+lower_site+'.png',bbox_inches='tight')
+    except:
+        pass
     plt.close()
-    print('plotted ' + site)
-
-
-# In[68]:
 
 for i,site in enumerate(sitelist):
     sitetitle = sitetitles[i]
     df = load_and_save_station_data(site)
     plot_station_data(site,sitetitle,df)
-
-
-# In[ ]:
-
-
-
