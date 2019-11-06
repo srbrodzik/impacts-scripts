@@ -1,3 +1,4 @@
+
 # coding: utf-8
 
 #!/usr/bin/env python3
@@ -248,7 +249,6 @@ def load_and_save_station_data(site):
         if not os.path.exists(path1_file):  
             yesterday_data = df[yesterday_date_dt_format]
             yesterday_data.to_csv(path1_file)
-        
         #either add to or create today's data file
         if not os.path.exists(path0_dir):
             os.makedirs(path0_dir)
@@ -263,21 +263,35 @@ def load_and_save_station_data(site):
         df['dt'] = df.index
         df = df.drop_duplicates()
         df = df.drop(labels='dt',axis=1)
-        
+        #Three days ago data
         if not os.path.exists(path3_dir): 
             os.makedirs(path3_dir)
+        #If any data is missing from previous dates, function will return 0
         try:
             three_days_ago_data = df_extra[three_days_ago_date_dt_format]
         except:
+            print("Missing data from yesterday for %s. Data was not updated for this site." %site)
             return 0
         three_days_ago_data.to_csv(path3_file)
+        #Two days ago data
         if not os.path.exists(path2_dir):
             os.makedirs(path2_dir)
-        two_days_ago_data = df[two_days_ago_date_dt_format]
+        #If any data is missing from previous dates, function will return 0
+        try:
+            two_days_ago_data = df[two_days_ago_date_dt_format]
+        except:
+            print("Missing data from yesterday for %s. Data was not updated for this site." %site)
+            return 0
         two_days_ago_data.to_csv(path2_file)
+        #Yesterday Data
         if not os.path.exists(path1_dir):
             os.makedirs(path1_dir)
-        yesterday_data = df[yesterday_date_dt_format]
+        #If any data is missing from previous dates, function will return 0
+        try:
+            yesterday_data = df[yesterday_date_dt_format]
+        except: 
+            print("Missing data from yesterday for %s. Data was not updated for this site." %site)
+            return 0
         yesterday_data.to_csv(path1_file)
         if not os.path.exists(path0_dir):
             os.makedirs(path0_dir)
@@ -460,6 +474,7 @@ def plot_station_data(site,sitetitle,df):
 
         ax.xaxis.set_major_locator( DayLocator() )
         ax.xaxis.set_major_formatter( DateFormatter('%b-%d') )
+
         ax.xaxis.set_minor_locator( HourLocator(np.linspace(6,18,3)) )
         ax.xaxis.set_minor_formatter( DateFormatter('%H') )
         ax.fmt_xdata = DateFormatter('Y%m%d%H%M%S')
@@ -476,6 +491,8 @@ def plot_station_data(site,sitetitle,df):
     plt.close()
 
 for i,site in enumerate(sitelist):
+    print(site)
     sitetitle = sitetitles[i]
     df = load_and_save_station_data(site)
     plot_station_data(site,sitetitle,df)
+

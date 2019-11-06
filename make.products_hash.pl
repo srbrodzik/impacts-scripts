@@ -83,11 +83,12 @@ open (HASH, '>'.$output_file_new);
 	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
 	     ["ir_ch14","vis_ch02","wv_ch08"],
 	     ["dpr","gmi"],
-	     ["ALB","BUF","CHH","GYX","IAD","OKX","PIT","RNK","WAL"],
-	     ["ALB","BUF","CHH","GYX","IAD","OKX","PIT","RNK","WAL"],
-             #["kwal","korf","kric","kdca","kged","kbwi","kacy","kphl","kavp","kalb","kbos","kcon","kpwm","khfd","khwv","kisp"],
-             ["kwal","korf","kric","kdca","kged","kbwi","kacy","kphl","kavp","kalb","kbos","kcon","kpwm"],
-	     ['addi','ande','bata','beac','beld','bell','belm']);
+	     ["ALB","BUF","CHH","CHS","DTX","GYX","IAD","ILN","ILX","OKX","PIT","RNK","WAL"],
+	     ["ALB","BUF","CHH","CHS","DTX","GYX","IAD","ILN","ILX","OKX","PIT","RNK","WAL"],
+             #["kalb","kacy","kbos",       "khwv","kbwi",       "kcon",       "kged","khfd","kisp",       "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
+             #["kalb","kacy","kbos",              "kbwi",       "kcon",       "kged",                     "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
+	     ["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw","kged","khfd","kind","kilx","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
+	     ["ande","bing","brew","broc","buff","elmi","fred","gfal","ilak","malo","nhud","oswe","pots","sara","stat","ston","wate","west"]);
 #print "products = @{products[0]}\n";
 #print "nproducts = $#(products[0])\n";
 

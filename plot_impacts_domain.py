@@ -10,6 +10,12 @@ Notes for Brodzik - create input params for:
    field  (field value to be displayed on map)
 """
 
+#These next 2 lines allows script to be run from cron without complaining about DISPLAY
+#Otherwise, they are unnecessary
+#--------------------------------------------------------------------------------------
+import matplotlib 
+matplotlib.use('Agg') 
+#--------------------------------------------------------------------------------------
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
@@ -159,9 +165,12 @@ def get_asos_data():
     #list_of_dir = glob.glob(csv_dir+'/2*')   
     list_of_dir = glob.glob(csv_dir)   
     Path = max(list_of_dir, key=os.path.getctime)
-
     Data_Path = Path + '/'    
     filelist = os.listdir(Data_Path) #Gets the files listed in the path directory
+    if len(filelist) == 0: #Will exit the function if there is no data in the directory
+        print("Latest directory of data files is empty. The script was exited and the figures and map were not updated.")
+        return 0
+    
     asos_data = {} #Dictionary to be returned
     for i in filelist: # Loops through the files
         with open(Data_Path + i, 'r') as f:
@@ -180,7 +189,9 @@ def plot_ASOS(ASOS,field):
        atmospheric field as the field parameter. Returns a list of the asos stations with data.
     '''    
     asos_data = get_asos_data() #Gets the dictionary of asos data
-
+    #will exit the function if there is no new data represented by 0
+    if asos_data == 0:
+        return 0
     asos_keys = list(asos_data.keys())
     
     #Saves a list of stations ID's for which there is data to be passed to get_pixels4clickbox.py
@@ -306,6 +317,9 @@ def main():
     keys2list(ASOS)
     
     asos_keys = plot_ASOS(ASOS,field)
+    #Gracefully exits the script without updating plots
+    if asos_keys == 0:
+        return
     write_plots2html(asos_keys,ASOS)
 
 main()
