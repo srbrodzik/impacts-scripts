@@ -76,10 +76,13 @@ $todayDay=substr($today,6,2);
     '74494', 'CHH',
     '72208', 'CHS',
     '72632', 'DTX',
+    '74455', 'DVN',
     '74389', 'GYX',
     '72403', 'IAD',
     '72426', 'ILN',
     '74560', 'ILX',
+    '72305', 'MHX',
+    '72649', 'MPX',
     '72501', 'OKX',
     '72520', 'PIT',
     '72318', 'RNK',
@@ -125,7 +128,7 @@ for ($isite=0;$isite<$numSites;$isite++) {
 	    system("$command");
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/removeLinesWithMissingData.py ".$outFile_html.".txt ".$outFile_html.".new";
 	    system("$command");
-	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file ".$outFile_html.".new --outpath /tmp --format UWYO";
+	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file ".$outFile_html.".new --outpath /tmp --format UWYO --parcel False --hodograph False";
 	    #print "command = $command\n";
 	    system("$command");
 
@@ -172,7 +175,7 @@ for ($isite=0;$isite<$numSites;$isite++) {
 	    system("$command");
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/removeLinesWithMissingData.py ".$outFile_html.".txt ".$outFile_html.".new";
 	    system("$command");
-	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file ".$outFile_html.".new --outpath /tmp --format UWYO";
+	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file ".$outFile_html.".new --outpath /tmp --format UWYO --parcel False --hodograph False";
 	    #print "command = $command\n";
 	    system("$command");
 

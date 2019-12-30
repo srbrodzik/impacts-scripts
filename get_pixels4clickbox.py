@@ -17,7 +17,7 @@ import pickle
 import cv2
 
 #Global Variable
-image_dir = '/home/disk/funnel/impacts'
+image_dir = '/home/disk/funnel/impacts/precip_map'
 #image_name = image_dir+'/IMPACTS_precip_map.png'
 image_name = image_dir+'/IMPACTS_map.png'
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar'

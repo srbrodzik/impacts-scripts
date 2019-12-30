@@ -28,22 +28,26 @@ from scipy import stats
 import glob
 from datetime import datetime
 from shutil import copy2
+import pandas as pd
+
 
 plt.rcParams.update({'figure.max_open_warning': 0})
 
 #################GLOBAL###############################
 buffer = 25 #The distance between stations which dictates whether the station is displayed 
-#Choose the desired field - > 1: air_temp_set_1
+#Choose the desired field - > 0: Date
+#                             1: air_temp_set_1
 #                             2: dew_point_temperature_set_1
 #                             3: dew_point_temperature_set_1d
-#                             4: precip_accumulated_set_1d
-#                             5: precip_intervals_set_1d
+#                             4: precip_accumulated_set_1d ->Precip from the beginning of the API grab
+#                             5: precip_intervals_set_1d -> Daily accumulated precip
 #                             6: sea_level_pressure_set_1
 #                             7: sea_level_pressure_set_1d
 #                             8: wind_direction_set_1
 #                             9: wind_gust_set_1
 #                            10: wind_speed_set_1
-field = 1 
+field = 5 #Should be 5 for Impacts map
+
 
 #########################################################################
 ######################       Base Plot           ########################
@@ -84,7 +88,7 @@ csv_dir = '/home/disk/funnel/impacts/data_archive/asos/*'
 plot_dir = '/home/disk/funnel/impacts/archive/ops/asos'
 
 #destination of image that gets bashed over
-precip_map_dir = '/home/disk/funnel/impacts'
+precip_map_dir = '/home/disk/funnel/impacts/precip_map'
 
 #Name of the saved figure
 #precip_map_name = 'IMPACTS_precip_map.png'
@@ -166,6 +170,7 @@ def get_asos_data():
     list_of_dir = glob.glob(csv_dir)   
     Path = max(list_of_dir, key=os.path.getctime)
     Data_Path = Path + '/'    
+
     filelist = os.listdir(Data_Path) #Gets the files listed in the path directory
     if len(filelist) == 0: #Will exit the function if there is no data in the directory
         print("Latest directory of data files is empty. The script was exited and the figures and map were not updated.")
@@ -174,14 +179,21 @@ def get_asos_data():
     asos_data = {} #Dictionary to be returned
     for i in filelist: # Loops through the files
         with open(Data_Path + i, 'r') as f:
-            linelist = f.readlines() 
-
-            data = linelist[-1].replace('\n',"") #Removes end of line characters
-            data = data.split(',') #Splits the line into field values
-
-            station = i[-8:-4].upper() #splices the filename to get the station ID
-            asos_data[station] = data #Fills the dictionary
-    
+            df = pd.read_csv(f)
+            # Sum up the precip amount over each interval and replace the last interval with the sum
+            if field == 5:
+                precip_intervals = df.iloc[:,5].dropna()
+                daily_accum_precip = float(precip_intervals.sum())
+                data = list(df.iloc[-1,:].values)
+                data[5] = str(daily_accum_precip) #Changes it back to string format to match other values in the list
+                
+            else:
+                data = list(df.iloc[-1,:].values)
+            # Splice the filename to get the station ID    
+            station = i[-8:-4].upper()
+            # Add the last line of data
+            asos_data[station] = data  # Fills the dictionary
+            
     return asos_data
 
 def plot_ASOS(ASOS,field):    
@@ -197,7 +209,7 @@ def plot_ASOS(ASOS,field):
     #Saves a list of stations ID's for which there is data to be passed to get_pixels4clickbox.py
     #Uncomment if the data keys ever change
     #with open(pickle_jar + "asos_keys.pkl",'wb') as f:
-    #    pickle.dump(asos_keys,f,protocol=2)
+    #    pickle.dump(asos_keys,f,protocol=2)    
 
     zscores = magnitude_scaling(asos_data,field)
     for station in asos_keys: #loops through the stations with data    
@@ -210,15 +222,25 @@ def plot_ASOS(ASOS,field):
                 plt.plot(x,y,color="red",marker="D",markersize=4,linestyle="None")
                 #Faux Snow
                 #data_string = str(round(np.random.sample(1)*10 + (np.random.sample(1)+1)*10,1))
+                #data_string = str(asos_data[station][field]) #Gets the text of the displayed field value
                 
-                data_string = str(asos_data[station][field]) #Gets the text of the displayed field value
+                data_point = np.round(float(asos_data[station][field]),1) #Gets the text of the displayed field value
+                
+                if zscores[station] > 5:
+                    zscores[station] = 5
                 #Places text centered and above the station
-                txt = plt.text(x - .17, y + .1, data_string, weight = 'bold', fontsize = 10.5 + zscores[station] ) 
+                txt = plt.text(x - .17, y + .1, data_point, weight = 'bold', fontsize = 9.5 + zscores[station] ) 
                 #Creates a white outline
                 txt.set_path_effects([PathEffects.withStroke(linewidth = 2, foreground = 'w')]) 
+                
         except:
             pass
-    plt.savefig(precip_map_name,bbox_inches = 'tight', pad_inches = 0)
+    file_time = datetime.strptime(asos_data[station][0],'%Y-%m-%d %H:%M:%S')
+    figtitle = "Precip Accumulation (mm) for %s 00:00 - %s UTC " % (file_time.strftime("%Y-%m-%d"),file_time.strftime("%H:%M"))
+    fig.suptitle(figtitle, fontsize = 18, y=.9)
+    #cmd = "plt.savefig("+precip_map_dir+"/"+precip_map_name+",bbox_inches = 'tight', pad_inches = 0)"
+    #print "cmd = " + cmd
+    plt.savefig(precip_map_dir+'/'+precip_map_name,bbox_inches = 'tight', pad_inches = 0)
     return asos_keys
     
 def magnitude_scaling(asos_data,field):
@@ -241,7 +263,7 @@ def magnitude_scaling(asos_data,field):
     indices = np.where(all_values == -9999)[0]
     all_values[indices] = mean
     #Z-scores with NaNs not being affecting
-    zscores = stats.zscore(all_values)
+    zscores = stats.zscore(all_values) / 2
     
     count = 0 #Iterator for zscores
     zscore_dict = {}
@@ -274,6 +296,7 @@ def write_plots2html(sites,ASOS):
     now = datetime.utcnow()
     date = now.strftime("%Y%m%d")
     for site in sites:
+        
         #gets all files of a station in the "today" directory        
         today_directory = plot_dir + '/%s/*%s*' % (date, site.lower())
         files = glob.glob(today_directory)
@@ -281,31 +304,32 @@ def write_plots2html(sites,ASOS):
             #Finds the file that was last created
             latest_file = max(files, key=os.path.getctime)
             copy2( plot_dir + '/%s/%s' % (date, os.path.basename(latest_file)), 
-                   most_recent_plots_dir + '/%s.png' %site )
-            copy2( os.getcwd()+"/"+precip_map_name, precip_map_dir+'/'+precip_map_name )
+                  most_recent_plots_dir + '/%s.png' %site )
+            copy2( os.getcwd()+'/'+precip_map_name, precip_map_dir+'/'+precip_map_name )
             write_html_file(site)
         except:
             #print ("No data yet for today")
             pass
-            
+
 def write_html_file(site):
-    #Writing plots to html
-    with open(most_recent_plots_dir + '/%s.html' %site.lower(), 'w') as f:
-        message = """<html>
-        <head>
-           <title>Real-time Weather Plots</title>
-        </head>
-        <body>"""
-        f.write(message)
-        #Commented out the title since the figure plot contains the title itself
-        #                message2 = '<h2>%s %s</h2>\n'%(site, ASOS[site][0])
-        #                f.write(message2)
-        message3 = ('        <img src = \"%s/%s.png\" alt=\"3-day\">' %(html_plots_dir,site))
-        f.write(message3)
-        message4 = """
-        </body>
-        </html>"""
-        f.write(message4)
+        #Writing plots to html
+        with open(most_recent_plots_dir + '/%s.html' %site.lower(), 'w') as f:
+            message = """<html>
+            <head>
+                <title>Real-time Weather Plots</title>
+            </head>
+
+            <body>"""
+            f.write(message)
+            #Commented out the title since the figure plot contains the title itself
+            #                message2 = '<h2>%s %s</h2>\n'%(site, ASOS[site][0])
+            #                f.write(message2)
+            message3 = ('        <img src = \"%s/%s.png\" alt=\"3-day\">' %(html_plots_dir,site))
+            f.write(message3)
+            message4 = """
+            </body>
+            </html>"""
+            f.write(message4)
 
 def main():
     ASOS = load_us()

@@ -7,24 +7,30 @@ import shutil
 
 secsPerDay = 86400
 pastSecs = secsPerDay * 2
-baseDir = '/home/disk/bob/impacts/model'
-model = ['gfs_28km','nam_12km','hrrr_03km','wrf_gfs_04km','wrf_gfs_12km','wrf_gfs_36km']
+baseDir = '/home/disk/bob/impacts/radar'
+radar = ['kaspr']
+dir_prefix = 'imageset'
 
 # Get current time
 nowTime = time.gmtime()
 now = datetime(nowTime.tm_year, nowTime.tm_mon, nowTime.tm_mday,
                nowTime.tm_hour, nowTime.tm_min, nowTime.tm_sec)
 nowDateHourStr = now.strftime("%Y%m%d%H")
+nowUnixTime = int(now.strftime("%s"))
 
 # Compute oldest time to keep
 pastDelta = timedelta(0, pastSecs)
 lastGoodTime = now - pastDelta
 lastGoodTimeStr = lastGoodTime.strftime("%Y%m%d%H")
+lastGoodUnixTime = int(lastGoodTime.strftime("%s"))
 
 # For each model, removed runs older than 2 days old
-for imodel in range(0,len(model)):
-    modelBaseDir = baseDir+'/'+model[imodel]
-    for dir in os.listdir(modelBaseDir):
-        if dir < lastGoodTimeStr:
-            shutil.rmtree(modelBaseDir+'/'+dir)
+for iradar in range(0,len(radar)):
+    radarBaseDir = baseDir+'/'+radar[iradar]
+    for dir in os.listdir(radarBaseDir):
+        dirUnixTime = int(dir.replace(dir_prefix,''))
+        if dirUnixTime < lastGoodUnixTime:
+            shutil.rmtree(radarBaseDir+'/'+dir)
             
+
+#dirObjTime = datetime.fromtimestamp(dirUnixTime)

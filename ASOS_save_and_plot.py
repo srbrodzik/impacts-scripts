@@ -58,6 +58,8 @@ csv_dir = '/home/disk/funnel/impacts/data_archive/asos'
 plot_dir = '/home/disk/funnel/impacts/archive/ops/asos'
 #csv_dir = '/home/disk/p/broneil/Documents/Impacts/ASOS_map/ASOS_CSV'
 #plot_dir = '/home/disk/p/broneil/Documents/Impacts/ASOS_map/ASOS_plots'
+#csv_dir = '/home/disk/meso-home/masonf3/IMPACTS/asos_data'  #for testing
+#plot_dir = '/home/disk/meso-home/masonf3/IMPACTS/asos_plots' #for testing
 
 def load_and_save_station_data(site):
     '''Given a site station ID, returns 3-day DataFrame of specified weather variables. Also saves a each day's
@@ -117,10 +119,22 @@ def load_and_save_station_data(site):
             today_all['date_time'] = pd.to_datetime(today_all['date_time'])
             today_all = today_all.set_index('date_time')
         
-        time_length = '60' #in mins, time length for API data grab, only last hour 
+            #If there's missing data for today, API will grab all data up to midnight
+            earliest_time = pd.to_datetime(today_all.iloc[0].name)
+            latest_time = pd.to_datetime(today_all.iloc[-1].name) 
+            #Time from the first data point to midnight where the new dataset should begin
+            earliest_time_to_midnight = (earliest_time.hour*60) + earliest_time.minute
+            if earliest_time_to_midnight > 60: #Gets data since midnight
+                time_length = now - datetime.datetime(now.year,now.month,now.day,0,0)
+            else: #If no missing hours of data, then gets the difference between the last data point and the current time
+                time_diff = now - latest_time
+                time_length = str(int(np.round(time_diff.days + time_diff.seconds/60,0)))
+        else: #If there's no data for today, get data since midnight
+            time_length = now - datetime.datetime(now.year,now.month,now.day,0,0)
+            #Converts to minutes
+            time_length = str(int(np.round(time_length.seconds/60,0)))
         data_type = 'appended'
-        
-    else:
+    else: #Last 3 days worth of data
         time_length = '4340' #in mins, time length for API grab, last three days + 20min extra
         data_type = 'entirely new'
     ##
@@ -145,12 +159,16 @@ def load_and_save_station_data(site):
     fullUrl = '{}?{}'.format(url,apiString)
     response = urllib.request.urlopen(fullUrl).read()
     responseDict = json.loads(response.decode('utf-8'))
-    if len(responseDict['STATION']) == 0: #Checks for non reporting stations
-        return 0 #Exits the function
     try:
+        #Sometimes the data is pretty messed up, this attempts to catch these situations
+        if len(responseDict['STATION']) == 0: #Checks for non reporting stations
+            print("Problem reading data for %s. Data was not updated" % site)
+            return 0 #Exits the function
         new_data = pd.DataFrame(responseDict['STATION'][0]['OBSERVATIONS'])
     except:
+        print("Problem reading data for %s. Data was not updated" % site)
         return 0
+    
     new_data['date_time'] = pd.to_datetime(new_data['date_time'])
     new_data = new_data.set_index('date_time')
 
@@ -176,58 +194,6 @@ def load_and_save_station_data(site):
                              'precip_accumulated_set_1d','precip_intervals_set_1d',
                              'sea_level_pressure_set_1','sea_level_pressure_set_1d',
                              'wind_direction_set_1','wind_gust_set_1','wind_speed_set_1']]
-    '''
-    ## ONLY USE THIS SECTION IF GRABBING A SPECIFIC DATE RANGE, OTHERWISE COMMENT OUT & USE ALL CODE ABOVE API CALL
-    #definining dates in YYYYmmdd format (for saving and finding files)
-    three_days_ago_date = (new_data.index[-1]-timedelta(hours=72)).strftime('%Y%m%d')
-    two_days_ago_date = (new_data.index[-1]-timedelta(hours=48)).strftime('%Y%m%d')
-    yesterday_date = (new_data.index[-1]-timedelta(hours=24)).strftime('%Y%m%d')
-    today_date = new_data.index[-1].strftime('%Y%m%d')
-    
-    #defining dates in YYYY-mm-dd format (for selecting ranges of data from dataframes)
-    three_days_ago_date_dt_format = (new_data.index[-1]-timedelta(hours=72)).strftime('%Y-%m-%d')
-    two_days_ago_date_dt_format = (new_data.index[-1]-timedelta(hours=48)).strftime('%Y-%m-%d')
-    yesterday_date_dt_format = (new_data.index[-1]-timedelta(hours=24)).strftime('%Y-%m-%d')
-    today_date_dt_format = new_data.index[-1].strftime('%Y-%m-%d')
-    
-    path3_dir = csv_dir+'/'+three_days_ago_date
-    path2_dir = csv_dir+'/'+two_days_ago_date
-    path1_dir = csv_dir+'/'+yesterday_date
-    path0_dir = csv_dir+'/'+today_date
-    
-    path3_file = path3_dir+'/ops.asos.'+three_days_ago_date+'.'+lower_site+'.csv'
-    path2_file = path2_dir+'/ops.asos.'+two_days_ago_date+'.'+lower_site+'.csv'
-    path1_file = path1_dir+'/ops.asos.'+yesterday_date+'.'+lower_site+'.csv'
-    path0_file = path0_dir+'/ops.asos.'+today_date+'.'+lower_site+'.csv'
-    
-    #figuring out if most of last 3-day data already exists, and if so, grabbing it from os
-    if os.path.exists(path3_file) and os.path.exists(path2_file) and os.path.exists(path1_file):
-        three_days_ago_all = pd.read_csv(path3_file)
-        three_days_ago_all['date_time'] = pd.to_datetime(three_days_ago_all['date_time'])
-        three_days_ago_all = three_days_ago_all.set_index('date_time')
-        
-        two_days_ago_all = pd.read_csv(path2_file)
-        two_days_ago_all['date_time'] = pd.to_datetime(two_days_ago_all['date_time'])
-        two_days_ago_all = two_days_ago_all.set_index('date_time')
-        
-        yesterday_all = pd.read_csv(path1_file)
-        yesterday_all['date_time'] = pd.to_datetime(yesterday_all['date_time'])
-        yesterday_all = yesterday_all.set_index('date_time')
-        
-        #today's path won't exist yet if first hour of new day
-        if os.path.exists(path0_file):
-            today_all = pd.read_csv(path0_file)
-            today_all['date_time'] = pd.to_datetime(today_all['date_time'])
-            today_all = today_all.set_index('date_time')
-        
-        time_length = '60' #in mins, time length for API data grab, only last hour 
-        data_type = 'appended'
-        
-    else:
-        time_length = '4340' #in mins, time length for API grab, last three days + 20min extra
-        data_type = 'entirely new'
-    ##
-    '''
     
     #find datetime 3 days ago for slicing later
     begin_offset_dt_format = (new_data.index[-1]-timedelta(hours=72)).strftime('%Y-%m-%d %H:%M') 
@@ -242,20 +208,16 @@ def load_and_save_station_data(site):
         df['dt'] = df.index
         df = df.drop_duplicates()
         df = df.drop(labels='dt',axis=1)
-            
-        #check if yesterday's data exists, makes file for it if not
-        if not os.path.exists(path1_dir):
-            os.makedirs(path1_dir)
-        if not os.path.exists(path1_file):  
-            yesterday_data = df[yesterday_date_dt_format]
-            yesterday_data.to_csv(path1_file)
+
         #either add to or create today's data file
         if not os.path.exists(path0_dir):
             os.makedirs(path0_dir)
-        if os.path.exists(path0_file):
+        #Making sure the data is in the right day -> Could be the case for the first run
+        if today_date == df.index[-1].strftime('%Y%m%d'):
             today_data = df[today_date_dt_format]
+            today_data = today_data.sort_index()
             today_data.to_csv(path0_file)
-    
+
     else:
         #if no 3-day data exists yet in os as .csv files, grab it all using API instead
         df_extra = new_data
@@ -270,7 +232,7 @@ def load_and_save_station_data(site):
         try:
             three_days_ago_data = df_extra[three_days_ago_date_dt_format]
         except:
-            print("Missing data from yesterday for %s. Data was not updated for this site." %site)
+            print("Missing data from three days ago for %s. Data was not updated." %site)
             return 0
         three_days_ago_data.to_csv(path3_file)
         #Two days ago data
@@ -280,7 +242,7 @@ def load_and_save_station_data(site):
         try:
             two_days_ago_data = df[two_days_ago_date_dt_format]
         except:
-            print("Missing data from yesterday for %s. Data was not updated for this site." %site)
+            print("Missing data from two days ago for %s. Data was not updated." %site)
             return 0
         two_days_ago_data.to_csv(path2_file)
         #Yesterday Data
@@ -290,7 +252,7 @@ def load_and_save_station_data(site):
         try:
             yesterday_data = df[yesterday_date_dt_format]
         except: 
-            print("Missing data from yesterday for %s. Data was not updated for this site." %site)
+            print("Missing data from yesterday for %s. Data was not updated." %site)
             return 0
         yesterday_data.to_csv(path1_file)
         if not os.path.exists(path0_dir):
@@ -300,7 +262,6 @@ def load_and_save_station_data(site):
         if today_date == df.index[-1].strftime('%Y%m%d'):
             today_data = df[today_date_dt_format]
             today_data.to_csv(path0_file)
-        
     #print(data_type + ' data')
     return df
 
@@ -474,7 +435,7 @@ def plot_station_data(site,sitetitle,df):
 
         ax.xaxis.set_major_locator( DayLocator() )
         ax.xaxis.set_major_formatter( DateFormatter('%b-%d') )
-
+        
         ax.xaxis.set_minor_locator( HourLocator(np.linspace(6,18,3)) )
         ax.xaxis.set_minor_formatter( DateFormatter('%H') )
         ax.fmt_xdata = DateFormatter('Y%m%d%H%M%S')
@@ -487,12 +448,11 @@ def plot_station_data(site,sitetitle,df):
     try:
         plt.savefig(plot_path+'/ops.asos.'+timestamp_end+'.'+lower_site+'.png',bbox_inches='tight')
     except:
-        pass
+        print("Problem saving figure for %s. Usually a maxticks problem" %site)
     plt.close()
 
 for i,site in enumerate(sitelist):
-    print(site)
+    #print(site)
     sitetitle = sitetitles[i]
     df = load_and_save_station_data(site)
     plot_station_data(site,sitetitle,df)
-

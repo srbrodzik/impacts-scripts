@@ -10,6 +10,6 @@ $ENV{'LD_LIBRARY_PATH'} = "/opt/intel/compilers_and_libraries_2019.1.144/linux/c
 
 $binDir = "/home/disk/bob/impacts/bin";
 
-$command = "python ".$binDir."/clean_model_images.py";
+$command = "python ".$binDir."/get_noaa_snow_precip_24hr.py";
 system($command);
 

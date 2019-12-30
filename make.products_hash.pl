@@ -24,29 +24,19 @@ open (HASH, '>'.$output_file_new);
 
 # Get ops data first
 
-@platforms = ("upper_air",
-              "sfc_anal",
-              "extrema",
+@platforms = ("extrema",
+	      "noaa",
+	      "sfc_anal",
+	      "sfc_metar",
               "totals",
-	      
+	      "upper_air",
+    
 	      "nexrad",
-	      "prof_alba",
-	      "prof_bell",
-	      "prof_bron",
-	      "prof_buff",
-	      "prof_chaz",
-	      "prof_clym",
-	      "prof_eham",
-	      "prof_jord",
-	      "prof_oweg",
-	      "prof_quee",
-	      "prof_redh",
-	      "prof_stat",
-	      "prof_ston",
-	      "prof_suff",
-	      "prof_tupp",
-	      "prof_want",
-	      "prof_webs",
+	      "nys_lidar_cnr",
+	      "nys_lidar_horz_wspd",
+	      "nys_lidar_vert_wspd",
+	      "nys_mwr_cloud",
+	      "nys_mwr_ts",
 	      
 	      "goes_east",
 	      "gpm",
@@ -59,36 +49,30 @@ open (HASH, '>'.$output_file_new);
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
 #@products = (["ir_4km","vis_1km","vis_4km","wv_8km"],
-@products = (["850mb","700mb","500mb","300mb","200mb"],
-             ["atlantic","n_amer"],
-             ["max_temp","min_temp"],
-             ["precip24","snow"],
-	     ["bgm_bref","bgm_vel","box_bref","box_vel","ccx_bref","ccx_vel","dix_bref","dix_vel","dox_bref","dox_vel","enx_bref","enx_vel","gyx_bref","gyx_vel","okx_bref","okx_vel"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["lidar_cnr","lidar_horiz_ws","lidar_ts","lidar_vert_ws","mwr_integrations","mwr_ts"],
-	     ["ir_ch14","vis_ch02","wv_ch08"],
+@products = (["max_temp","min_temp"],
+	     ["day1_psnow_gt_04","day2_psnow_gt_04","day3_psnow_gt_04","lowtrack","snow_precip_24hr"],
+	     ["atlantic","n_amer"],
+	     ["mid_atlantic","mid_west","northeast"],
+	     ["precip24","snow"],
+	     ["850mb","700mb","500mb","300mb","200mb"],
+    
+	     ["akq_bref","akq_vel","bgm_bref","bgm_vel","box_bref","box_vel","ccx_bref","ccx_vel","dix_bref","dix_vel","dox_bref","dox_vel",
+	      "enx_bref","enx_vel","gyx_bref","gyx_vel","lwx_bref","lwx_vel","mhx_bref","mhx_vel","okx_bref","okx_vel","rax_bref","rax_vel",
+	      "tyx_bref","tyx_vel"],
+	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
+	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
+	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
+	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
+	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
+	     
+	     ["ir_ch14","vis_ch02","wv_ch08","ir_4km","vis_4km","wv_4km"],
 	     ["dpr","gmi"],
-	     ["ALB","BUF","CHH","CHS","DTX","GYX","IAD","ILN","ILX","OKX","PIT","RNK","WAL"],
-	     ["ALB","BUF","CHH","CHS","DTX","GYX","IAD","ILN","ILX","OKX","PIT","RNK","WAL"],
+	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
+	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
              #["kalb","kacy","kbos",       "khwv","kbwi",       "kcon",       "kged","khfd","kisp",       "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
              #["kalb","kacy","kbos",              "kbwi",       "kcon",       "kged",                     "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
 	     ["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw","kged","khfd","kind","kilx","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
-	     ["ande","bing","brew","broc","buff","elmi","fred","gfal","ilak","malo","nhud","oswe","pots","sara","stat","ston","wate","west"]);
+	     ["ande","bing","brew","broc","buff","elmi","fred","gfld","gfal","ilak","malo","nhud","oswe","pots","redf","sara","stat","ston","wate","west"]);
 #print "products = @{products[0]}\n";
 #print "nproducts = $#(products[0])\n";
 
@@ -131,18 +115,20 @@ for $iplat (0..$#platforms) {
 
 # Get model data next
 
-@platforms = ("wrf_nam_04km",
-	      "wrf_nam_12km",
-	      "wrf_nam_36km",
-	      "wrf_gfs_04km_imp",
-	      "wrf_gfs_36km_imp");
+@platforms = ("wrf_gfs_04km",
+	      "wrf_gfs_12km",
+	      "wrf_gfs_36km",
+	      "gfs_28km",
+	      "nam_12km",
+	      "hrrr_03km");
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
-@products = (["01_pcp1","00_winds_sfc"],
-	     ["03_pcp3","03_snow3","00_temps_sfc"],
-	     ["00_temps_sfc","00_slp_thickness","00_temps_500","00_700_RHomg","03_pcp3","03_snow3"],
-	     ["03_pcp3","12_pcp12","00_melt","00_sfc","00_wssfc"],
-	     ["03pcp3","12_pcp12","00_300j","00_500vor","00_500temp","00_850t","00_925rh","00_melt","00_sfc","00_wssfc"]);
+@products = (["00_500_avo","00_700_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
+	     ["00_500_avo","00_700_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
+	     ["00_500_avo","00_700_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
+	     ["00_T2m_us","00_uv250_us","00_z500_vort_us","00_temp_adv_fgen_700_us","06_ir_us","06_ref_frzn_us"],
+	     ["00_T2m_us","00_uv250_us","00_z500_vort_us","00_temp_adv_fgen_700_us","06_ref_frzn_us"],
+	     ["00_T2m_us","00_ir_us","01_ref_frzn_us"]);
 
 for $iplat (0..$#platforms) {
     $plat = $platforms[$iplat];
@@ -186,9 +172,7 @@ for $iplat (0..$#platforms) {
 @platforms = ("er2",
 	      "p3",
 
-	      "brookhaven",
 	      "manhattan",
-	      "southampton",
 	      "stonybrook",
 	      "stonybrookmobile",
 
@@ -206,25 +190,23 @@ for $iplat (0..$#platforms) {
 #print "nplatforms = $#platforms\n";
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
-@products = (["ampr","cpl","crs","cosmir","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
+@products = (["ampr","cpl_backscatter","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
 	     ["avaps","cloud_probe","flight_track","phips","tamms","wisper"],
 
-	     ["met_station"],
-	     ["met_station","parsivel2"],
-	     ["met_station","smartflux_flux","smartflux_met","smartflux_sonic","smartflux_turb"],
-	     ["met_station","parsivel2","pluvio","skycam","solar_tracker"],
-	     ["met_station"],
+	     ["parsivel"],
+	     ["pluvio","solar_tracker"],
+	     ["met_station","parsivel"],
 
 	     ["ceil075","dopp_lidar","mrr2"],
 	     ["ka_ppi_zdb","ka_rhi_zdb","ku_ppi_rhohv","ku_ppi_vel","ku_ppi_zdb","ku_rhi_rhohv","ku_rhi_vel","ku_rhi_zdb"],
 	     ["ppi_dbz","ppi_ldr","ppi_phidp","ppi_rhohv","ppi_rhoxh","ppi_sw","ppi_vel","ppi_veldp","ppi_zdr","rhi_dbz","rhi_ldr","rhi_phidp","rhi_rhohv","rhi_rhoxh","rhi_sw","rhi_vel","rhi_veldp","rhi_zdr","vpt_dbz","vpt_ldr","vpt_sw","vpt_vel"],
-	     ["ceil150","ceil150_cirrus","mrr_pro"],
+	     ["ceil150","mrr_pro"],
 	     ["ppi_cz","ppi_npid","ppi_rhohv","ppi_vr","ppi_zdr","rhi_cz","rhi_npid","rhi_rhohv","rhi_vr","rhi_zdr"],
-	     ["mrr_pro","wband_spec_refl","wband_tseries","xband_ph_arr"],
-	     ["dopp_lidar","mrr","xband_ph_arr"],
+	     ["mwr","roger","wband_spec_refl","wband_tseries","xband_ph_arr"],
+	     ["ceil150","mrr_pro","xband_ph_arr"],
 
-	     ["sbum","uiuc"],
-	     ["sbum","uiuc"]);
+	     ["sbum","UIUC_Mobile"],
+	     ["sbum","UIUC_Mobile"]);
 
 for $iplat (0..$#platforms) {
     $plat = $platforms[$iplat];

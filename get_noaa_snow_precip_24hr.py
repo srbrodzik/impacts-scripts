@@ -10,54 +10,62 @@ import shutil
 # User inputs
 debug = 1
 secsPerDay = 86400
-pastSecs = secsPerDay/6   # 4 hours
-deltaBetweenFiles = secsPerDay / 24
-#lastForecastHour = 6
-metarUrl = 'http://weather.rap.ucar.edu/surface'
-targetDirBase = '/home/disk/bob/impacts/raw/surface/metars'
-products = ['metars_alb','metars_bwi','metars_dtw']
-catalogBaseDir = '/home/disk/funnel/impacts-website/archive/ops/sfc_metar'
+pastSecs = secsPerDay
+deltaBetweenFiles = secsPerDay
+snowUrl = 'https://www.nohrsc.noaa.gov/snow_model/images/full/National/ruc_snow_precip_24hr'
+targetDirBase = '/home/disk/bob/impacts/raw/surface/snow'
+products = ['ruc_snow_precip_24hr']
+catalogBaseDir = '/home/disk/funnel/impacts-website/archive/ops/noaa'
 
 # get current date and hour
 nowTime = time.gmtime()
 now = datetime(nowTime.tm_year, nowTime.tm_mon, nowTime.tm_mday,
                nowTime.tm_hour, nowTime.tm_min, nowTime.tm_sec)
+nowYearMonthStr = now.strftime("%Y%m")
 nowDateStr = now.strftime("%Y%m%d")
-nowHourStr = now.strftime("%H")
-nowDateHourStr = nowDateStr+nowHourStr
 if debug:
-    print >>sys.stderr, "nowDateHourStr = ", nowDateHourStr
+    print >>sys.stderr, "nowYearMonthStr = ", nowYearMonthStr
+    print >>sys.stderr, "nowDateStr = ", nowDateStr
 
 # compute start time
 pastDelta = timedelta(0, pastSecs)
-nowDateHour = datetime.strptime(nowDateHourStr,'%Y%m%d%H')
-startTime = nowDateHour - pastDelta
-startDateHourStr = startTime.strftime("%Y%m%d%H")
+nowDate = datetime.strptime(nowDateStr,'%Y%m%d')
+startTime = nowDate - pastDelta
+startYearMonthStr = startTime.strftime("%Y%m")
 startDateStr = startTime.strftime("%Y%m%d")
 if debug:
-    print >>sys.stderr, "startDateHourStr = ", startDateHourStr
+    print >>sys.stderr, "startYearMonthStr = ", startYearMonthStr
+    print >>sys.stderr, "startDateStr = ", startDateStr
 
 # set up list of date-hour combos to be checked
-nFiles = (pastSecs / deltaBetweenFiles)
+nFiles = (pastSecs / deltaBetweenFiles) + 1
+yearMonthStrList = []
 dateHourStrList = []
 for iFile in range(0, nFiles):
     deltaSecs = timedelta(0, iFile * deltaBetweenFiles)
     dayTime = now - deltaSecs
+    yearMonthStr = dayTime.strftime("%Y%m")
     dateStr = dayTime.strftime("%Y%m%d")
-    dateHourStr = dayTime.strftime("%Y%m%d%H")
+    dateHourStr = dateStr + '05'
+    yearMonthStrList.append(yearMonthStr)
     dateHourStrList.append(dateHourStr)
 if debug:
+    print >>sys.stderr, "yearMonthStrList = ", yearMonthStrList
     print >>sys.stderr, "dateHourStrList = ", dateHourStrList
 
 # get list of files meeting criteria from url
+urlYearMonthList = []
 urlFileList = []
 for t in range(0,nFiles):
+    currentYearMonth = yearMonthStrList[t]
     currentFileTime = dateHourStrList[t]
     for i in range(0,len(products)):
         # get list of files on server for this time and this product
-        nextFile = currentFileTime+'_'+products[i]+'.gif'
+        nextFile = products[i]+'_'+currentFileTime+'_National.jpg'
+        urlYearMonthList.append(currentYearMonth)
         urlFileList.append(nextFile)
 if debug:
+    print >>sys.stderr, "urlYearMonthList = ", urlYearMonthList
     print >>sys.stderr, "urlFileList = ", urlFileList
 
 # if files in urlFileList not in localFileList, download them
@@ -81,6 +89,7 @@ else:
     #    print >>sys.stderr, "Starting to loop through url file list"
             
     for idx,urlFileName in enumerate(urlFileList,0):
+        urlYearMonth = urlYearMonthList[idx]
         if debug:
             print >>sys.stderr, "  idx = ", idx
             print >>sys.stderr, "  urlFileName = ", urlFileName
@@ -89,7 +98,7 @@ else:
             if debug:
                 print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
             try:
-                command = 'wget '+metarUrl+'/'+urlFileName
+                command = 'wget '+snowUrl+'/'+urlYearMonth+'/'+urlFileName
                 os.system(command)
             except Exception as e:
                 print sys.stderr, "    wget failed, exception: ", e
@@ -98,14 +107,9 @@ else:
             # rename file and move to web server
             # first get forecast_hour
             (base,ext) = os.path.splitext(urlFileName)
-            (dateTime,junk,location) = base.split('_')
-            if location == 'alb':
-                region = 'northeast'
-            elif location == 'bwi':
-                region = 'mid-atlantic'
-            else:
-                region = 'mid_west'
-            newFileName = 'ops.sfc_metar.'+dateTime+'00.'+region+'.gif'
+            base = base.replace(products[i]+'_','')
+            dateTime = base.replace('_National','')
+            newFileName = 'ops.noaa.'+dateTime+'00.snow_precip_24hr.jpg'
             if debug:
                 print >>sys.stderr, "    newFileName = ", newFileName
 

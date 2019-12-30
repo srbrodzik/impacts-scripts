@@ -19,6 +19,7 @@ import glob
 import argparse
 import xarray as xr
 
+
 ### FORMAT FOR NEW UIUC NC FILES
 uiuc_fmt = 'UIUCnc' 
 
@@ -90,12 +91,14 @@ parser.add_argument('--hodograph', action='store', dest='hodograph', default=Tru
 
 pargs = parser.parse_args()
 
+#Will change the input of hodograph and parcel from a string to a boolean
 try:
     if pargs.parcel.lower() == 'false':
         pargs.parcel = False
     else:
         print("Improper parcel flag. Use \"False\" to turn off the parcel plot." )
         pargs.parcel = True
+#Except will be triggered if parcel is a boolean and has no lower() method
 except:
     pass
 try:
@@ -177,8 +180,6 @@ for fname in sounding_files:
         attrs = ds.attrs
         
         stn_id = attrs['institution'].replace(" ","_")
-        #Add next line to ensure IMPACTS field catalog naming convention used
-        stn_id = stn_id.replace("_Sonde","")
         file_time = datetime.datetime.strptime(attrs['start_datetime'],'%Y-%m-%dT%H:%M:%SZ')
         #Location is outputted in a string of lat and long including words
         location_str = attrs['location']
@@ -191,10 +192,18 @@ for fname in sounding_files:
             lon *= -1
         if location_list[2] == 'south':
             lat *= -1
-        #Changed next line to ensure IMPACTS field catalog naming convention used
-        #out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id)
-        out_fname = 'research.skewt.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id)
-        figtitle = '{sn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(sn = stn_id, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
+        out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id)
+        figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
+
+    elif pargs.format == 'SBUnc':
+        ds = xr.open_dataset(fname)
+        attrs = ds.attrs
+        
+        file_time = datetime.datetime.strptime(attrs['ReleaseTime'],'%Y/%m/%d %H:%M:%S')
+        #stn_id = attrs['InputFile'][:3]
+        stn_id = 'SBU'
+        out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id)
+        figtitle = '{stn} {dt} sounding '.format(stn = stn_id, dt = file_time.strftime(title_dt_fmt))
 
     elif pargs.format == 'raw':
 

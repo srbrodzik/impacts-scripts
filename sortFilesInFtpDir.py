@@ -7,26 +7,26 @@ webserverDir = '/home/disk/funnel/impacts/archive'
 
 for file in os.listdir(ftpDir):
     if os.path.isfile(ftpDir+'/'+file):
-        cmd = 'chmod a+r '+ftpDir+'/'+file
+        cmd = 'chmod a+rw '+ftpDir+'/'+file
         os.system(cmd)
         try:
             (prefix,date,junk,suffix) = file.split('.')
             if prefix == 'wxbriefing':
                 if not os.path.exists(webserverDir+'/forecast/'+date):
                     os.mkdir(webserverDir+'/forecast/'+date)
-                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date)
+                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date+'/'+file)
             elif prefix == 'wxbriefing_update':
                 if not os.path.exists(webserverDir+'/forecast/'+date):
                     os.mkdir(webserverDir+'/forecast/'+date)
-                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date)
+                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date+'/'+file)
             elif prefix == 'flt_plan':
                 if not os.path.exists(webserverDir+'/forecast/'+date):
                     os.mkdir(webserverDir+'/forecast/'+date)
-                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date)
+                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date+'/'+file)
             elif prefix == 'summary':
                 if not os.path.exists(webserverDir+'/forecast/'+date):
                     os.mkdir(webserverDir+'/forecast/'+date)
-                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date)
+                shutil.move(ftpDir+'/'+file,webserverDir+'/forecast/'+date+'/'+file)
             else:
                 print 'file = '+file+' has unexpected name -- move to junk'
                 if not os.path.exists(ftpDir+'/junk'):
@@ -35,7 +35,7 @@ for file in os.listdir(ftpDir):
         except ValueError:
             if not os.path.exists(ftpDir+'/junk'):
                 os.mkdir(ftpDir+'/junk')
-            shutil.move(ftpDir+'/'+file,ftpDir+'/junk')
+            shutil.move(ftpDir+'/'+file,ftpDir+'/junk'+'/'+file)
             continue
         
 
