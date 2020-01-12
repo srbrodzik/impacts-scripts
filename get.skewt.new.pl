@@ -10,10 +10,10 @@ $command = "umask 2";
 system($command);
 
 #define system env variables
-$ENV{'PATH'} = "/usr/local/bin:/usr/ucb:".$ENV{'PATH'};
-$ENV{'PYTHONPATH'} = "/home/disk/bob/impacts/bin:/home/disk/shear2/brodzik/python:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/lib-tk:".$ENV{'PYTHONPATH'};
-$ENV{'LD_LIBRARY_PATH'} = "/opt/intel/compilers_and_libraries_2019.1.144/linux/compiler/lib/intel64_lin";
-#$ENV{'DISPLAY'} = ":0";
+#$ENV{'PATH'} = "/usr/local/bin:/usr/ucb:".$ENV{'PATH'};
+#$ENV{'PYTHONPATH'} = "/home/disk/bob/impacts/bin:/home/disk/shear2/brodzik/python:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/lib-tk:".$ENV{'PYTHONPATH'};
+#$ENV{'LD_LIBRARY_PATH'} = "/opt/intel/compilers_and_libraries_2019.1.144/linux/compiler/lib/intel64_lin";
+##$ENV{'DISPLAY'} = ":0";
 
 #$binDir = "/home/disk/bob/impacts/bin";
 
@@ -28,16 +28,20 @@ chdir($ARCHIVE_PATH);
 # First, get time and make date subdirs if necessary
 $yesterday = `date -u --date='1 day ago' "+%Y%m%d"`;
 chop $yesterday;
-#$yesterday = '20190731';
+#$yesterday = '20200107';
+print "yesterday = $yesterday\n";
 $yesterdaySkewtDir = $ARCHIVE_PATH."/skewt/".$yesterday;
+print "yesterdaySkewtDir = $yesterdaySkewtDir\n";
 unless (-e $yesterdaySkewtDir) {
     mkdir $yesterdaySkewtDir;
 }
 $yesterdayWetbulbDir = $ARCHIVE_PATH."/wet_bulb/".$yesterday;
+print "yesterdayWetbulbDir = $yesterdayWetbulbDir\n";
 unless (-e $yesterdayWetbulbDir) {
     mkdir $yesterdayWetbulbDir;
 }
 $yesterdayTextDir = $ARCHIVE_PATH."/text_sounding/".$yesterday;
+print "yesterdayTextDir = $yesterdayTextDir\n";
 unless (-e $yesterdayTextDir) {
     mkdir $yesterdayTextDir;
     $command = "ln -s ".$ARCHIVE_PATH."/text_sounding/index.php ".$yesterdayTextDir;
@@ -46,19 +50,24 @@ unless (-e $yesterdayTextDir) {
 $yesterdayYear=substr($yesterday,0,4);
 $yesterdayMonth=substr($yesterday,4,2);
 $yesterdayDay=substr($yesterday,6,2);
+print "yesterday: $yesterdayYear $yesterdayMonth $yesterdayDay\n";
 
 $today = `date -u "+%Y%m%d"`;
 chop $today;
-#$today = '20190801';
+#$today = '20200108';
+print "today = $today\n";
 $todaySkewtDir = $ARCHIVE_PATH."/skewt/".$today;
+print "todaySkewtDir = $todaySkewtDir\n";
 unless (-e $todaySkewtDir) {
     mkdir $todaySkewtDir;
 }
 $todayWetbulbDir = $ARCHIVE_PATH."/wet_bulb/".$today;
+print "todayWetbulbDir = $todayWetbulbDir\n";
 unless (-e $todayWetbulbDir) {
     mkdir $todayWetbulbDir;
 }
 $todayTextDir = $ARCHIVE_PATH."/text_sounding/".$today;
+print "todayTextDir = $todayTextDir\n";
 unless (-e $todayTextDir) {
     mkdir $todayTextDir;
     $command = "ln -s ".$ARCHIVE_PATH."/text_sounding/index.php ".$todayTextDir;
@@ -68,6 +77,7 @@ unless (-e $todayTextDir) {
 $todayYear=substr($today,0,4);
 $todayMonth=substr($today,4,2);
 $todayDay=substr($today,6,2);
+print "today: $todayYear $todayMonth $todayDay\n";
 
 # Define sites of interest
 %siteID = (
@@ -99,23 +109,23 @@ $numTimes = @times;
 # Download yesterday's ascii data and create associated skewt
 for ($isite=0;$isite<$numSites;$isite++) {
 
-    #print "site = $siteID{$siteNum[$isite]}\n";
+    print "site = $siteID{$siteNum[$isite]}\n";
     
     for ($itime=0;$itime<$numTimes;$itime++) {
 
-	#print "time = $times[$itime]\n";
+	print "time = $times[$itime]\n";
 
 	$outFile_skewt = $yesterdaySkewtDir."/ops.skewt.".$yesterday.$times[$itime]."00.".$siteID{$siteNum[$isite]}.".png";
 	$outFile_wetbulb = $yesterdayWetbulbDir."/ops.wet_bulb.".$yesterday.$times[$itime]."00.".$siteID{$siteNum[$isite]}.".png";
 	$outFile_html = $yesterdayTextDir."/ops.text_sounding.".$yesterday.$times[$itime]."00.".$siteID{$siteNum[$isite]}.".html";
-	#print "outFile_html = $outFile_html\n";
+	print "outFile_html = $outFile_html\n";
 	
 	# get ascii data
 	$urlStr = 'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR='.$yesterdayYear.'&MONTH='.$yesterdayMonth.'&FROM='.$yesterdayDay.$times[$itime].'&TO='.$yesterdayDay.$times[$itime].'&STNM='.$siteNum[$isite];
 	print "urlStr = $urlStr\n";
 	$command = "lwp-request '".$urlStr."' > ".$outFile_html;
 	system("$command");
-	#print "   Done getting yesterdays html file\n'";
+	print "   Done getting yesterdays html file\n'";
 	$filesize = -s $outFile_html;
 	if ($filesize <= 3000) {
 	    print "file too small - go to next time\n";
@@ -129,21 +139,21 @@ for ($isite=0;$isite<$numSites;$isite++) {
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/removeLinesWithMissingData.py ".$outFile_html.".txt ".$outFile_html.".new";
 	    system("$command");
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file ".$outFile_html.".new --outpath /tmp --format UWYO --parcel False --hodograph False";
-	    #print "command = $command\n";
+	    print "command = $command\n";
 	    system("$command");
 
 	    print "file okay - create T vs Tw plot\n";
 	    #Convert text data to T vs Tw plot
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/vertical_TvsTw_sean_rev_v2.py ".$outFile_html." ".$outFile_wetbulb." ".$max_ht;
-	    #print "command = $command\n";
+	    print "command = $command\n";
 	    system($command);
 	    
 	    $command = "/bin/rm ".$outFile_html.".txt"." ".$outFile_html.".new";
 	    system("$command");
 	    $command = "/bin/mv /tmp/upperair.NWS_".$siteID{$siteNum[$isite]}."_sonde.".$yesterday.$times[$itime]."00.skewT.png ".$outFile_skewt;
-	    #print "command = $command\n";
+	    print "command = $command\n";
 	    system("$command");
-	    #print "   Done making yesterdays skewt file\n";
+	    print "   Done making yesterdays skewt file\n";
 	}
     }
 }
@@ -155,14 +165,14 @@ for ($isite=0;$isite<$numSites;$isite++) {
 	$outFile_skewt = $todaySkewtDir."/ops.skewt.".$today.$times[$itime]."00.".$siteID{$siteNum[$isite]}.".png";
 	$outFile_wetbulb = $todayWetbulbDir."/ops.wet_bulb.".$today.$times[$itime]."00.".$siteID{$siteNum[$isite]}.".png";
 	$outFile_html = $todayTextDir."/ops.text_sounding.".$today.$times[$itime]."00.".$siteID{$siteNum[$isite]}.".html";
-	#print "outFile_html = $outFile_html\n";
+	print "outFile_html = $outFile_html\n";
 
 	# get ascii data
 	$urlStr = 'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR='.$todayYear.'&MONTH='.$todayMonth.'&FROM='.$todayDay.$times[$itime].'&TO='.$todayDay.$times[$itime].'&STNM='.$siteNum[$isite];
 	print "urlStr = $urlStr\n";
 	$command = "lwp-request '".$urlStr."' > ".$outFile_html;
 	system("$command");
-	#print "   Done getting todays html file\n";
+	print "   Done getting todays html file\n";
 	$filesize = -s $outFile_html;
 	if ($filesize <= 3000) {
 	    print "file too small - go to next time\n";
@@ -176,21 +186,21 @@ for ($isite=0;$isite<$numSites;$isite++) {
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/removeLinesWithMissingData.py ".$outFile_html.".txt ".$outFile_html.".new";
 	    system("$command");
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file ".$outFile_html.".new --outpath /tmp --format UWYO --parcel False --hodograph False";
-	    #print "command = $command\n";
+	    print "command = $command\n";
 	    system("$command");
 
 	    print "file okay - create T vs Tw plot\n";
 	    #Convert text data to T vs Tw plot
 	    $command = "/usr/bin/python /home/disk/bob/impacts/bin/vertical_TvsTw_sean_rev_v2.py ".$outFile_html." ".$outFile_wetbulb." ".$max_ht;
-	    #print "command = $command\n";
+	    print "command = $command\n";
 	    system($command);
 	    
 	    $command = "/bin/rm ".$outFile_html.".txt"." ".$outFile_html.".new";
 	    system("$command");
 	    $command = "/bin/mv /tmp/upperair.NWS_".$siteID{$siteNum[$isite]}."_sonde.".$today.$times[$itime]."00.skewT.png ".$outFile_skewt;	
-	    #print "command = $command\n";
+	    print "command = $command\n";
 	    system("$command");
-	    #print "   Done making todays skewt file\n";
+	    print "   Done making todays skewt file\n";
 	}
     }
 }

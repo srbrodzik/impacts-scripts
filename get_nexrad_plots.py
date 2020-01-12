@@ -10,6 +10,7 @@ import shutil
 # User inputs
 debug = 1
 secsPerDay = 86400
+#pastSecs = secsPerDay*6     # check data from last six days
 pastSecs = secsPerDay/12   # check data from last two hours
 basePath = '/home/disk/data/images/newnexrad'
 siteList = ['AKQ','BGM','BOX','CCX','DIX','DOX','ENX','GYX','LWX','MHX','OKX','RAX','TYX']

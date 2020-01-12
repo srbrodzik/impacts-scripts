@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import os
 import sys
 import time
@@ -46,6 +44,8 @@ now = datetime(nowTime.tm_year, nowTime.tm_mon, nowTime.tm_mday,
                nowTime.tm_hour, nowTime.tm_min, nowTime.tm_sec)
 nowDateStr = now.strftime("%Y%m%d")
 nowHourStr = now.strftime("%H")
+#nowDateStr = '20200108'
+#nowHourStr = '13'
 if nowHourStr < '12':
     lastModelHourStr = '00'
 else:
@@ -159,7 +159,7 @@ for t in range(0,nRuns):
                         print >>sys.stderr, "    forecast_hour = ", forecast_hour
 
                     # create full file name
-                    newFileName = catalogFilePrefix+'.'+currentModelRun+'00.'+forecast_hour+'_'+products[i]+'.'+ext
+                    newFileName = catalogFilePrefix+'.'+currentModelRun+'00.'+forecast_hour+'_'+products[i]+ext
                     if debug:
                         print >>sys.stderr, "    newFileName = ", newFileName
 

@@ -1,9 +1,4 @@
-
-# coding: utf-8
-
-# In[1]:
-
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 """
 Created August/September 2019

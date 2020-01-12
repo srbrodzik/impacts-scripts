@@ -1,7 +1,4 @@
-
-# coding: utf-8
-
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 Created September 2019
 @author: masonf3 (Mason Friedman)
