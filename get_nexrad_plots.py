@@ -13,7 +13,9 @@ secsPerDay = 86400
 #pastSecs = secsPerDay*6     # check data from last six days
 pastSecs = secsPerDay/12   # check data from last two hours
 basePath = '/home/disk/data/images/newnexrad'
-siteList = ['AKQ','BGM','BOX','CCX','DIX','DOX','ENX','GYX','LWX','MHX','OKX','RAX','TYX']
+siteList = ['AKQ','BGM','BOX','CCX','CLE','DIX','DOX','DTX','DVN','ENX','GRB',
+            'GRR','GYX','ILN','ILX','IND','IWX','LOT','LWX','MHX','MKX','OKX',
+            'RAX','TYX','VWX']
 productList = {'N0R':'_bref','N0V':'_vel'}
 targetDirBase = '/home/disk/bob/impacts/radar/nexrad'
 catalogBaseDir = '/home/disk/funnel/impacts/archive/ops/nexrad'

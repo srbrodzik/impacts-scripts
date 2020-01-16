@@ -102,7 +102,7 @@ else:
             if location == 'alb':
                 region = 'northeast'
             elif location == 'bwi':
-                region = 'mid-atlantic'
+                region = 'mid_atlantic'
             else:
                 region = 'mid_west'
             newFileName = 'ops.sfc_metar.'+dateTime+'00.'+region+'.gif'

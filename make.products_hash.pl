@@ -186,14 +186,13 @@ for $iplat (0..$#platforms) {
 	      "stonybrook",
 	      "stonybrookmobile",
 
-	      "skewt",
-	      "text_sounding");
+	      "skewt");
 #print "platforms = @platforms\n";
 #print "nplatforms = $#platforms\n";
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
 @products = (["ampr","cpl_backscatter","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
-	     ["avaps","cloud_probe","flight_track","phips","tamms","wisper"],
+	     ["avaps","cloud_probe","dropsonde","flight_track","phips_camera_C1","phips_camera_C2","tamms","wisper"],
 
 	     ["parsivel"],
 	     ["pluvio","solar_tracker"],
@@ -203,12 +202,13 @@ for $iplat (0..$#platforms) {
 	     ["ka_ppi_zdb","ka_rhi_zdb","ku_ppi_rhohv","ku_ppi_vel","ku_ppi_zdb","ku_rhi_rhohv","ku_rhi_vel","ku_rhi_zdb"],
 	     ["ppi_dbz","ppi_ldr","ppi_phidp","ppi_rhohv","ppi_rhoxh","ppi_sw","ppi_vel","ppi_veldp","ppi_zdr","rhi_dbz","rhi_ldr","rhi_phidp","rhi_rhohv","rhi_rhoxh","rhi_sw","rhi_vel","rhi_veldp","rhi_zdr","vpt_dbz","vpt_ldr","vpt_sw","vpt_vel"],
 	     ["ceil150","mrr_pro"],
-	     ["ppi_cz","ppi_npid","ppi_rhohv","ppi_vr","ppi_zdr","rhi_cz","rhi_npid","rhi_rhohv","rhi_vr","rhi_zdr"],
+	     
+	     ["ppi_dbz","ppi_hid","ppi_phidp","ppi_rainr","ppi_rhohv","ppi_vel","ppi_zdr","rhi_dbz","rhi_hid","rhi_phidp","rhi_rainr","rhi_rhohv","rhi_vel","rhi_zdr"],
+	     
 	     ["mwr","roger","wband_spec_refl","wband_tseries","xband_ph_arr"],
 	     ["ceil150","mrr_pro","xband_ph_arr"],
 
-	     ["sbum","UIUC_Mobile"],
-	     ["sbum","UIUC_Mobile"]);
+	     ["SBU","UIUC_Mobile_Sonde"]);
 
 for $iplat (0..$#platforms) {
     $plat = $platforms[$iplat];
