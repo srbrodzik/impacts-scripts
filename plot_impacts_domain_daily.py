@@ -30,10 +30,11 @@ import os
 import scipy
 from scipy import stats
 import glob
+import time
 from datetime import datetime
 from shutil import copy2
 import pandas as pd
-
+import sys
 
 plt.rcParams.update({'figure.max_open_warning': 0})
 
@@ -86,27 +87,19 @@ bmap.shadedrelief()
 #########################################################################
 
 #Directory of CSV directories ie dates as directories containing CSV data from that date
-csv_dir = '/home/disk/funnel/impacts/data_archive/asos/*'
+csv_dir = '/home/disk/funnel/impacts/data_archive/asos'
 
-#Directory of plots where dates are directory names of plots that occur that day
-plot_dir = '/home/disk/funnel/impacts/archive/ops/asos'
+#Date of interest
+date_of_interest = '20200122'
 
-#destination of image that gets bashed over
-#precip_map_dir = '/home/disk/funnel/impacts/precip_map'
-precip_map_dir = '/home/disk/funnel/impacts/precip_map_impacts'
+#destination of daily image 
+precip_map_dir = '/home/disk/funnel/impacts/precip_map'
 
 #Name of the saved figure
-#precip_map_name = 'IMPACTS_precip_map.png'
-precip_map_name = 'IMPACTS_map.png'
-
-#Directory of most recent plots that will be linked on the website
-most_recent_plots_dir = '/home/disk/funnel/impacts/tmp_asos_dir'
+precip_map_name = 'ops.totals.'+date_of_interest+'0000.precip24.png'
 
 # Directory of pickles
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar/'
-
-#html plots directory
-html_plots_dir = 'http://impacts.atmos.washington.edu/tmp_asos_dir'
 
 #########################################################################
 ######################           Functions       ########################
@@ -172,16 +165,10 @@ def get_asos_data():
     '''Gets the available ASOS data and outputs a dictionary with station ID "KSSS" or "CSSS" as keys and a list of 11 atmospheric
        fields is the item.
     '''
-    #list_of_dir = glob.glob(csv_dir+'/2*')   
-    list_of_dir = glob.glob(csv_dir)   
-    Path = max(list_of_dir, key=os.path.getctime)
-    Data_Path = Path + '/'
-    # print Data_Path
-    print('Data_Path = {}'.format(Data_Path))
-    
+    Path = csv_dir+'/'+date_of_interest
+    Data_Path = Path + '/'    
+
     filelist = os.listdir(Data_Path) #Gets the files listed in the path directory
-    # print csv filelist
-    print('filelist = {}'.format(filelist))
     if len(filelist) == 0: #Will exit the function if there is no data in the directory
         print("Latest directory of data files is empty. The script was exited and the figures and map were not updated.")
         return 0
@@ -190,17 +177,19 @@ def get_asos_data():
     for i in filelist: # Loops through the files
         with open(Data_Path + i, 'r') as f:
             df = pd.read_csv(f)
+        f.close()
+        if not df.empty:
             # Sum up the precip amount over each interval and replace the last interval with the sum
             if field == 5:
                 precip_intervals = df.iloc[:,5].dropna()
                 daily_accum_precip = float(precip_intervals.sum())
                 data = list(df.iloc[-1,:].values)
                 data[5] = str(daily_accum_precip) #Changes it back to string format to match other values in the list
-                
             else:
                 data = list(df.iloc[-1,:].values)
-            # Splice the filename to get the station ID    
-            station = i[-8:-4].upper()
+            # Splice the filename to get the station ID
+            (category,product,datetime,station,ext) = i.split('.')
+            station = station.upper()
             # Add the last line of data
             asos_data[station] = data  # Fills the dictionary
             
@@ -219,7 +208,8 @@ def plot_ASOS(ASOS,field):
     #Saves a list of stations ID's for which there is data to be passed to get_pixels4clickbox.py
     #Uncomment if the data keys ever change
     with open(pickle_jar + "asos_keys.pkl",'wb') as f:
-        pickle.dump(asos_keys,f,protocol=2)    
+        pickle.dump(asos_keys,f,protocol=2)
+    #f.close()
 
     zscores = magnitude_scaling(asos_data,field)
     for station in asos_keys: #loops through the stations with data    
@@ -247,17 +237,10 @@ def plot_ASOS(ASOS,field):
             pass
     file_time = datetime.strptime(asos_data[station][0],'%Y-%m-%d %H:%M:%S')
     figtitle = "Precip Accumulation (mm) for %s 00:00 - %s UTC " % (file_time.strftime("%Y-%m-%d"),file_time.strftime("%H:%M"))
-    # print figure title
-    print('figtitle = {}'.format(figtitle))
     fig.suptitle(figtitle, fontsize = 18, y=.9)
     #cmd = "plt.savefig("+precip_map_dir+"/"+precip_map_name+",bbox_inches = 'tight', pad_inches = 0)"
     #print "cmd = " + cmd
     plt.savefig(precip_map_dir+'/'+precip_map_name,bbox_inches = 'tight', pad_inches = 0)
-    plt.savefig(precip_map_dir+'/testDir/'+precip_map_name,bbox_inches = 'tight', pad_inches = 0)
-    # print time output file created
-    outputfile = precip_map_dir+'/'+precip_map_name
-    print('output file {} created:'.format(outputfile))
-    os.system('date')
     return asos_keys
     
 def magnitude_scaling(asos_data,field):
@@ -319,55 +302,23 @@ def keys2list(ASOS):
     f2.close()
     return sites,sitenames
     
-def write_plots2html(sites,ASOS):
-    '''Will write most recent plot of each site to an html directory to be called upon by get_pixels4clickbox.py.
-       This function will update the plot at the html directory every time the cron runs.
-    '''
-    #Gets the directory of today
-    now = datetime.utcnow()
-    date = now.strftime("%Y%m%d")
-    for site in sites:
-        
-        #gets all files of a station in the "today" directory        
-        today_directory = plot_dir + '/%s/*%s*' % (date, site.lower())
-        files = glob.glob(today_directory)
-        try:
-            #Finds the file that was last created
-            latest_file = max(files, key=os.path.getctime)
-            copy2( plot_dir + '/%s/%s' % (date, os.path.basename(latest_file)), 
-                  most_recent_plots_dir + '/%s.png' %site )
-            copy2( os.getcwd()+'/'+precip_map_name, precip_map_dir+'/'+precip_map_name )
-            write_html_file(site)
-        except:
-            #print ("No data yet for today")
-            pass
+def main(argv):
 
-def write_html_file(site):
-        #Writing plots to html
-        with open(most_recent_plots_dir + '/%s.html' %site.lower(), 'w') as f:
-            message = """<html>
-            <head>
-                <title>Real-time Weather Plots</title>
-            </head>
+    #Check to make sure there is an input argument
+    #nargs = len(sys.argv) - 1
+    #if nargs != 1:
+    #    print('Usage: argv[0] [dateOfInterest]')
+    #    sys.exit()
+    #else:
+    #    print('Entering the program')
+    #    date_of_interest = sys.argv[1]
+    #    print('dateOfInterest = '+date_of_interest)
+    
+    #Name of the saved figure
+    #precip_map_name = 'ops.totals.'+date_of_interest+'0000.precip24.png'
 
-            <body>"""
-            f.write(message)
-            #Commented out the title since the figure plot contains the title itself
-            #                message2 = '<h2>%s %s</h2>\n'%(site, ASOS[site][0])
-            #                f.write(message2)
-            message3 = ('        <img src = \"%s/%s.png\" alt=\"3-day\">' %(html_plots_dir,site))
-            f.write(message3)
-            message4 = """
-            </body>
-            </html>"""
-            f.write(message4)
-
-def main():
     ASOS = load_us()
     
-    #ASOS_ca = load_ca()
-    #ASOS.update(ASOS_ca)
-
     ASOS = thin_station_density(ASOS)
 
     # Outputs the station ids as a list and the stations names as
@@ -375,10 +326,14 @@ def main():
     keys2list(ASOS)
     
     asos_keys = plot_ASOS(ASOS,field)
+    
     #Gracefully exits the script without updating plots
     if asos_keys == 0:
         return
-    write_plots2html(asos_keys,ASOS)
 
 main()
+
+#if __name__ == "__main__":
+#   main(sys.argv[1:])
+
 

@@ -44,10 +44,12 @@ import pickle
 token = '8c150f37a5ba47ad929c0a24180e877c'
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar/'
 infile = open(pickle_jar + "sitelist.pkl",'rb')
+#infile = open(pickle_jar + "sitelist_test.pkl",'rb')
 sitelist = pickle.load(infile)
 infile.close()
 
 infile2 = open(pickle_jar + 'sitetitles.pkl','rb')
+#infile2 = open(pickle_jar + 'sitetitles_test.pkl','rb')
 sitetitles = pickle.load(infile2)
 infile.close()
 

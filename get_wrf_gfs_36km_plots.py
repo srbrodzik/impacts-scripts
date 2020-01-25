@@ -34,9 +34,9 @@ targetDirBase = '/home/disk/bob/impacts/model/wrf_gfs_36km'
 #filename format: <initModel>.<product>.<domain>.<fcasthour>.<file_ext>
 initModel = 'GFS'
 domain = 'd01'
-products = ['refl_10cm','temps_sfc','pcp3','700_dBZfronto','500_avo']
+products = ['refl_10cm','temps_sfc','pcp3','850_dBZfronto','700_dBZfronto','500_avo']
 file_ext = 'gif'
-has_anal_prod = [1,1,0,1,1]
+has_anal_prod = [1,1,0,1,1,1]
 catalogBaseDir = '/home/disk/funnel/impacts-website/archive/model/wrf_gfs_36km'
 catalogFilePrefix = 'model.wrf_gfs_36km'
 
@@ -126,19 +126,19 @@ for t in range(0,nRuns):
 
             # loop through the url file list, downloading those that have
             # not yet been downloaded
-            if debug:
-                print >>sys.stderr, "Starting to loop through url file list"
+            #if debug:
+            #    print >>sys.stderr, "Starting to loop through url file list"
             
             for idx,urlFileName in enumerate(urlFileList,0):
-                if debug:
-                    print >>sys.stderr, "  idx = ", idx
-                    print >>sys.stderr, "  urlFileName = ", urlFileName
-                    #print >>sys.stderr, "  urlDateList[",idx,"] = ", urlDateList[idx]
-                    #print >>sys.stderr, "  dateStr = ", dateStr
+                #if debug:
+                #    print >>sys.stderr, "  idx = ", idx
+                #    print >>sys.stderr, "  urlFileName = ", urlFileName
+                #    #print >>sys.stderr, "  urlDateList[",idx,"] = ", urlDateList[idx]
+                #    #print >>sys.stderr, "  dateStr = ", dateStr
 
                 if urlFileName not in localFileList:
-                    if debug:
-                        print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
+                    #if debug:
+                    #    print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
                     try:
                         command = 'wget '+wrfUrl+'/'+currentModelRun+'/'+urlFileName
                         os.system(command)
@@ -157,13 +157,13 @@ for t in range(0,nRuns):
                     #    forecast_hour = str(int(parts[-1])*deltaBetweenForecastHours)
                     #if len(forecast_hour) == 1:
                     #    forecast_hour = '0'+forecast_hour
-                    if debug:
-                        print >>sys.stderr, "    forecast_hour = ", forecast_hour
+                    #if debug:
+                    #    print >>sys.stderr, "    forecast_hour = ", forecast_hour
 
                     # create full file name
                     newFileName = catalogFilePrefix+'.'+currentModelRun+'00.'+forecast_hour+'_'+products[i]+ext
-                    if debug:
-                        print >>sys.stderr, "    newFileName = ", newFileName
+                    #if debug:
+                    #    print >>sys.stderr, "    newFileName = ", newFileName
 
                     # check to make sure that web server path exists
                     catalogDir = catalogBaseDir+'/'+dateStrList[t]

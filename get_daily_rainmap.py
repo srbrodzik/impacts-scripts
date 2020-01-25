@@ -3,7 +3,7 @@ import datetime
 import os
 import shutil
 
-infile = '/home/disk/funnel/impacts-website/precip_map/IMPACTS_map.png'
+infile = '/home/disk/funnel/impacts-website/precip_map_impacts/testDir/IMPACTS_map.png'
 outdir = '/home/disk/funnel/impacts-website/archive/ops/totals'
 prefix = 'ops.totals'
 suffix = 'precip24.png'

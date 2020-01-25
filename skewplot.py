@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Brody Fuchs, CSU, November 2015
 # brfuchs@atmos.colostate.edu
 
@@ -199,11 +201,20 @@ for fname in sounding_files:
         ds = xr.open_dataset(fname)
         attrs = ds.attrs
         
-        file_time = datetime.datetime.strptime(attrs['ReleaseTime'],'%Y/%m/%d %H:%M:%S')
         #stn_id = attrs['InputFile'][:3]
         stn_id = 'SBU'
+        file_time = datetime.datetime.strptime(attrs['ReleaseTime'],'%Y/%m/%d %H:%M:%S')
+
+        #Location is outputted in two strings of lat and long including words
+        lat_str_raw = attrs['SiteLocation_Latitude']
+        lon_str_raw = attrs['SiteLocation_Longitude']
+        (lat_str,lat_dir) = lat_str_raw.split()
+        (lon_str,lon_dir) = lon_str_raw.split()
+        lat = float(lat_str)
+        lon = float(lon_str)
+        
         out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id)
-        figtitle = '{stn} {dt} sounding '.format(stn = stn_id, dt = file_time.strftime(title_dt_fmt))
+        figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
 
     elif pargs.format == 'raw':
 

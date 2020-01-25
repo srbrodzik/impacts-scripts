@@ -73,6 +73,6 @@ for site in siteList:
                         if not os.path.exists(catalogBaseDir+'/'+fileDateStr):
                             os.mkdir(catalogBaseDir+'/'+fileDateStr)
                         shutil.copy(targetDir+'/'+file,catalogBaseDir+'/'+fileDateStr+'/'+catalog_name)
-                        if debug:
-                            print >>sys.stderr, "Copied ", file, " to ", catalog_name
+                        #if debug:
+                        #    print >>sys.stderr, "Copied ", file, " to ", catalog_name
             

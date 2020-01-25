@@ -67,13 +67,15 @@ open (HASH, '>'.$output_file_new);
 	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
 	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
 	     
-	     ["ir_ch14","vis_ch02","wv_ch08","ir_4km","vis_4km","wv_4km"],
+	     #["ir_ch14","vis_ch02","wv_ch08","ir_4km","vis_4km","wv_4km"],
+	     ["ir_4km","vis_4km","wv_4km","M1color"],
 	     ["dpr","gmi"],
 	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
 	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
              #["kalb","kacy","kbos",       "khwv","kbwi",       "kcon",       "kged","khfd","kisp",       "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
              #["kalb","kacy","kbos",              "kbwi",       "kcon",       "kged",                     "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
-	     ["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw","kged","khfd","kind","kilx","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
+	     #["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw",       "kged","khfd","kind","kilx",                     "korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
+	     ["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw","kewr","kged","khfd","kind","kilx","kisp","kjfk","klga","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
 	     ["ande","bing","brew","broc","buff","elmi","fred","gfld","gfal","ilak","malo","nhud","oswe","pots","redf","sara","stat","ston","wate","west"]);
 #print "products = @{products[0]}\n";
 #print "nproducts = $#(products[0])\n";
@@ -122,15 +124,17 @@ for $iplat (0..$#platforms) {
 	      "wrf_gfs_36km",
 	      "gfs_28km",
 	      "nam_12km",
-	      "hrrr_03km");
+	      "hrrr_03km",
+	      "hrrr_01km");
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
-@products = (["00_500_avo","00_700_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
-	     ["00_500_avo","00_700_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
-	     ["00_500_avo","00_700_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
-	     ["00_T2m_us","00_uv250_us","00_z500_vort_us","00_temp_adv_fgen_700_us","06_ir_us","06_ref_frzn_us"],
-	     ["00_T2m_us","00_uv250_us","00_z500_vort_us","00_temp_adv_fgen_700_us","06_ref_frzn_us"],
-	     ["00_T2m_us","00_ir_us","01_ref_frzn_us"]);
+@products = (["00_500_avo","00_700_dBZfronto","00_850_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
+	     ["00_500_avo","00_700_dBZfronto","00_850_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
+	     ["00_500_avo","00_700_dBZfronto","00_850_dBZfronto","00_refl_10cm","00_temps_sfc","03_pcp3"],
+	     ["00_T2m_us","00_uv250_us","00_z500_vort_us","00_temp_adv_fgen_700_us","00_T850_us","06_ir_us","06_ref_frzn_us"],
+	     ["00_T2m_us","00_uv250_us","00_z500_vort_us","00_temp_adv_fgen_700_us","00_T850_us","06_ref_frzn_us"],
+	     ["00_T2m_us","00_ir_us","01_ref_frzn_us"],
+	     ["00_ctop","00_cref_sfc","00_G114bt_sat","00_lcc_sfc","00_mcc_sfc","00_hcc_sfc","00_wind_250","00_temp_700","00_temp_850","00_temp_925"]);
 
 for $iplat (0..$#platforms) {
     $plat = $platforms[$iplat];
@@ -191,7 +195,7 @@ for $iplat (0..$#platforms) {
 #print "nplatforms = $#platforms\n";
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
-@products = (["ampr","cpl_backscatter","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
+@products = (["ampr","cpl_355nm","cpl_532nm","cpl_1064nm","cpl_combo","cpl_aerosol_od","cpl_cloud_od","cpl_column_od","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
 	     ["avaps","cloud_probe","dropsonde","flight_track","phips_camera_C1","phips_camera_C2","tamms","wisper"],
 
 	     ["parsivel"],
@@ -203,7 +207,7 @@ for $iplat (0..$#platforms) {
 	     ["ppi_dbz","ppi_ldr","ppi_phidp","ppi_rhohv","ppi_rhoxh","ppi_sw","ppi_vel","ppi_veldp","ppi_zdr","rhi_dbz","rhi_ldr","rhi_phidp","rhi_rhohv","rhi_rhoxh","rhi_sw","rhi_vel","rhi_veldp","rhi_zdr","vpt_dbz","vpt_ldr","vpt_sw","vpt_vel"],
 	     ["ceil150","mrr_pro"],
 	     
-	     ["ppi_dbz","ppi_hid","ppi_phidp","ppi_rainr","ppi_rhohv","ppi_vel","ppi_zdr","rhi_dbz","rhi_hid","rhi_phidp","rhi_rainr","rhi_rhohv","rhi_vel","rhi_zdr"],
+	     ["ppi_dbz","ppi_hid","ppi_rainr","ppi_rhohv","ppi_vel","ppi_zdr","rhi_dbz","rhi_hid","rhi_rainr","rhi_rhohv","rhi_vel","rhi_zdr"],
 	     
 	     ["mwr","roger","wband_spec_refl","wband_tseries","xband_ph_arr"],
 	     ["ceil150","mrr_pro","xband_ph_arr"],

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct  7 13:48:32 2019
@@ -8,6 +8,11 @@ Created on Mon Oct  7 13:48:32 2019
 Creates an ascii file defined by 'text_output_name' whose contents can replace
 map definitions in /home/disk/funnel/impacts/Home.html
 
+@modified by Brodzik on 21 Jan 2020
+changed site pickle file from asos_keys.pkl to sitelist.pkl so new sites 
+   added to map will be included
+moved old output file so new one will be created
+
 Note for Brodzik - create input params for:
    'size' of box (parameter to 'get_box_crnr')
 """
@@ -15,15 +20,18 @@ Note for Brodzik - create input params for:
 import numpy as np
 import pickle
 import cv2
+import os
+import shutil
 
 #Global Variable
 image_dir = '/home/disk/funnel/impacts/precip_map'
 #image_name = image_dir+'/IMPACTS_precip_map.png'
 image_name = image_dir+'/IMPACTS_map.png'
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar'
+site_pickle_file = pickle_jar+'/sitelist.pkl'
 html_plots_url = 'http://impacts.atmos.washington.edu/tmp_asos_dir'
-text_output_dir = '/home/disk/funnel/impacts'
-text_output_name = 'clickable_boxes.txt'
+output_dir = '/home/disk/funnel/impacts'
+output_file = output_dir+'/clickable_boxes.txt'
 
 def load_us_asos():
     # add ASOS sites
@@ -125,7 +133,7 @@ def write_box2txt(nw_corner,se_corner,station,name):
     '''Uses the coordinates of the box to print out an ascii line to a txt file that 
        will be used to make clickabe boxes.
     '''
-    with open(text_output_dir+'/'+text_output_name,'a') as f:
+    with open(output_file,'a') as f:
 
         line = ('                <area shape=\"rect\" coords=\"%s,%s,%s,%s\" alt=\"%s\" href=\"%s/%s.html\" title=\"%s\">\n'
                % (nw_corner[0],nw_corner[1],se_corner[0],se_corner[1],station,html_plots_url,station.lower(),name))
@@ -147,11 +155,15 @@ def main():
     ASOS_us = load_us_asos()
     ASOS_ca = load_ca_asos()
     ASOS = merge_asos_dict(ASOS_us,ASOS_ca)
-    with open(pickle_jar + "/asos_keys.pkl",'rb') as f:
+    #with open(pickle_jar + "/asos_keys.pkl",'rb') as f:
+    with open(site_pickle_file,'rb') as f:
         asos_keys = pickle.load(f)
-    
+    f.close()
+
+    #save last good file
+    if os.path.exists(output_file):
+        shutil.move(output_file,output_file+'.bak')
     get_box_and_write2txt(ASOS,asos_keys)
-    
     
 main()
     

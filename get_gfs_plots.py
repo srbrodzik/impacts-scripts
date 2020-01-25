@@ -24,8 +24,8 @@ deltaBetweenForecastHours = 6
 lastForecastHour = 96
 gfsUrl = 'https://tropicaltidbits.com/analysis/models/gfs'
 targetDirBase = '/home/disk/bob/impacts/model/gfs_28km'
-products = ['ref_frzn_us','temp_adv_fgen_700_us','z500_vort_us','uv250_us','ir_us','T2m_us']
-has_anal_prod = [0,1,1,1,0,1]
+products = ['ref_frzn_us','T850_us','temp_adv_fgen_700_us','z500_vort_us','uv250_us','ir_us','T2m_us']
+has_anal_prod = [0,1,1,1,1,0,1]
 catalogBaseDir = '/home/disk/funnel/impacts-website/archive/model/gfs_28km'
 
 # get model date and time closest to current time
@@ -123,19 +123,19 @@ for t in range(0,nRuns):
 
             # loop through the url file list, downloading those that have
             # not yet been downloaded
-            if debug:
-                print >>sys.stderr, "Starting to loop through url file list"
+            #if debug:
+            #    print >>sys.stderr, "Starting to loop through url file list"
             
             for idx,urlFileName in enumerate(urlFileList,0):
-                if debug:
-                    print >>sys.stderr, "  idx = ", idx
-                    print >>sys.stderr, "  urlFileName = ", urlFileName
-                    #print >>sys.stderr, "  urlDateList[",idx,"] = ", urlDateList[idx]
-                    #print >>sys.stderr, "  dateStr = ", dateStr
+                #if debug:
+                #    print >>sys.stderr, "  idx = ", idx
+                #    print >>sys.stderr, "  urlFileName = ", urlFileName
+                #    #print >>sys.stderr, "  urlDateList[",idx,"] = ", urlDateList[idx]
+                #    #print >>sys.stderr, "  dateStr = ", dateStr
 
                 if urlFileName not in localFileList:
-                    if debug:
-                        print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
+                    #if debug:
+                    #    print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
                     try:
                         command = 'wget '+gfsUrl+'/'+currentModelRun+'/'+urlFileName
                         os.system(command)
@@ -153,13 +153,13 @@ for t in range(0,nRuns):
                         forecast_hour = str(int(parts[-1])*deltaBetweenForecastHours)
                     if len(forecast_hour) == 1:
                         forecast_hour = '0'+forecast_hour
-                    if debug:
-                        print >>sys.stderr, "    forecast_hour = ", forecast_hour
+                    #if debug:
+                    #    print >>sys.stderr, "    forecast_hour = ", forecast_hour
 
                     # create full file name
                     newFileName = 'model.gfs_28km.'+currentModelRun+'00.'+forecast_hour+'_'+products[i]+'.png'
-                    if debug:
-                        print >>sys.stderr, "    newFileName = ", newFileName
+                    #if debug:
+                    #    print >>sys.stderr, "    newFileName = ", newFileName
 
                     # check to make sure that web server path exists
                     catalogDir = catalogBaseDir+'/'+dateStrList[t]

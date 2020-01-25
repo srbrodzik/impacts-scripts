@@ -1,5 +1,5 @@
-#!/usr/bin/python3
-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
 Created on Fri Oct  4 13:30:03 2019
 
@@ -8,10 +8,6 @@ Created on Fri Oct  4 13:30:03 2019
 Notes for Brodzik - create input params for:
    buffer (distance in km between stations)
    field  (field value to be displayed on map)
-
-Mod by Brodzik on 22 Jan 2020
-   magnitude_scaling function modified to check for mean = 0
-   if that occurs, stats.zscore call crashes so if-else added
 """
 
 #These next 2 lines allows script to be run from cron without complaining about DISPLAY
@@ -92,8 +88,7 @@ csv_dir = '/home/disk/funnel/impacts/data_archive/asos/*'
 plot_dir = '/home/disk/funnel/impacts/archive/ops/asos'
 
 #destination of image that gets bashed over
-#precip_map_dir = '/home/disk/funnel/impacts/precip_map'
-precip_map_dir = '/home/disk/funnel/impacts/precip_map_impacts'
+precip_map_dir = '/home/disk/funnel/impacts/precip_map'
 
 #Name of the saved figure
 #precip_map_name = 'IMPACTS_precip_map.png'
@@ -175,13 +170,9 @@ def get_asos_data():
     #list_of_dir = glob.glob(csv_dir+'/2*')   
     list_of_dir = glob.glob(csv_dir)   
     Path = max(list_of_dir, key=os.path.getctime)
-    Data_Path = Path + '/'
-    # print Data_Path
-    print('Data_Path = {}'.format(Data_Path))
-    
+    Data_Path = Path + '/'    
+
     filelist = os.listdir(Data_Path) #Gets the files listed in the path directory
-    # print csv filelist
-    print('filelist = {}'.format(filelist))
     if len(filelist) == 0: #Will exit the function if there is no data in the directory
         print("Latest directory of data files is empty. The script was exited and the figures and map were not updated.")
         return 0
@@ -218,8 +209,8 @@ def plot_ASOS(ASOS,field):
     
     #Saves a list of stations ID's for which there is data to be passed to get_pixels4clickbox.py
     #Uncomment if the data keys ever change
-    with open(pickle_jar + "asos_keys.pkl",'wb') as f:
-        pickle.dump(asos_keys,f,protocol=2)    
+    #with open(pickle_jar + "asos_keys.pkl",'wb') as f:
+    #    pickle.dump(asos_keys,f,protocol=2)    
 
     zscores = magnitude_scaling(asos_data,field)
     for station in asos_keys: #loops through the stations with data    
@@ -247,61 +238,40 @@ def plot_ASOS(ASOS,field):
             pass
     file_time = datetime.strptime(asos_data[station][0],'%Y-%m-%d %H:%M:%S')
     figtitle = "Precip Accumulation (mm) for %s 00:00 - %s UTC " % (file_time.strftime("%Y-%m-%d"),file_time.strftime("%H:%M"))
-    # print figure title
-    print('figtitle = {}'.format(figtitle))
     fig.suptitle(figtitle, fontsize = 18, y=.9)
     #cmd = "plt.savefig("+precip_map_dir+"/"+precip_map_name+",bbox_inches = 'tight', pad_inches = 0)"
     #print "cmd = " + cmd
     plt.savefig(precip_map_dir+'/'+precip_map_name,bbox_inches = 'tight', pad_inches = 0)
-    plt.savefig(precip_map_dir+'/testDir/'+precip_map_name,bbox_inches = 'tight', pad_inches = 0)
-    # print time output file created
-    outputfile = precip_map_dir+'/'+precip_map_name
-    print('output file {} created:'.format(outputfile))
-    os.system('date')
     return asos_keys
     
 def magnitude_scaling(asos_data,field):
     '''Takes in ASOS data, and returns bins corresponding to the text size of station based on the z-score.
     '''
-
-    #Used for creating zscore_dict at end of routine
-    count = 0
-    zscore_dict = {}
-
     #List of only digits
     field_values = []
-    
     #List of all values with None in place for NaNs
     all_values = []
-    
     for item in asos_data.items():
         if item[1][field].replace(".","").isdigit() or item[1][field].replace(".","") == "00": #Removes "." so isdigit can find the numbers
             field_values.append(float(item[1][field])) #adds the float value
             all_values.append(float(item[1][field])) 
         else:
             all_values.append(-9999) #Adds to where there are Nans only in all values
-            
     #Calculates the mean of the reported values
     mean = scipy.mean(field_values)
+    all_values = np.array(all_values)
+    #Fills NaNs with the mean
+    indices = np.where(all_values == -9999)[0]
+    all_values[indices] = mean
+    #Z-scores with NaNs not being affecting
+    zscores = stats.zscore(all_values) / 2
     
-    if mean > 0:
-        all_values = np.array(all_values)
-        #Fills NaNs with the mean
-        indices = np.where(all_values == -9999)[0]
-        all_values[indices] = mean
-        #Z-scores with NaNs not being affecting
-        zscores = stats.zscore(all_values) / 2
-        
-        #Create dictionary of stations to zscore... Otherwise the zscore was not aligning properly when passed back
-        for item in asos_data.items():
-            zscore_dict[item[0]] = zscores[count]
-            count += 1
-    else:
-        #Create dictionary of stations to zscore - fills in zeros for zscores
-        for item in asos_data.items():
-            zscore_dict[item[0]] = 0.0
-            count += 1
-        
+    count = 0 #Iterator for zscores
+    zscore_dict = {}
+    #Adds in a dictionary of stations to zscore... Otherwise the zscore was not aligning properly when passed back
+    for item in asos_data.items():
+        zscore_dict[item[0]] = zscores[count]
+        count += 1
     return zscore_dict
 
 def keys2list(ASOS):
@@ -368,10 +338,7 @@ def main():
     #ASOS_ca = load_ca()
     #ASOS.update(ASOS_ca)
 
-    ASOS = thin_station_density(ASOS)
-
-    # Outputs the station ids as a list and the stations names as
-    # another list and writes them to pickle files
+    ASOS = thin_station_density(ASOS) 
     keys2list(ASOS)
     
     asos_keys = plot_ASOS(ASOS,field)

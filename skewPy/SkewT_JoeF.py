@@ -1045,7 +1045,7 @@ class Sounding(UserDict):
             pres = file_data[:,prescol]
             temp = file_data[:,tempcol]
             dew = file_data[:,dewcol]
-            wspd = file_data[:,spdcol]*1.94
+            wspd = file_data[:,spdcol]#*1.94 JF removed this as data already in kts
             drct = file_data[:,drctcol]
 
             drct[drct > 360] = 0
@@ -1133,7 +1133,7 @@ class Sounding(UserDict):
 
             temp = ds['TC'].values
             height = ds['HAGL'].values
-            wspd = ds['WINDSPD'].values
+            wspd = ds['WINDSPD'].values*1.94 # Joe Finlon fix for m/s to kts
             pres = ds['PRESS'].values
             drct = ds['WINDDRN'].values
             RH = ds['RH'].values
@@ -1157,7 +1157,7 @@ class Sounding(UserDict):
             end_index = -1
             pres = ds['pressure'].values[:end_index]
             temp = ds['temperature'].values[:end_index]
-            wspd = ds['wind_speed'].values[:end_index]
+            wspd = ds['wind_speed'].values[:end_index]*1.94 # Joe Finlon fix for m/s to kts
             drct = ds['wind_direction'].values[:end_index]
             height = ds['geometric_height'].values[:end_index]
             dew = ds['dewpoint_temperature'].values[:end_index]

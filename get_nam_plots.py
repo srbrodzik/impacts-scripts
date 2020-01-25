@@ -16,7 +16,7 @@ def listFD(url, ext=''):
     return [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href').endswith(ext)]
 
 # User inputs
-debug = 0
+debug = 1
 debug2 = 1
 secsPerDay = 86400
 pastSecs = secsPerDay
@@ -25,8 +25,8 @@ deltaBetweenForecastHours = [1,3]  # 1 for files 1-36, 3 for files 37-52
 lastForecastHour = 84
 namUrl = 'https://tropicaltidbits.com/analysis/models/namconus'
 targetDirBase = '/home/disk/bob/impacts/model/nam_12km'
-products = ['ref_frzn_us','temp_adv_fgen_700_us','z500_vort_us','uv250_us','T2m_us']
-has_anal_prod = [0,1,1,1,1]
+products = ['ref_frzn_us','T850_us','temp_adv_fgen_700_us','z500_vort_us','uv250_us','T2m_us']
+has_anal_prod = [0,1,1,1,1,1]
 catalogBaseDir = '/home/disk/funnel/impacts-website/archive/model/nam_12km'
 
 # get model date and time closest to current time
@@ -126,19 +126,19 @@ for t in range(0,nRuns):
 
             # loop through the url file list, downloading those that have
             # not yet been downloaded
-            if debug:
-                print >>sys.stderr, "Starting to loop through url file list"
+            #if debug:
+            #    print >>sys.stderr, "Starting to loop through url file list"
             
             for idx,urlFileName in enumerate(urlFileList,0):
-                if debug:
-                    print >>sys.stderr, "  idx = ", idx
-                    print >>sys.stderr, "  urlFileName = ", urlFileName
-                    #print >>sys.stderr, "  urlDateList[",idx,"] = ", urlDateList[idx]
-                    #print >>sys.stderr, "  dateStr = ", dateStr
+                #if debug:
+                #    print >>sys.stderr, "  idx = ", idx
+                #    print >>sys.stderr, "  urlFileName = ", urlFileName
+                #    #print >>sys.stderr, "  urlDateList[",idx,"] = ", urlDateList[idx]
+                #    #print >>sys.stderr, "  dateStr = ", dateStr
 
                 if urlFileName not in localFileList:
-                    if debug:
-                        print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
+                    #if debug:
+                    #    print >>sys.stderr, urlFileName,"    not in localFileList -- get file"
                     try:
                         command = 'wget '+namUrl+'/'+currentModelRun+'/'+urlFileName
                         os.system(command)
@@ -150,35 +150,35 @@ for t in range(0,nRuns):
                     # first get forecast_hour
                     (base,ext) = os.path.splitext(urlFileName)
                     parts = base.split('_')
-                    if debug2:
-                        print >>sys.stderr, "base      = ", base
-                        print >>sys.stderr, "   parts[-1] = ", parts[-1]
+                    #if debug2:
+                    #    print >>sys.stderr, "base      = ", base
+                    #    print >>sys.stderr, "   parts[-1] = ", parts[-1]
                     if has_anal_prod[i]:
                         if int(parts[-1]) <= 37:
                             forecast_hour = str( (int(parts[-1])-1) * deltaBetweenForecastHours[0])
                         else:
                             forecast_hour = str(36 + ( (int(parts[-1]) - 37) * deltaBetweenForecastHours[1] ) )
-                        if debug2:
-                            print >>sys.stderr, "   has_anal_prod: forecast_hour = ", forecast_hour
+                        #if debug2:
+                        #    print >>sys.stderr, "   has_anal_prod: forecast_hour = ", forecast_hour
                     else:
                         if int(parts[-1]) <= 36:
                             forecast_hour = str(int(parts[-1])*deltaBetweenForecastHours[0])
                         else:
                             forecast_hour = str(36 + ( (int(parts[-1]) - 36) * deltaBetweenForecastHours[1] ) )
-                        if debug2:
-                            print >>sys.stderr, "   no_anal_prod: forecast_hour = ", forecast_hour
+                        #if debug2:
+                        #    print >>sys.stderr, "   no_anal_prod: forecast_hour = ", forecast_hour
                     if len(forecast_hour) == 1:
                         forecast_hour = '0'+forecast_hour
-                    if debug:
-                        print >>sys.stderr, "    forecast_hour = ", forecast_hour
+                    #if debug:
+                    #    print >>sys.stderr, "    forecast_hour = ", forecast_hour
 
                     # only copy three hourly files to web server
                     if not (int(forecast_hour) % 3):
                         
                         # create full file name
                         newFileName = 'model.nam_12km.'+currentModelRun+'00.'+forecast_hour+'_'+products[i]+'.png'
-                        if debug:
-                            print >>sys.stderr, "    newFileName = ", newFileName
+                        #if debug:
+                        #    print >>sys.stderr, "    newFileName = ", newFileName
 
                         # check to make sure that web server path exists
                         catalogDir = catalogBaseDir+'/'+dateStrList[t]
