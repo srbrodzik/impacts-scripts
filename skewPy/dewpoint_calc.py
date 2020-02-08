@@ -16,4 +16,4 @@ def calculate_dewpoint(T, RH):
     Td = (237.3 * x)/(17.269-x)
         
     return Td
-print(calculate_dewpoint(20,20))
+#print(calculate_dewpoint(20,20))

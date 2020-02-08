@@ -8,7 +8,7 @@ import shutil
 secsPerDay = 86400
 pastSecs = secsPerDay * 2
 baseDir = '/home/disk/bob/impacts/model'
-model = ['gfs_28km','nam_12km','hrrr_03km','wrf_gfs_04km','wrf_gfs_12km','wrf_gfs_36km']
+model = ['gfs_28km','hrrr_01km','hrrr_03km','nam_12km','wrf_gfs_04km','wrf_gfs_12km','wrf_gfs_36km']
 
 # Get current time
 nowTime = time.gmtime()

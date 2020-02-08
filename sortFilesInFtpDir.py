@@ -7,11 +7,20 @@ import shutil
 ftpDir = '/home/disk/ftp/brodzik/incoming'
 webserverDir = '/home/disk/funnel/impacts/archive'
 
+# Change permissions on all files and rename SBU soundings
 for file in os.listdir(ftpDir):
-    #print sys.stderr, "file = ", file
     if os.path.isfile(ftpDir+'/'+file):
         cmd = 'chmod a+rw '+ftpDir+'/'+file
         os.system(cmd)
+        if file.startswith('GrawSonde'):
+            (base,ext) = os.path.splitext(file)
+            (product,junk,date,time) = base.split('_')
+            newName = 'research.sounding.'+date+time+'.SBU_Mobile'+ext
+            os.rename(ftpDir+'/'+file,ftpDir+'/'+newName)
+            
+for file in os.listdir(ftpDir):
+    #print sys.stderr, "file = ", file
+    if os.path.isfile(ftpDir+'/'+file):
         if file.endswith('pdf') or file.endswith('.jpg') or file.endswith('png') or file.endswith('gif') or file.endswith('nc'):
             #print sys.stderr, "   processing file"
             try:
@@ -29,7 +38,7 @@ for file in os.listdir(ftpDir):
                 if product == 'sounding' and suffix == 'nc':
                     if category == 'UIUC_Mobile':
                         format = 'UIUCnc'
-                    elif category == 'sbum':
+                    elif category == 'SBU_Mobile':
                         format = 'SBUnc'
                     skewtPath = webserverDir+'/'+prefix+'/skewt/'+yyyymmdd
                     if not os.path.exists(skewtPath):

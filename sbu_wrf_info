@@ -1,0 +1,92 @@
+d01 = 36km
+d02 = 12km
+d03 = 04km
+
+Surface Winds
+http://itpa.somas.stonybrook.edu/sbuwrf/2019120412/GFS.winds_sfc.d01.84.gif
+Surface Temps
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.temps_sfc.d01.84.gif
+
+925/850/700/500/300 hPa Winds
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.winds_925.d01.84.gif
+925/850/700/500/300 hPa Temps
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.temps_925.d01.84.gif
+
+Simulated Refl
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.refl_10cm.d01.84.gif
+
+PBL Height
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.pblht.d01.84.gif
+
+SLP/Thickness
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.slp_thickness.d01.84.gif
+
+850/700 hPa dBZ/Fronto
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.850_dBZfronto.d01.84.gif
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.700_dBZfronto.d01.84.gif
+
+500 hPa Absolute Vort
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.500_avo.d01.84.gif
+
+Accum Precip 1/3/24 hr
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.pcp1.d01.84.gif
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.pcp3.d01.84.gif
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.pcp24.d01.84.gif
+
+Snow Accum 1/3/24 hr
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.snow1.d01.84.gif
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.snow3.d01.84.gif
+http://itpa.somas.stonybrook.edu/sbuwrf/2019121012/GFS.snow24.d01.84.gif
+
+
+
+
+
+SB Ground Instruments
+
+VCeilo 7.5K
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/CEILOMETER/2019/ceilometer_20191209.png
+
+VCeilo 15K
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/CL51/2019/cl51_20191209.png
+
+KASPR - Sean
+
+SKYLER - Sean
+
+Lidar
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/LIDAR/2019/lidar_20191209.png
+
+MRR-PRO images
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/MRR/2019/mrrpro_20191209.png
+
+Parsivel
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/PARSIVEL/2019/parsivel_20191209.png
+
+Pluvio
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/PLUVIO/2019/pluvio_20191209.png
+
+ROGER - Can you split this into 2 images?
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES/ROGER/2019/roger_20191209.png
+
+Radar Truck AirMar Weather Station
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES//RadarTruck/AirmarWeather/2019/airmar_20191209.png
+
+Radar Truck CHM15K
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES//RadarTruck/CHM15K/2019/chm15k_20191209.png
+
+Radar Truck MRR-PRO
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES//RadarTruck/MRRPRO/2019/mrrpro_20191209.png
+
+Radar Truck Parsivel
+https://doppler.somas.stonybrook.edu/ARCHIVE/IMAGES//RadarTruck/Parsivel/2019/parsivel_20191209.png
+
+
+
+
+
+Downloading from Google Drive (https://jessicastansberry.com/googledrive/)
+
+https://docs.google.com/document/d/FILE_ID/export?format=doc/pdf
+https://docs.google.com/spreadsheets/d/FILE_ID/export?format=xlsx/pdf
+https://docs.google.com/presentation/d/FILE_ID/export/pptx/pdf

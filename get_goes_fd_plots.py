@@ -11,14 +11,14 @@ import shutil
 debug = 1
 secsPerDay = 86400
 pastSecs = secsPerDay/48   # check data from last 30 minutes
-#pastSecs = 300   # check data from last 5 minutes
-basePath = '/home/disk/data/images/sat_east_meso_impacts'
-productList = ['M1color']
+#pastSecs = 360   # check data from last 6 minutes
+basePath = '/home/disk/data/images/sat_east_impacts'
+productList = {'C02':'vis_ch02','color':'multi_ch_color'}
 targetDirBase = '/home/disk/bob/impacts/sat'
 catalogBaseDir = '/home/disk/funnel/impacts/archive/ops/goes_east'
 ext = 'jpg'
 catalog_prefix = 'ops.goes_east'
-catalog_suffix = 'M1color'
+#catalog_suffix = ['vis_ch02','multi_ch_color']
 
 # getdate and time - are now and nowObj the same thing??
 nowTime = time.gmtime()
@@ -39,7 +39,7 @@ startDateStr = startObj.strftime("%Y%m%d")
 if debug:
     print >>sys.stderr, "startStr = ", startStr
 
-for product in productList:
+for product in productList.keys():
     print >>sys.stderr, "product = ", product
     
     # get list of files from last 5 minutes
@@ -53,7 +53,7 @@ for product in productList:
             if fileUnixTime <= nowUnixTime and fileUnixTime >= startUnixTime:
         
                 # create and cd to target dir
-                targetDir = targetDirBase+'/'+product
+                targetDir = targetDirBase+'/'+product+'/'+fileDateStr
                 if not os.path.exists(targetDir):
                     os.makedirs(targetDir)
                 os.chdir(targetDir)
@@ -66,7 +66,7 @@ for product in productList:
                     shutil.copy(basePath+'/'+file,targetDir)
                     
                     # copy file to catalog location
-                    catalog_name = catalog_prefix+'.'+fileTimeStr+'.'+catalog_suffix+'.'+ext
+                    catalog_name = catalog_prefix+'.'+fileTimeStr+'.'+productList[product]+'.'+ext
                     if not os.path.exists(catalogBaseDir+'/'+fileDateStr):
                         os.mkdir(catalogBaseDir+'/'+fileDateStr)
                     shutil.copy(targetDir+'/'+file,catalogBaseDir+'/'+fileDateStr+'/'+catalog_name)

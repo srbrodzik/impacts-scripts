@@ -68,8 +68,8 @@ open (HASH, '>'.$output_file_new);
 	     ["alba","bell","bron","buff","chaz","clym","eham","jord","oweg","quee","redh","stat","ston","suff","tupp","want","webs"],
 	     
 	     #["ir_ch14","vis_ch02","wv_ch08","ir_4km","vis_4km","wv_4km"],
-	     ["ir_4km","vis_4km","wv_4km","M1color"],
-	     ["dpr","gmi"],
+	     ["multi_ch_color","vis_ch02","ir_4km","vis_4km","wv_4km","M1color","M2color"],
+	     ["2Ku","gmi"],
 	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
 	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
              #["kalb","kacy","kbos",       "khwv","kbwi",       "kcon",       "kged","khfd","kisp",       "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
@@ -181,6 +181,7 @@ for $iplat (0..$#platforms) {
 	      "manhattan",
 	      "stonybrook",
 	      "stonybrookmobile",
+	      "ualbany",
 
 	      "brookhaven",
 	      "d3r",
@@ -189,6 +190,7 @@ for $iplat (0..$#platforms) {
 	      "npol",
 	      "stonybrook",
 	      "stonybrookmobile",
+	      "ualbany",
 
 	      "skewt");
 #print "platforms = @platforms\n";
@@ -196,11 +198,12 @@ for $iplat (0..$#platforms) {
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
 @products = (["ampr","cpl_355nm","cpl_532nm","cpl_1064nm","cpl_combo","cpl_aerosol_od","cpl_cloud_od","cpl_column_od","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
-	     ["avaps","cloud_probe","dropsonde","flight_track","phips_camera_C1","phips_camera_C2","tamms","wisper"],
+	     ["2DS_distributions","2DS_images","avaps","dropsonde","FCDP_distributions","flight_track","HVPS3A_distributions","HVPS3A_images","phips_camera_C1","phips_camera_C2","tamms","wisper"],
 
 	     ["parsivel"],
 	     ["pluvio","solar_tracker"],
 	     ["met_station","parsivel"],
+	     ["parsivel"],
 
 	     ["ceil075","dopp_lidar","mrr2"],
 	     ["ka_ppi_zdb","ka_rhi_zdb","ku_ppi_rhohv","ku_ppi_vel","ku_ppi_zdb","ku_rhi_rhohv","ku_rhi_vel","ku_rhi_zdb"],
@@ -208,9 +211,11 @@ for $iplat (0..$#platforms) {
 	     ["ceil150","mrr_pro"],
 	     
 	     ["ppi_dbz","ppi_hid","ppi_rainr","ppi_rhohv","ppi_vel","ppi_zdr","rhi_dbz","rhi_hid","rhi_rainr","rhi_rhohv","rhi_vel","rhi_zdr"],
-	     
-	     ["mwr","roger","wband_spec_refl","wband_tseries","xband_ph_arr"],
+
+	     #["mwr","roger","wband_spec_refl","wband_tseries","xband_ph_arr"],
+	     ["mwr","roger","skyler_ppi","skyler_rhi"],
 	     ["ceil150","mrr_pro","xband_ph_arr"],
+	     ["mrr","mrr_cfad","mrr_parsivel_tseries"],
 
 	     ["SBU","UIUC_Mobile_Sonde"]);
 

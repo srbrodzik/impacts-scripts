@@ -1,6 +1,22 @@
 #EDITED: Clayton Sasaki, UW, MAY 2019
 # crs326@uw.edu
 
+#EDITED: Joe Finlon, UW, JAN 2020
+# changed windspeed (wspd) assignment in 'readfile'
+
+#EDITED: S Brodzik, UW, JAN 2020
+# changed def of mixing ratio (mr) in 'make_skewt_axes'
+
+#EDITED: S Brodzik, UW, JAN 2020
+# for UIUCnc: converted dewpt from list to np.array in 'readfile'
+# this fixes error when calculating mixing ratio
+
+#NOTE: S Brodzik, UW, JAN 2020
+# getting error in 'cape' function if there are nan's in the
+# array before this command is run:
+# CAPE[CAPE<0] = 0.0
+# needs to be corrected
+
 from numpy import ma,array,linspace,log,cos,sin,pi,zeros,exp,arange,interp,flipud
 import numpy as np
 from matplotlib.axes import Axes
@@ -479,7 +495,7 @@ class Sounding(UserDict):
 
         #self.cape()
 
-		# IMPORTANT NOTE!!! Change this mixdepth to alter  mixed layer LCL NOT one in surface_pacel
+    # IMPORTANT NOTE!!! Change this mixdepth to alter  mixed layer LCL NOT one in surface_pacel
     def plot_skewt(self, imagename=None, title=None,hodograph = True, mixdepth=50, pres_s=1000.0, windskip = None, \
                         parcel = False, parcel_draw = False, **kwargs):
         """A wrapper for plotting the skewt diagram for a Sounding instance."""
@@ -487,13 +503,13 @@ class Sounding(UserDict):
         self.make_skewt_axes()
         self.add_profile(pres_s=pres_s, **kwargs)
         if parcel:
-			# produces mixed layer LCL
+	    # produces mixed layer LCL
             self.parcel=self.surface_parcel(mixdepth = mixdepth, pres_s = pres_s)
 
             self.parcel_pres, self.parcel_tdry, self.parcel_tiso, self.parcel_pwet, self.parcel_twet = self.lift_parcel(
                 *self.parcel, plotkey = parcel_draw, LCL_num = 1, LCL_name = 'mixed')
 
-			# produces surface based LCL
+	    # produces surface based LCL
             self.parcel=self.surface_parcel(mixdepth = .0001, pres_s = pres_s)
 
             self.parcel_pres, self.parcel_tdry, self.parcel_tiso, self.parcel_pwet, self.parcel_twet = self.lift_parcel(
@@ -509,7 +525,6 @@ class Sounding(UserDict):
         if isinstance(title, str):
             ttl = self.skewxaxis.set_title(title, fontsize=15)
             ttl.set_position([0.55, 1.06])
-
 
         else:
             try:
@@ -575,8 +590,14 @@ class Sounding(UserDict):
 
             CAPE = (9.8*(Tp_interp[1:] - Te[1:]) / Te[1:]) * (wet_heights[1:] - wet_heights[:-1])
 
-        CAPE[CAPE<=0] = 0.0
-
+        # Use a mask to mark the NaNs - this doesn't get rid of error
+        #CAPE = np.ma.array(CAPE, mask=np.isnan(CAPE))
+        #CAPE[CAPE<0] = 0.0
+        
+        for idx in range(0,len(CAPE)):
+            if not math.isnan(CAPE[idx]) and CAPE[idx] < 0.0:
+                CAPE[idx] = 0.0
+ 
         try:   
 
             self.fig.text(0.84, 0.60, 'SBCAPE: %d J/kg'%(CAPE.sum()))
@@ -829,7 +850,9 @@ class Sounding(UserDict):
         h40 = self.data['hght'][np.argmin(abs(self.data['temp']+40))]
         lcl_height = 216*(self.data['temp'][0]-self.data['dwpt'][0])
         wcd = h0 - lcl_height
-        mr = MixRatio(SatVap(self.data['dwpt'][0]), self.data['pres']*100)
+        # SRB: removed this formula for mixing ratio and reverted to orig definition
+        #mr = MixRatio(SatVap(self.data['dwpt'][0]), self.data['pres']*100)
+        mr = MixRatio(SatVap(self.data['dwpt']), self.data['pres']*100)
         pdiff = -1.0*np.diff(self.data['pres'])
         #print mr.shape, pdiff.shape
         # precipitable water
@@ -1000,9 +1023,9 @@ class Sounding(UserDict):
 
 
     def readfile(self, fname):
-            #-----------------------------------------------------------------
-            # This *should* be a convenient way to read a uwyo sounding
-            #-----------------------------------------------------------------
+        #-----------------------------------------------------------------
+        # This *should* be a convenient way to read a uwyo sounding
+        #-----------------------------------------------------------------
         if self.fmt == 'UWYO': # READING IN STANDARD UNIVERSITY OF WYOMING FILES from website
             fid = open(fname)
             lines = [line for line in fid.readlines() if line.strip()]
@@ -1045,7 +1068,9 @@ class Sounding(UserDict):
             pres = file_data[:,prescol]
             temp = file_data[:,tempcol]
             dew = file_data[:,dewcol]
-            wspd = file_data[:,spdcol]#*1.94 JF removed this as data already in kts
+            # JF removed 1.94 factor from wspd as data already in kts
+            #wspd = file_data[:,spdcol]*1.94 
+            wspd = file_data[:,spdcol]
             drct = file_data[:,drctcol]
 
             drct[drct > 360] = 0
@@ -1057,7 +1082,6 @@ class Sounding(UserDict):
             
         if self.fmt == 'CSU': #used for CSU soundings
             rawfile = open(fname).readlines()
-
 
             try:
                 serial_number = rawfile[1].split('#')[1].strip()
@@ -1074,8 +1098,8 @@ class Sounding(UserDict):
                 self.station = 'test'
                 self.sounding_date = None
 
-        # Let's try reading in the Header line to see if we can figure this out, and the skip_header
-        # in the file_data line
+            # Let's try reading in the Header line to see if we can figure this out, and the skip_header
+            # in the file_data line
 
             done = False
 
@@ -1133,7 +1157,8 @@ class Sounding(UserDict):
 
             temp = ds['TC'].values
             height = ds['HAGL'].values
-            wspd = ds['WINDSPD'].values*1.94 # Joe Finlon fix for m/s to kts
+            # Joe Finlon fix for m/s to kts - added factor of 1.94
+            wspd = ds['WINDSPD'].values*1.94
             pres = ds['PRESS'].values
             drct = ds['WINDDRN'].values
             RH = ds['RH'].values
@@ -1142,18 +1167,19 @@ class Sounding(UserDict):
             dew = []
             for i,val in enumerate(RH):
                 dew.append(calculate_dewpoint(temp[i], RH[i]))
-
+            # dewpt needs to be an np.array, not a list, so convert it
+            dewpt = np.asarray(dew)
+                
+            self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dewpt, 'sknt': wspd, 'drct': drct}
             
-            self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct}
-        
         elif self.fmt == 'SBUnc':
             ds = xr.open_dataset(fname)
             #Data tends to oscillate, so end index is the first time the heights begin to decrease
             #All data is taken if heights never decrease
-            try:
-                end_index = np.where(np.gradient(ds['geometric_height'].values) < 0  )[0][0]
-            except:
-                end_index = -1
+            #try:
+            #    end_index = np.where(np.gradient(ds['geometric_height'].values) < 0  )[0][0]
+            #except:
+            #    end_index = -1
             end_index = -1
             pres = ds['pressure'].values[:end_index]
             temp = ds['temperature'].values[:end_index]
@@ -1161,9 +1187,9 @@ class Sounding(UserDict):
             drct = ds['wind_direction'].values[:end_index]
             height = ds['geometric_height'].values[:end_index]
             dew = ds['dewpoint_temperature'].values[:end_index]
+            
             self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct}
-            
-            
+
         elif self.fmt == 'SCOUT' or self.fmt == 'UIUC': #used for SCOUT and UIUC soundings
 
             df = pd.read_csv(fname, sep='\t')

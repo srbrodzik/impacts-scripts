@@ -1,7 +1,9 @@
+#!/usr/bin/python
+
 import os
 import sys
 
-indir = '/home/disk/bob/gpm/nam_imp_ku/classify/ex_data_v06/2019/12'
+indir = '/home/disk/bob/gpm/nam_imp_ku/classify/ex_data_v06/2020/02'
 outdir = '/home/disk/bob/impacts/raw/gpm_ku'
 
 for file in os.listdir(indir):

@@ -1,0 +1,161 @@
+Probability of Snowfall Maps
+https://origin.wpc.ncep.noaa.gov/wwd/winter_wx.shtml
+
+Daily Precip Maps
+https://www.wpc.ncep.noaa.gov/qpf/obsmaps/usa-dlyprcp-20191024-big_wbg.pdf
+
+Surface Analysis Products (available for 00Z, 03Z, 06Z, etc with ~3 hour lag)
+https://www.wpc.ncep.noaa.gov/html/sfc2.shtml#sfctable
+   directory listing - https://www.wpc.ncep.noaa.gov/sfc/
+   Analysis/Satellite Composite (CONUS): ussatsfc<HH>.gif  HH=00,03,06,09 etc
+   Analysis/Radar Composite (CONUS):  radar_mosaic<HH>.html
+  Surface Map (no obs) (CONUS): bwsfc<HH>.gif
+  US/Southern Canada Daily Weather Map: usdwmsfc<HH>wbg.gif
+  Surface Analysis (CONUS):  namussfc<HH>wbg.gif
+                   (North Eastern US): namnesfc<HH>wbg.gif
+  Surface Analysis (CONUS) Fronts/Analysis Only: usfntsfc<HH>wbg.gif
+  
+https://ocean.weather.gov/unified_analysis.php - ocean prediction center
+USA East or East Coast??
+00, 06, 12, 18
+
+
+https://weather.cod.edu/forecast/ College of Du Page forecast models
+HRRR
+                        <li data-href="https://weather.cod.edu/analysis/">Observational Analysis</li>
+                        <li data-href="https://weather.cod.edu/satrad/">Satellite and Radar</li>
+                        <li data-href="https://weather.cod.edu/forecast/">Numerical Forecast Models</li>
+                        <li data-href="https://weather.cod.edu/text/">NWS Text Products</li>
+ABI-Band13: https://weather.cod.edu/data/satellite/continental/conus/current/conus.13.jpg
+substitute two-digit band for 13
+figure out frequency ~5min
+  
+Pipe input to python script
+
+import sys
+#data = sys.stdin.readlines()
+data = sys.stdin.pd.read_csv()
+print data
+
+-- Running :
+
+    user@xxxxxxx:~$ cat t.txt
+    alpha
+    beta
+    gamma
+
+    user@xxxxxxx:~$ cat t.txt | python ./s.py
+    ['alpha\n', 'beta\n', 'gamma\n']
+
+
+
+ASOS Profiler plots
+
+YYYY-MM-DD-HH:MM-<filetype>.PROF_<site>.png
+<filetype>
+   lidar CNR              (lidar_cnr)
+   lidar horiz speed      (lidar_horiz_ws)
+   lidar time series      (lidar_ts)
+   lidar vert speed       (lidar_vert_ws)
+   mwr integrations       (mwr_integrations)
+   mwr time series        (mwr_ts)
+<site>
+   ALBA
+   BELL
+   BRON
+   BUFF
+   CHAZ
+   CLYM
+   EHAM
+   JORD
+   OWEG
+   QUEE
+   REDH
+   STAT
+   STON
+   SUFF????
+   TUPP
+   WANT
+   WEBS
+
+
+
+
+
+
+Move /h/d/bob/impacts/bin scripts for nexrad processing to
+
+~meso/git/lrose-uw-impacts/projDir/ingest/scripts/
+
+
+
+
+Dave Ovens
+Images in this location - /home/disk/data/images/newnexrad/
+are created with ~ldm/local/bin/make_new_nexrad.csh
+radmap is a GEMPAK program that was designed to run very quickly and be able to keep up with the LDM data inflow
+  It may be straightforward to add in range rings....
+
+
+David Ovens version of GEMPAK
+
+/home/disk/frosty2/ovens/GEMPAK7/gempak/source/contrib/tdl/radmap/imnidh2.f
+
+
+GEMPAK lives here:
+
+/home/disk/ldm/nawips -> /home/disk/sys/local/nawips
+
+/home/disk/sys/local/nawips -> NAWIPS-5.10.4
+
+Actual location is:
+
+/home/disk/sys/local/NAWIPS-5.10.4
+
+
+To use it, add this to .cshrc file:
+
+  source /home/disk/ldm/nawips/Gemenviron
+
+After sourcing that file:
+
+shear:brodzik:46>env | grep GEM
+GEMPAKHOME=/home/disk/sys/local/NAWIPS-5.10.4/gempak
+GEMLIB=/home/disk/sys/local/NAWIPS-5.10.4/os/linux64/lib
+GEM_COMPTYPE=g77
+GEMPAK=/home/disk/sys/local/NAWIPS-5.10.4/gempak
+GEMEXE=/home/disk/sys/local/NAWIPS-5.10.4/os/linux64/bin
+GEMPDF=/home/disk/sys/local/NAWIPS-5.10.4/gempak/pdf
+GEMTBL=/home/disk/sys/local/NAWIPS-5.10.4/gempak/tables
+GEMERR=/home/disk/sys/local/NAWIPS-5.10.4/gempak/error
+GEMHLP=/home/disk/sys/local/NAWIPS-5.10.4/gempak/help
+GEMMAPS=/home/disk/sys/local/NAWIPS-5.10.4/gempak/maps
+GEMNTS=/home/disk/sys/local/NAWIPS-5.10.4/gempak/nts
+GEMPARM=/home/disk/sys/local/NAWIPS-5.10.4/gempak/parm
+GEMPTXT=/home/disk/sys/local/NAWIPS-5.10.4/gempak/txt/programs
+GEMGTXT=/home/disk/sys/local/NAWIPS-5.10.4/gempak/txt/gemlib
+GEMDATA=/home/disk/data/gempak
+WS_ETA_GEM=/scratch/chiz/wseta/worketa/gempak
+
+
+When trying to run sflist, need to redefine SFFILE:
+
+  GEMPAK-SFLIST>sffile = /home/disk/ldm/nawips/gempak/data/hrcbob.sfc
+
+While at any GEMPAK prompt, use phelp for help with a program or parameter
+
+ GEMPAK-SFLIST>phelp idntyp
+ IDNTYP
+
+ IDNTYP sets character or numeric station identifiers to be used for
+ input or output.  The valid values are STID and STNM.  STID specifies
+ station character identifiers; STNM specifies station numbers.
+
+ If the value in IDNTYP is not STNM, the default of STID will be used.
+
+ For example, to update station headers in SFSTNS:
+
+   IDNTYP =        STID -- compares character ids in file with those
+                           in the station table
+   IDNTYP =        STNM -- compares numeric ids in file with those
+                           in the station table
