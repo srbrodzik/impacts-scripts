@@ -10,8 +10,8 @@ import shutil
 # User inputs
 debug = 1
 secsPerDay = 86400
-#pastSecs = secsPerDay/48   # check data from last 30 minutes
-pastSecs = 300   # check data from last 5 minutes
+pastSecs = secsPerDay
+#pastSecs = 300   # check data from last 5 minutes
 basePath = '/home/disk/data/images/sat_east_meso_impacts'
 productList = ['M1color']
 targetDirBase = '/home/disk/bob/impacts/sat'

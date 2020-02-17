@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os
 import sys
 import shutil
@@ -25,15 +27,17 @@ record = recordWithEOL.strip()
 f.close()
 os.remove('AVAPS_QuickLook')
 
-# parse record to get filename
+# parse record to get filename & dropsonde date and time
 (junk1,datetime,lat,lon,junk2,junk3,junk4,junk5,fileUrl) = record.split(',')
 sondeFile = os.path.basename(fileUrl)
-date = datetime[0:10]
-(year,month,day) = date.split('-')
-time = datetime[11:19]
-(hour,minute,second) = time.split(':')
+temp = sondeFile.replace('filehomeavapsdataskewtD','')
+(dateSonde,timeSonde,junk) = temp.split('_')
+#date = datetime[0:10]
+#(year,month,day) = date.split('-')
+#time = datetime[11:19]
+#(hour,minute,second) = time.split(':')
 
-targetDir = targetBaseDir+'/'+year+month+day
+targetDir = targetBaseDir+'/'+dateSonde
 if not os.path.exists(targetDir):
     os.makedirs(targetDir)
 os.chdir(targetDir)
@@ -55,8 +59,8 @@ if sondeFile not in sondeFileList:
     os.system(command)
     
     # rename gif file, copy to catalog, remove it
-    catalogFile = 'research.p3.'+year+month+day+hour+minute+second+'.dropsonde.gif'
-    catalogDir = catalogBaseDir+'/'+year+month+day
+    catalogFile = 'research.p3.'+dateSonde+timeSonde+'.dropsonde.gif'
+    catalogDir = catalogBaseDir+'/'+dateSonde
     if not os.path.exists(catalogDir):
         os.makedirs(catalogDir)
     shutil.copy(targetDir+'/'+sondeGifFile,catalogDir+'/'+catalogFile)
@@ -65,7 +69,6 @@ if sondeFile not in sondeFileList:
     # add record to concatenated list of sondes
     with open(sondeInfoFile,"a") as myfile:
         myfile.write(recordWithEOL)
-    myfile.close()
         
 '''
 Generic function to delete all the files from a given directory based on matching pattern
