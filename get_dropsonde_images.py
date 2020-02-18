@@ -47,7 +47,7 @@ sondeFileList = os.listdir(targetDir)
 if sondeFile not in sondeFileList:
 
     if debug:
-        print >>sys.stderr, sondefile,"not downloaded yet -- downloading . . . "
+        print >>sys.stderr, sondeFile,"not downloaded yet -- downloading . . . "
     
     command = "wget "+fileUrl
     os.system(command)
