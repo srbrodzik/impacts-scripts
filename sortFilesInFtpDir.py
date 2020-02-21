@@ -5,7 +5,9 @@ import sys
 import shutil
 
 ftpDir = '/home/disk/ftp/brodzik/incoming'
-webserverDir = '/home/disk/funnel/impacts/archive'
+webserverDirBase = '/home/disk/funnel/impacts'
+webserverImageDir = webserverDirBase+'/archive'
+webserverDataDir = webserverDirBase+'/data_archive'
 
 # Change permissions on all files and rename SBU soundings
 for file in os.listdir(ftpDir):
@@ -26,32 +28,52 @@ for file in os.listdir(ftpDir):
             try:
                 (prefix,product,date,category,suffix) = file.split('.')
                 yyyymmdd = date[0:8]
-                if not os.path.exists(webserverDir+'/'+prefix+'/'+product+'/'+yyyymmdd):
-                    os.makedirs(webserverDir+'/'+prefix+'/'+product+'/'+yyyymmdd)
-                    if product == 'science_plan':
-                        shutil.copy(webserverDir+'/'+prefix+'/'+product+'/index.php',webserverDir+'/'+prefix+'/'+product+'/'+yyyymmdd)
-                # if science_plan, make new link        
-                if product == 'science_plan':
-                    os.unlink(webserverDir+'/'+prefix+'/'+product+'/DailySciencePlan.pdf')
-                    os.symlink(webserverDir+'/'+prefix+'/'+product+'/'+yyyymmdd+'/'+file,webserverDir+'/'+prefix+'/'+product+'/DailySciencePlan.pdf')
-                # if netcdf sounding, create skewt
+
+                # soundings get handled differently
                 if product == 'sounding' and suffix == 'nc':
+                    # create skewt
                     if category == 'UIUC_Mobile':
                         format = 'UIUCnc'
                     elif category == 'SBU_Mobile':
                         format = 'SBUnc'
-                    skewtPath = webserverDir+'/'+prefix+'/skewt/'+yyyymmdd
+                    skewtPath = webserverImageDir+'/'+prefix+'/skewt/'+yyyymmdd
                     if not os.path.exists(skewtPath):
                          os.makedirs(skewtPath)
                     command = '/usr/bin/python /home/disk/bob/impacts/bin/skewplot.py --file '+ftpDir+'/'+file+' --outpath '+skewtPath+' --format '+format+' --parcel False --hodograph False'
                     os.system(command)
+                    
                     # rename skewt for catalog
                     for plot in os.listdir(skewtPath):
                         if plot.startswith('upperair'):
                             plotNew = plot.replace('upperair.SkewT','research.skewt')
                             os.rename(skewtPath+'/'+plot,skewtPath+'/'+plotNew)
+                            
+                    # create nc output dir if necessary
+                    dataDir = webserverDataDir+'/soundings/impacts/'+yyyymmdd
+                    if not os.path.exists(dataDir):
+                        os.makedirs(dataDir)
+                        
+                    # move nc file to data_archive
+                    time = date[8:12]
+                    ncFile = 'IMPACTS_sounding_'+yyyymmdd+'_'+time+'_'+category+'.nc'
+                    shutil.move(ftpDir+'/'+file,dataDir+'/'+ncFile)
+                    
+                else:
+                    # create output dir if necessary
+                    imageDirBase = webserverImageDir+'/'+prefix+'/'+product
+                    imageDir = imageDirBase+'/'+yyyymmdd
+                    if not os.path.exists(imageDir):
+                        os.makedirs(imageDir)
+                        if product == 'science_plan':
+                            shutil.copy(imageDirBase+'/index.php',imageDir)                    
+                    
+                    # if science_plan, make new link        
+                    if product == 'science_plan':
+                        os.unlink(imageDirBase+'/DailySciencePlan.pdf')
+                        os.symlink(imageDir+'/'+file,imageDirBase+'/DailySciencePlan.pdf')
 
-                shutil.move(ftpDir+'/'+file,webserverDir+'/'+prefix+'/'+product+'/'+yyyymmdd+'/'+file)
+                    # move file to archive
+                    shutil.move(ftpDir+'/'+file,imageDir+'/'+file)
                     
             except ValueError:
                 #print sys.stderr, "   processing fails"

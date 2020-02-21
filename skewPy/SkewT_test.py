@@ -42,6 +42,7 @@ import xarray as xr
 from thermodynamics import VirtualTemp,Latentc,SatVap,MixRatio,GammaW,\
 	VirtualTempFromMixR,MixR2VaporPress,DewPoint,Theta,TempK,VaporPressure
 from thermodynamics import Rs_da, Rs_v, Cp_da, Epsilon
+from dewpoint_calc import calculate_dewpoint
 
 try:
     from sharppy.sharptab import profile as sprofile
@@ -54,6 +55,9 @@ import os
 import sys
 
 degC = '$^{\circ}$C'
+
+def mpers2knots(spd):
+    return (spd * 1.94)
 
 def trapezoid(value, trap_values, yvalues = [-1,1,1,-1]):
     xarr = np.array(trap_values).astype(float)
@@ -1151,7 +1155,8 @@ class Sounding(UserDict):
             self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct, 'lat': lat, 'lon': lon}
 
             return None
-        
+
+        # Added by S Brodzik (Feb 2020)
         elif self.fmt == 'rtso': #used for WFF soundings
 
             # read in file after header as DataFrame
@@ -1164,7 +1169,32 @@ class Sounding(UserDict):
                           'ns_wind_comp (m/s)','ew_wind_comp (m/s)','vert_wind_comp (m/s)','lon (deg)','lat (deg)',
                           'geom_ht (m)']
 
-	    # if missing values in data, have to replace with NaNs and then convet to numeric as it originaly is read strings instead of float64
+            for key in df.keys():
+	        # if missing values in data, have to replace with NaNs and then convet to numeric as it
+                # originaly is read strings instead of float64; coerce flag nicely takes anything that
+                # cannot be converted and puts NaN
+                if df[key].dtype.name != 'float64':
+                    df[key] = pd.to_numeric(df[key], errors='coerce')
+                if 'geom_ht' in key:
+                    height = (df[key][0:])
+                elif key == 'pres (mb)':
+                    pres = (df[key][0:])
+                elif key == 'temp (degC)':
+                    temp = (df[key][0:])
+                elif 'dew_pt' in key:
+                    dew = (df[key][0:])
+                elif 'wspd' in key:
+                    df[key].values[df[key] < 0] = 0
+                    wspd = mpers2knots(df[key][0:])
+                elif 'wdir' in key:
+                    drct = (df[key][0:])
+                elif 'lat' in key:
+                    lat = (df[key][0:])
+                elif 'lon' in key:
+                    lon = (df[key][0:])
+                    
+            '''
+            # if missing values in data, have to replace with NaNs and then convet to numeric as it originaly is read strings instead of float64
             #    coerce flag nicely takes anything that cannot be converted and puts NaN
             if df['geom_ht (m)'].dtype.name != 'float64':
                 df['geom_ht (m)'] = pd.to_numeric(df['geom_ht (m)'], errors='coerce')  
@@ -1186,7 +1216,7 @@ class Sounding(UserDict):
                 df['wspd (m/s)'] = pd.to_numeric(df['wspd (m/s)'], errors='coerce')
             df['wspd (m/s)'].values[df['wspd (m/s)'] < 0] = 0
             # convert wspd from m/s to knots
-            wspd = (df['wspd (m/s)'][0:]) * 1.94
+            wspd = mpers2knots(df['wspd (m/s)'][0:])
 
             if df['wdir (deg)'].dtype.name != 'float64':
                 df['wdir (deg)'] = pd.to_numeric(df['wdir (deg)'], errors='coerce')
@@ -1200,8 +1230,43 @@ class Sounding(UserDict):
             if df['lon (deg)'].dtype.name != 'float64':
                 df['lon (deg)'] = pd.to_numeric(df['lon (deg)'], errors='coerce')
             lon = (df['lon (deg)'][0:])
+            '''
 
             self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct, 'lat': lat, 'lon': lon}
+
+        # Added by S Brodzik (Feb 2020)
+        elif self.fmt == 'NCSU': #used for NCSU soundings
+
+            # read in file after header as DataFrame
+            df = pd.read_csv(fname, skiprows=1)
+
+            for key in df.keys():
+	        # if missing values in data, have to replace with NaNs and then convet to numeric as it
+                # originaly is read strings instead of float64; coerce flag nicely takes anything that
+                # cannot be converted and puts NaN
+                if df[key].dtype.name != 'float64':
+                    df[key] = pd.to_numeric(df[key], errors='coerce')
+                if 'Height' in key:
+                    height = (df[key][0:])
+                elif 'Pressure' in key:
+                    pres = (df[key][0:])
+                elif 'Temp' in key:
+                    temp = (df[key][0:])
+                elif 'humid' in key:
+                    RH = (df[key][0:])
+                elif 'speed' in key:
+                    # convert wspd from m/s to knots
+                    wspd = mpers2knots(df[key][0:])
+                elif 'direction' in key:
+                    drct = (df[key][0:])
+            # Why can't this go on top?
+            from dewpoint_calc import calculate_dewpoint
+            dew = []
+            for i,val in enumerate(RH):
+                dew.append(calculate_dewpoint(temp[i], RH[i]))
+            dewpt = np.asarray(dew)
+                    
+            self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dewpt, 'sknt': wspd, 'drct': drct}
 
         elif self.fmt == 'UIUCnc': #Used for impact netcdf soundings
             ds = xr.open_dataset(fname)

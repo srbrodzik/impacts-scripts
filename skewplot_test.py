@@ -20,10 +20,12 @@ plt.switch_backend('agg')
 from skewPy import SkewT_test
 import os
 import datetime
+from datetime import timedelta
 import glob
 import argparse
 import xarray as xr
-
+from pytz import timezone
+import pytz
 
 ### FORMAT FOR NEW UIUC NC FILES
 uiuc_fmt = 'UIUCnc' 
@@ -197,6 +199,8 @@ for fname in sounding_files:
 
         # get station id
         stn_id = stationStr
+        if stn_id == 'N-179':
+            stn_id = 'WAL'
         
         # get lat/lon
         temp = latlonStr.split(' ')
@@ -210,6 +214,40 @@ for fname in sounding_files:
         # define out_fname and figtitle
         out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id)
         figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
+
+    ##Added by Stacy Brodzik (Feb 2020)
+    elif pargs.format == 'NCSU':
+
+        stationStr = 'NCSU'
+        
+        # read file header
+        with open(fname) as myfile:
+            head = myfile.readline()
+        parts = head.split(' ')
+        for part in parts:
+            if 'lat' in part:
+                (junk,latStr) = part.split('=')
+            elif 'lon' in part:
+                (junk,lonStr) = part.split('=')
+            elif 'time' in part:
+                (junk,dateStr) = part.split('=')
+        timeStr = parts[-1].rstrip()
+                
+        # get file time
+        datetimeStr = (dateStr+'T'+timeStr)
+        file_time_est = datetime.datetime.strptime(datetimeStr,'%Y-%m-%dT%H:%M')
+        file_time_utc = file_time_est + timedelta(hours=5)
+
+        # get station id
+        stn_id = stationStr
+        
+        # get lat/lon
+        lat = float(latStr[:-1])
+        lon = float(lonStr[:-1])
+
+        # define out_fname and figtitle
+        out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time_utc.strftime(file_out_dt_fmt), stn = stn_id)
+        figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id, dt = file_time_utc.strftime(title_dt_fmt), lati=lat, long=lon)
 
     ##Added by Sean O'Neil (Nov 2019)
     elif pargs.format == 'UIUCnc':

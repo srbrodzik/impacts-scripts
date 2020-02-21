@@ -10,15 +10,17 @@ import shutil
 # User inputs
 debug = 1
 secsPerDay = 86400
-pastSecs = secsPerDay
+pastSecs = secsPerDay*3
 #pastSecs = 300   # check data from last 5 minutes
 basePath = '/home/disk/data/images/sat_east_meso_impacts'
-productList = ['M1color']
+#productList = ['M1color']
+productList = ['M2color']
 targetDirBase = '/home/disk/bob/impacts/sat'
 catalogBaseDir = '/home/disk/funnel/impacts/archive/ops/goes_east'
 ext = 'jpg'
 catalog_prefix = 'ops.goes_east'
-catalog_suffix = 'M1color'
+#catalog_suffix = 'M1color'
+catalog_suffix = 'M2color'
 
 # getdate and time - are now and nowObj the same thing??
 nowTime = time.gmtime()

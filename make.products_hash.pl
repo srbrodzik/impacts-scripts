@@ -70,8 +70,8 @@ open (HASH, '>'.$output_file_new);
 	     #["ir_ch14","vis_ch02","wv_ch08","ir_4km","vis_4km","wv_4km"],
 	     ["multi_ch_color","vis_ch02","ir_4km","vis_4km","wv_4km","M1color","M2color"],
 	     ["2Ku","gmi"],
-	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
-	     ["ALB","BUF","CHH","CHS","DTX","DVN","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
+	     ["ALB","BUF","CHH","CHS","DTX","DVN","GSO","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
+	     ["ALB","BUF","CHH","CHS","DTX","DVN","GSO","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
              #["kalb","kacy","kbos",       "khwv","kbwi",       "kcon",       "kged","khfd","kisp",       "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
              #["kalb","kacy","kbos",              "kbwi",       "kcon",       "kged",                     "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
 	     #["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw",       "kged","khfd","kind","kilx",                     "korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
@@ -217,7 +217,7 @@ for $iplat (0..$#platforms) {
 	     ["ceil150","mrr_pro","xband_ph_arr"],
 	     ["mrr","mrr_cfad","mrr_parsivel_tseries"],
 
-	     ["SBU","UIUC_Mobile_Sonde"]);
+	     ["NCSU","SBU","UIUC_Mobile_Sonde"]);
 
 for $iplat (0..$#platforms) {
     $plat = $platforms[$iplat];

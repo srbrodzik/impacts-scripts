@@ -5,6 +5,7 @@
 
 import os
 import sys
+import shutil
 from datetime import datetime
 import pandas as pd
 import xarray
@@ -78,7 +79,7 @@ def read_var_vals(line,missing_value):
 #inDirBase = '/home/snowband/impacts/Downloads/sounding'
 inDirBase = '/home/disk/funnel/impacts-website/archive/ops/text_sounding'
 #outDirBase = inDirBase
-outDirBase = '/home/disk/funnel/impacts-website/archive/ops/sounding'
+outDirBase = '/home/disk/funnel/impacts-website/data_archive/soundings/nws'
 #bindir = '/home/snowband/brodzik/bin'
 bindir = '/home/disk/bob/impacts/bin'
 missing_value = -999
@@ -90,6 +91,7 @@ for date in os.listdir(inDirBase):
         outDir = outDirBase+'/'+date
         if not os.path.exists(outDir):
             os.makedirs(outDir)
+            shutil.copy(outDirBase+'/index.php',outDir)
         
         for file in os.listdir(inDir):
             if file.endswith('html'):
