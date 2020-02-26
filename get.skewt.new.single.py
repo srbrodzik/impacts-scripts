@@ -24,28 +24,29 @@ secsPerDay = 86400
 #    0 -> start now
 #    1 -> start at startDate
 startFlag = 1
-startDate = '20200101'
+startDate = '20200222'
 # set number of days to go back from startDate
 num_days = 1
 hourList = ['00','03','06','09','12','15','18','21']
-siteList = {'72518':'ALB',
-	    '72528':'BUF',
-            '74494':'CHH',
-            '72208':'CHS',
-            '72632':'DTX',
-            '74455':'DVN',
-            '74389':'GYX',
-            '72403':'IAD',
-            '72426':'ILN',
-            '74560':'ILX',
-            '72305':'MHX',
-            '72649':'MPX',
-            '72501':'OKX',
-            '72520':'PIT',
-            '72318':'RNK',
-            '72402':'WAL'
-}
-#siteList = {'74389':'GYX'}
+#siteList = {'72518':'ALB',
+#	    '72528':'BUF',
+#            '74494':'CHH',
+#            '72208':'CHS',
+#            '72632':'DTX',
+#            '74455':'DVN',
+#            '74389':'GYX',
+#            '72403':'IAD',
+#            '72426':'ILN',
+#            '74560':'ILX',
+#            '72305':'MHX',
+#            '72649':'MPX',
+#            '72501':'OKX',
+#            '72520':'PIT',
+#            '72318':'RNK',
+#            '72402':'WAL'
+#}
+#siteList = {'72645':'GRB'}
+siteList = {'72634':'APX'}
 
 numHours = len(hourList)
 numSites = len(siteList)
