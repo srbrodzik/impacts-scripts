@@ -17,7 +17,8 @@ sector = sys.argv[1]
 # User inputs
 debug = 1
 secsPerDay = 86400
-pastSecs = secsPerDay/12   # check data from last 2 hours
+pastSecs = secsPerDay*4
+#pastSecs = secsPerDay/12   # check data from last 2 hours
 #pastSecs = 300   # check data from last 5 minutes
 basePath = '/home/disk/data/images/sat_east_meso_impacts'
 targetDirBase = '/home/disk/bob/impacts/sat'

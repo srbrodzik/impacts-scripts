@@ -53,7 +53,7 @@ for plane in planes:
         if os.path.isdir(inDirBase+'/'+plane+'/'+date):
             inDir = inDirBase+'/'+plane+'/'+date
             for file in os.listdir(inDir):
-                if 'flight_track' in file:
+                if 'flight_track.txt' in file:
 
                     # Read in csv data as Datafreme object
                     df = pd.read_csv(inDir+'/'+file)
