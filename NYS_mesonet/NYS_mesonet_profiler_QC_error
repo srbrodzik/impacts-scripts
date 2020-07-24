@@ -1,0 +1,179 @@
+Plotting and saving data for ALBA at 2020-02-09 19:00:00.
+Traceback (most recent call last):
+  File "./NYS_mesonet_profiler_QC.py", line 921, in <module>
+    plot_mwr_ts(mwr_4plot_df,station, station_name, logo_path, curr_dt)
+  File "./NYS_mesonet_profiler_QC.py", line 310, in plot_mwr_ts
+    extend='both', cmap='viridis')
+  File "/usr/lib/python2.7/dist-packages/matplotlib/__init__.py", line 1869, in inner
+    return func(ax, *args, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/axes/_axes.py", line 6290, in contourf
+    contours = mcontour.QuadContourSet(self, *args, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 890, in __init__
+    kwargs = self._process_args(*args, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 1476, in _process_args
+    x, y, z = self._contour_args(args, kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 1534, in _contour_args
+    x, y, z = self._check_xyz(args[:3], kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 1570, in _check_xyz
+    raise TypeError("Input z must be at least a 2x2 array.")
+TypeError: Input z must be at least a 2x2 array.
+
+In [73]: mwr_4plot_df
+Out[73]: 
+                           temperature  dew_point       theta  relative_humidity  liquid
+time                range                                                               
+2020-02-08T18:50:00 0             -5.8      -11.3  266.387746               65.0   0.001
+                    50            -7.6      -13.2  265.081463               64.0   0.001
+                    100           -8.0      -13.7  265.165153               63.0   0.001
+                    150           -8.1      -14.0  265.559578               62.0   0.001
+                    200           -8.4      -14.2  265.741657               62.0   0.001
+                    250           -8.7      -14.6  265.934364               62.0   0.001
+                    300           -8.9      -14.7  266.223049               63.0   0.012
+                    350           -9.3      -14.9  266.313211               64.0   0.014
+                    400           -9.6      -15.0  266.499220               65.0   0.010
+                    450          -10.1      -15.2  266.493536               66.0   0.014
+                    500          -10.5      -15.4  266.583677               67.0   0.012
+                    600          -11.2      -15.7  266.857592               70.0   0.021
+                    700          -12.1      -16.1  266.938308               72.0   0.020
+                    800          -13.0      -16.5  267.020791               75.0   0.016
+                    900          -13.9      -17.0  267.096570               77.0   0.001
+                    1000         -15.0      -17.6  266.967054               80.0   0.001
+                    1100         -16.2      -18.4  266.733688               83.0   0.001
+                    1200         -17.3      -19.1  266.603663               86.0   0.001
+                    1300         -18.4      -19.6  266.473531               90.0   0.001
+                    1400         -19.6      -20.4  266.238254               93.0   0.001
+                    1500         -20.7      -21.6  266.107400               92.0   0.001
+                    1600         -21.7      -22.6  266.082149               92.0   0.001
+                    1700         -22.6      -23.2  266.163699               94.0   0.001
+                    1800         -23.4      -24.0  266.353269               95.0   0.001
+                    1900         -24.0      -24.6  266.749484               95.0   0.001
+                    2000         -24.7      -25.6  267.041787               92.0   0.001
+                    2250         -25.8      -27.5  268.488693               86.0   0.001
+                    2500         -26.8      -28.7  270.057345               84.0   0.001
+                    2750         -27.8      -30.2  271.638046               80.0   0.001
+                    3000         -28.9      -31.9  273.127969               75.0   0.033
+                    3250         -29.9      -34.0  274.748163               67.0   0.041
+                    3500         -30.6      -35.7  276.715897               61.0   0.037
+                    3750         -31.5      -37.9  278.487844               53.0   0.017
+                    4000         -32.6      -39.8  280.029066               49.0   0.001
+                    4250         -33.8      -41.8  281.473992               44.0   0.001
+                    4500         -34.9      -44.0  283.055104               38.0   0.001
+                    4750         -36.0      -46.5  284.654196               33.0   0.001
+                    5000         -37.1      -48.2  286.269150               30.0   0.012
+                    5250         -38.5      -50.2  287.529884               28.0   0.014
+                    5500         -39.9      -52.0  288.793472               26.0   0.001
+                    5750         -41.2      -53.9  290.199734               24.0   0.001
+                    6000         -42.6      -55.4  291.498142               23.0   0.001
+                    6250         -43.8      -57.2  293.066139               21.0   0.001
+                    6500         -44.8      -59.0  294.909660               18.0   0.001
+                    6750         -45.7      -60.8  296.882424               16.0   0.001
+                    7000         -46.6      -62.9  298.896017               13.0   0.001
+                    7250         -47.3      -64.6  301.193285               11.0   0.001
+                    7500         -48.1      -66.8  303.374687                9.0   0.001
+                    7750         -48.6      -69.8  306.002424                6.0   0.001
+                    8000         -48.9      -70.3  308.896607                6.0   0.001
+                    8250         -49.1      -72.6  312.002730                4.0   0.001
+                    8500         -49.2      -75.3  315.267666                3.0   0.001
+                    8750         -48.9      -75.1  319.115965                3.0   0.001
+                    9000         -48.3      -77.3  323.447227                2.0   0.001
+                    9250         -47.6      -76.0  327.980690                2.0   0.001
+                    9500         -46.4        NaN  333.304383                NaN   0.001
+                    9750         -45.6        NaN  338.099366                NaN   0.001
+                    10000        -44.8        NaN  342.940734                NaN   0.001
+
+In [74]: mwr_precip_df
+Out[74]: 
+                     integrated_vapor  integrated_liquid  cloud_base  rain_flag
+time_integrated                                                                
+2020-02-08T18:47:38             0.388              0.028        -1.0        0.0
+2020-02-08T18:50:13             0.382              0.081        -1.0        0.0
+
+In [75]: lidar_df
+Out[75]: 
+                           pressure_level  velocity  direction   cnr    w
+range time                                                               
+100   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+125   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+150   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+175   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+200   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -32.0  NaN
+225   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -32.0  NaN
+250   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -32.0  NaN
+275   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -31.0  NaN
+300   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -32.0  NaN
+325   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -31.0  NaN
+350   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -31.0  NaN
+375   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -31.0  NaN
+400   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -31.0  NaN
+425   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -30.0  NaN
+450   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -30.0  NaN
+475   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -30.0  NaN
+500   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -29.0  NaN
+525   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -29.0  NaN
+550   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -29.0  NaN
+575   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -29.0  NaN
+600   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -29.0  NaN
+625   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -29.0  NaN
+650   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -28.0  NaN
+675   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -28.0  NaN
+700   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -28.0  NaN
+725   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -28.0  NaN
+750   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -28.0  NaN
+775   2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -27.0  NaN
+800   2020-02-08T18:50:00   -9.223372e+17      11.4      279.0 -26.0 -0.3
+825   2020-02-08T18:50:00   -9.223372e+17      11.5      274.0 -25.0 -0.1
+...                                   ...       ...        ...   ...  ...
+5550  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5600  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5650  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5700  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5750  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5800  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5850  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5900  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+5950  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -34.0  NaN
+6000  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6050  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6100  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6150  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6200  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6250  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6300  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6350  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6400  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6450  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -34.0  NaN
+6500  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -34.0  NaN
+6550  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6600  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6650  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6700  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6750  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6800  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6850  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6900  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+6950  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+7000  2020-02-08T18:50:00   -9.223372e+17       NaN        NaN -33.0  NaN
+
+[157 rows x 5 columns]
+
+
+
+Plotting and saving data for ALBA at 2020-02-09 20:00:00.
+Traceback (most recent call last):
+  File "./NYS_mesonet_profiler_QC.py", line 924, in <module>
+    plot_mwr_ts(mwr_4plot_df,station, station_name, logo_path, curr_dt)
+  File "./NYS_mesonet_profiler_QC.py", line 310, in plot_mwr_ts
+    extend='both', cmap='viridis')
+  File "/usr/lib/python2.7/dist-packages/matplotlib/__init__.py", line 1869, in inner
+    return func(ax, *args, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/axes/_axes.py", line 6290, in contourf
+    contours = mcontour.QuadContourSet(self, *args, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 890, in __init__
+    kwargs = self._process_args(*args, **kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 1476, in _process_args
+    x, y, z = self._contour_args(args, kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 1534, in _contour_args
+    x, y, z = self._check_xyz(args[:3], kwargs)
+  File "/usr/lib/python2.7/dist-packages/matplotlib/contour.py", line 1570, in _check_xyz
+    raise TypeError("Input z must be at least a 2x2 array.")
+TypeError: Input z must be at least a 2x2 array.

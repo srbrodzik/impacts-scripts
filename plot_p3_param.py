@@ -4,8 +4,16 @@
 # FORMAT: iwg1,date_time,lat,lon,gps_msl_alt,wgs84_alt,press_alt,radar_alt,grnd_spd,true_airspeed,indicated_airspeed,mach_number,vert_velocity,true_hdg,track,drift,pitch,roll,side_slip,angle_of_attack,ambient_temp,dew_point,total_temp,static_press,dynamic_press,cabin_pressure,wind_speed,wind_dir,vert_wind_spd,solar_zenith,sun_elev_ac,sun_az_grd,sun_az_ac
 
 # For testing
-inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200207'
-inFile = 'missions.p3.20200207.flight_track.txt'
+inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200225'
+inFile = 'missions.p3.20200225.flight_track.txt'
+#inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200220'
+#inFile = 'missions.p3.20200220.flight_track.txt'
+#inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200218'
+#inFile = 'missions.p3.20200218.flight_track.txt'
+#inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200213'
+#inFile = 'missions.p3.20200213.flight_track.txt'
+#inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200207'
+#inFile = 'missions.p3.20200207.flight_track.txt'
 #inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200125'
 #inFile = 'missions.p3.20200125.flight_track.txt'
 #inDir = '/home/disk/funnel/impacts-website/archive/missions/p3/20200118'
@@ -15,7 +23,7 @@ inFile = 'missions.p3.20200207.flight_track.txt'
 paramIndex = 4
 paramName = 'alt'
 outDir = '/tmp'
-outFile = '20200207_p3_'+paramName+'.png'
+outFile = 'research.p3.20200225.'+paramName+'.png'
 
 import os
 import sys

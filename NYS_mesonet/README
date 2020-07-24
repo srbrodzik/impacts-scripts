@@ -1,0 +1,49 @@
+Copied code from
+
+~jfinlon/impacts/python_scripts/mesonet and
+~jfinlon/impacts/mesonet
+
+on May 28, 2020 -- SRB
+
+
+FOR STANDARD DATA - ran for 2-3 minutes on updraft every hour in 2020
+-----------------
+Cron running every hour at XX:00 to execute:
+
+mesonet_standard.sh
+
+This script calls two python scripts:
+
+NYS_mesonet_save.py
+NYS_mesonet_plot.py
+
+to create
+
+1. daily csv files for each site in:
+
+/home/disk/funnel/impacts/data_archive/nys_ground
+
+2. 3-day time series plots for catalog:
+
+/home/disk/funnel/impacts/archive/ops/nys_ground
+
+
+FOR PROFILER DATA - ran for ~8 minutes at 100% CPU on updraft? in 2020
+-----------------
+Cron running every hour at XX:04 (due to ldm time lag) to execute:
+
+mesonet_profiler.sh
+
+This script calls a python script:
+
+NYS_mesonet_profiler.py
+
+to create multiple plots for catalog:
+
+/home/disk/funnel/impacts/archive/ops/nys_lidar_cnr
+/home/disk/funnel/impacts/archive/ops/nys_lidar_horz_wspd
+/home/disk/funnel/impacts/archive/ops/nys_lidar_vert_wspd
+/home/disk/funnel/impacts/archive/ops/nys_mwr_cloud
+/home/disk/funnel/impacts/archive/ops/nys_mwr_ts
+
+

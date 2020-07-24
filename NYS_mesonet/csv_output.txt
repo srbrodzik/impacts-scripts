@@ -1,0 +1,132 @@
+NYS_mesonet_save.py:68: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  site_data['datetime'] = pd.to_datetime(site_data['time'], format='%Y-%m-%d %H:%M:%S UTC') # get datetime objects
+Sucessfully saved 20200110 mesonet data for Addison (ADDI).
+Sucessfully saved 20200110 mesonet data for Andes (ANDE).
+Sucessfully saved 20200110 mesonet data for Batavia (BATA).
+Sucessfully saved 20200110 mesonet data for Beacon (BEAC).
+Sucessfully saved 20200110 mesonet data for Belden (BELD).
+Sucessfully saved 20200110 mesonet data for Belleville (BELL).
+Sucessfully saved 20200110 mesonet data for Belmont (BELM).
+Sucessfully saved 20200110 mesonet data for Berkshire (BERK).
+Sucessfully saved 20200110 mesonet data for Binghamton (BING).
+Sucessfully saved 20200110 mesonet data for Brooklyn (BKLN).
+Sucessfully saved 20200110 mesonet data for Brant (BRAN).
+Sucessfully saved 20200110 mesonet data for Brewster (BREW).
+Sucessfully saved 20200110 mesonet data for Brockport (BROC).
+Sucessfully saved 20200110 mesonet data for Bronx (BRON).
+Sucessfully saved 20200110 mesonet data for Brookfield (BROO).
+Sucessfully saved 20200110 mesonet data for Ballston Spa (BSPA).
+Sucessfully saved 20200110 mesonet data for Buffalo (BUFF).
+Sucessfully saved 20200110 mesonet data for Burdett (BURD).
+Sucessfully saved 20200110 mesonet data for Burt (BURT).
+Sucessfully saved 20200110 mesonet data for Camden (CAMD).
+Sucessfully saved 20200110 mesonet data for Cape Vincent (CAPE).
+Sucessfully saved 20200110 mesonet data for Chazy (CHAZ).
+Sucessfully saved 20200110 mesonet data for Chestertown (CHES).
+Sucessfully saved 20200110 mesonet data for Cincinnatus (CINC).
+Sucessfully saved 20200110 mesonet data for Claryville (CLAR).
+Sucessfully saved 20200110 mesonet data for Clifton Springs (CLIF).
+Sucessfully saved 20200110 mesonet data for Clymer (CLYM).
+Sucessfully saved 20200110 mesonet data for Cobleskill (COBL).
+Sucessfully saved 20200110 mesonet data for Cohocton (COHO).
+Sucessfully saved 20200110 mesonet data for Cold Brook (COLD).
+Sucessfully saved 20200110 mesonet data for Copake (COPA).
+Sucessfully saved 20200110 mesonet data for Copenhagen (COPE).
+Sucessfully saved 20200110 mesonet data for Croghan (CROG).
+Sucessfully saved 20200110 mesonet data for Central Square (CSQR).
+Sucessfully saved 20200110 mesonet data for Delevan (DELE).
+Sucessfully saved 20200110 mesonet data for Deposit (DEPO).
+Sucessfully saved 20200110 mesonet data for Dover Plains (DOVE).
+Sucessfully saved 20200110 mesonet data for Duanesburg (DUAN).
+Sucessfully saved 20200110 mesonet data for East Aurora (EAUR).
+Sucessfully saved 20200110 mesonet data for Edinburg (EDIN).
+Sucessfully saved 20200110 mesonet data for Edwards (EDWA).
+Sucessfully saved 20200110 mesonet data for Eldred (ELDR).
+Sucessfully saved 20200110 mesonet data for Ellenburg (ELLE).
+Sucessfully saved 20200110 mesonet data for Elmira (ELMI).
+Sucessfully saved 20200110 mesonet data for Essex (ESSX).
+Sucessfully saved 20200110 mesonet data for Fayetteville (FAYE).
+Sucessfully saved 20200110 mesonet data for Fredonia (FRED).
+Sucessfully saved 20200110 mesonet data for Gabriels (GABR).
+Sucessfully saved 20200110 mesonet data for Glens Falls (GFAL).
+Sucessfully saved 20200110 mesonet data for Glenfield (GFLD).
+Sucessfully saved 20200110 mesonet data for Groton (GROT).
+Sucessfully saved 20200110 mesonet data for Grove (GROV).
+Sucessfully saved 20200110 mesonet data for Hammond (HAMM).
+Sucessfully saved 20200110 mesonet data for Harpersfield (HARP).
+Sucessfully saved 20200110 mesonet data for Harrisburg (HARR).
+Sucessfully saved 20200110 mesonet data for Hartsville (HART).
+Sucessfully saved 20200110 mesonet data for Herkimer (HERK).
+Sucessfully saved 20200110 mesonet data for High Falls (HFAL).
+Sucessfully saved 20200110 mesonet data for Indian Lake (ILAK).
+Sucessfully saved 20200110 mesonet data for Johnstown (JOHN).
+Sucessfully saved 20200110 mesonet data for Jordan (JORD).
+Sucessfully saved 20200110 mesonet data for Kinderhook (KIND).
+Sucessfully saved 20200110 mesonet data for Laurens (LAUR).
+Sucessfully saved 20200110 mesonet data for Louisville (LOUI).
+Sucessfully saved 20200110 mesonet data for Malone (MALO).
+Sucessfully saved 20200110 mesonet data for Manhattan (MANH).
+Sucessfully saved 20200110 mesonet data for Medina (MEDI).
+Sucessfully saved 20200110 mesonet data for Medusa (MEDU).
+Sucessfully saved 20200110 mesonet data for Morrisville (MORR).
+Sucessfully saved 20200110 mesonet data for North Branch (NBRA).
+Sucessfully saved 20200110 mesonet data for Newcomb (NEWC).
+Sucessfully saved 20200110 mesonet data for North Hudson (NHUD).
+Sucessfully saved 20200110 mesonet data for Old Forge (OLDF).
+Sucessfully saved 20200110 mesonet data for Olean (OLEA).
+Sucessfully saved 20200110 mesonet data for Ontario (ONTA).
+Sucessfully saved 20200110 mesonet data for Oppenheim (OPPE).
+Sucessfully saved 20200110 mesonet data for Osceola (OSCE).
+Sucessfully saved 20200110 mesonet data for Oswego (OSWE).
+Sucessfully saved 20200110 mesonet data for Otisville (OTIS).
+Sucessfully saved 20200110 mesonet data for Owego (OWEG).
+Sucessfully saved 20200110 mesonet data for Penn Yan (PENN).
+Sucessfully saved 20200110 mesonet data for Philadelphia (PHIL).
+Sucessfully saved 20200110 mesonet data for Piseco (PISE).
+Sucessfully saved 20200110 mesonet data for Potsdam (POTS).
+Sucessfully saved 20200110 mesonet data for Queens (QUEE).
+Sucessfully saved 20200110 mesonet data for Randolph (RAND).
+Sucessfully saved 20200110 mesonet data for Raquette Lake (RAQU).
+Sucessfully saved 20200110 mesonet data for Redfield (REDF).
+Sucessfully saved 20200110 mesonet data for Red Hook (REDH).
+Sucessfully saved 20200110 mesonet data for Roxbury (ROXB).
+Sucessfully saved 20200110 mesonet data for Rush (RUSH).
+Sucessfully saved 20200110 mesonet data for Saranac (SARA).
+Sucessfully saved 20200110 mesonet data for South Bristol (SBRI).
+Sucessfully saved 20200110 mesonet data for Schaghticoke (SCHA).
+Sucessfully saved 20200110 mesonet data for Schodack (SCHO).
+Sucessfully saved 20200110 mesonet data for Schuylerville (SCHU).
+Sucessfully saved 20200110 mesonet data for Scipio Center (SCIP).
+Sucessfully saved 20200110 mesonet data for Sherburne (SHER).
+Sucessfully saved 20200110 mesonet data for Somers (SOME).
+Sucessfully saved 20200110 mesonet data for Southold (SOUT).
+Sucessfully saved 20200110 mesonet data for Sprakers (SPRA).
+Sucessfully saved 20200110 mesonet data for Springfield (SPRI).
+Sucessfully saved 20200110 mesonet data for Staten Island (STAT).
+Sucessfully saved 20200110 mesonet data for Stephentown (STEP).
+Sucessfully saved 20200110 mesonet data for Stony Brook (STON).
+Sucessfully saved 20200110 mesonet data for Suffern (SUFF).
+Sucessfully saved 20200110 mesonet data for Tannersville (TANN).
+Sucessfully saved 20200110 mesonet data for Ticonderoga (TICO).
+Sucessfully saved 20200110 mesonet data for Tully (TULL).
+Sucessfully saved 20200110 mesonet data for Tupper Lake (TUPP).
+Sucessfully saved 20200110 mesonet data for Tyrone (TYRO).
+Sucessfully saved 20200110 mesonet data for Voorheesville (VOOR).
+Sucessfully saved 20200110 mesonet data for Wallkill (WALL).
+Sucessfully saved 20200110 mesonet data for Walton (WALT).
+Sucessfully saved 20200110 mesonet data for Wantagh (WANT).
+Sucessfully saved 20200110 mesonet data for Warsaw (WARS).
+Sucessfully saved 20200110 mesonet data for Warwick (WARW).
+Sucessfully saved 20200110 mesonet data for Waterloo (WATE).
+Sucessfully saved 20200110 mesonet data for Woodbourne (WBOU).
+Sucessfully saved 20200110 mesonet data for Wellesley Island (WELL).
+Sucessfully saved 20200110 mesonet data for Westmoreland (WEST).
+Sucessfully saved 20200110 mesonet data for Whiteface Mountain Base (WFMB).
+Sucessfully saved 20200110 mesonet data for Woodgate (WGAT).
+Sucessfully saved 20200110 mesonet data for Whitehall (WHIT).
+Sucessfully saved 20200110 mesonet data for Wolcott (WOLC).
+Sucessfully saved 20200110 mesonet data for York (YORK).

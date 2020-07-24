@@ -11,3 +11,7 @@ cd to appropriate directory
 
 mirror -R
 
+or
+
+mirror -R '*ch01*'
+

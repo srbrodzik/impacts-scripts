@@ -197,7 +197,7 @@ for $iplat (0..$#platforms) {
 #print "nplatforms = $#platforms\n";
 #$num_platforms = $#platforms + 1;
 #print "num_platforms = $num_platforms\n";
-@products = (["ampr","cpl_355nm","cpl_532nm","cpl_1064nm","cpl_combo","cpl_aerosol_od","cpl_cloud_od","cpl_column_od","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","flight_track","hiwrap_ka","hiwrap_ku"],
+@products = (["ampr","cpl_355nm","cpl_532nm","cpl_1064nm","cpl_combo","cpl_aerosol_od","cpl_cloud_od","cpl_column_od","cpl_depol_ratio","cpl_extinction_coef","cpl_feature_type","cpl_iwc","crs","crs_dbz","crs_ldr","crs_sw","crs_vel","cosmir_aft_conical","cosmir_along_track","cosmir_cross_track","cosmir_forward_conical","exrad","exrad_dbz","exrad_sw","exrad_vel","flight_track","hiwrap_ka","hiwrap_Ka_dbz","hiwrap_Ka_sw","hiwrap_Ka_vel","hiwrap_ku","hiwrap_Ku_dbz","hiwrap_Ku_sw","hiwrap_Ku_vel"],
 	     ["2DS_distributions","2DS_images","avaps","dropsonde","FCDP_distributions","flight_track","HVPS3A_distributions","HVPS3A_images","phips_camera_C1","phips_camera_C2","tamms","wisper"],
 
 	     ["parsivel"],
@@ -213,7 +213,7 @@ for $iplat (0..$#platforms) {
 	     ["ppi_dbz","ppi_hid","ppi_rainr","ppi_rhohv","ppi_vel","ppi_zdr","rhi_dbz","rhi_hid","rhi_rainr","rhi_rhohv","rhi_vel","rhi_zdr"],
 
 	     #["mwr","roger","wband_spec_refl","wband_tseries","xband_ph_arr"],
-	     ["mwr","roger","skyler_ppi","skyler_rhi"],
+	     ["roger_spectrum_refl","roger_time_ht","skyler_ppi","skyler_rhi"],
 	     ["ceil150","mrr_pro","xband_ph_arr"],
 	     ["mrr","mrr_cfad","mrr_parsivel_tseries"],
 

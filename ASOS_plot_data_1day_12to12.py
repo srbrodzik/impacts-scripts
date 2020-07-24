@@ -67,7 +67,7 @@ sitelist = {'KACY':'ATLANTIC CITY INTL AP',
             'KNFE':'FENTRESS NAVAL AUX FIELD',
             'KNGU':'NORFOLK NAS',
             'KNMM':'MERIDIAN NAS',
-            'KNSE':'WHITING FIELD NAS NORTH',
+            'KNSE'':'WHITING FIELD NAS NORTH',
             'KOFP':'MIAMI-OPA LOCKA EXEC AP',
             'KOXB':'OCEAN CITY MUNI AP',
             'KOXC':'WATERBURY-OXFORD AP',
@@ -110,11 +110,11 @@ def load_station_data(date,site):
     lower_site = site.lower()
     now = datetime.strptime(date,'%Y%m%d')
     
-    # define date to plot
+    # define date to plot (YYYYMMDD format)
     today_date = now.strftime('%Y%m%d')
     tomorrow_date = (now+timedelta(hours=24)).strftime('%Y%m%d')
     
-    # define date in YYYY-mm-dd format (for selecting ranges of data from dataframes)
+    # define date (YYYY-mm-dd format) (for selecting ranges of data from dataframes)
     today_date_dt_format = now.strftime('%Y-%m-%d')
     tomorrow_date_dt_format = (now+timedelta(hours=24)).strftime('%Y-%m-%d')
 

@@ -1,0 +1,93 @@
+NESTED DICTS
+
+dict.keys() - give first level of keys (e.g. mwr and lidar)
+
+dict['lidar'].keys()) - gives second level of keys (e.g. dims,
+		      coords, attrs, data_vars)
+---------------------------------------------------------------------------
+dict['lidar']['dims'].keys() - gives third level of keys (e.g. range, time)
+dict['lidar']['dims']['range'].keys() - error, no further dicts
+dict['lidar']['dims']['range'] - 157
+dict['lidar']['dims']['time'] - 144
+---------------------------------------------------------------------------
+data['lidar']['coords'].keys() - range, time
+---
+data['lidar']['coords']['range'].keys() - dims, data, attrs
+data['lidar']['coords']['range']['dims'].keys() - no further dicts
+data['lidar']['coords']['range']['dims'] - 'range'
+data['lidar']['coords']['range']['data'].keys() - no further dicts
+data['lidar']['coords']['range']['data'] - values for ranges
+data['lidar']['coords']['range']['attrs'].keys() - units, standard_name
+data['lidar']['coords']['range']['attrs']['units'] - 'm'
+data['lidar']['coords']['range']['attrs']['standard_name'] - 'height'
+---
+data['lidar']['coords']['time'].keys() - dims, data, attrs
+data['lidar']['coords']['time']['dims'].keys() - no further dicts
+data['lidar']['coords']['time']['data'].keys() - no further dicts
+data['lidar']['coords']['time']['data'] - values for times
+data['lidar']['coords']['time']['attrs'].keys() - []
+---------------------------------------------------------------------------
+data['lidar']['attrs'].keys() - []
+---------------------------------------------------------------------------
+data['lidar']['data_vars'].keys() - velocity, direction, cnr, w, (pressure_level)
+---
+data['lidar']['data_vars']['velocity'].keys() - dims, data, attrs
+---
+data['lidar']['data_vars']['direction'].keys() - dims, data, attrs
+---
+data['lidar']['data_vars']['cnr'].keys() - dims, data, attrs
+data['lidar']['data_vars']['cnr']['dims'] - time, range
+data['lidar']['data_vars']['cnr']['data'] - array
+data['lidar']['data_vars']['cnr']['attrs'].keys() - units, long_name, scale_factor
+data['lidar']['data_vars']['cnr']['attrs']['units'] - 'dB'
+data['lidar']['data_vars']['cnr']['attrs']['long_name'] - 'carrier to noise ratio'
+data['lidar']['data_vars']['cnr']['attrs']['scale_factor'] - 1
+---
+data['lidar']['data_vars']['w'].keys() - dims, data, attrs
+data['lidar']['data_vars']['w']['dims'] - time, range
+data['lidar']['data_vars']['w']['data'] - array
+data['lidar']['data_vars']['w']['attrs'].keys() - units, standard_name, scale_factor
+data['lidar']['data_vars']['w']['attrs']['units'] - 'm/s'
+data['lidar']['data_vars']['w']['attrs']['standard_name'] - 'upward_air_velocity'
+data['lidar']['data_vars']['w']['attrs']['scale_factor'] - 0.1
+
+
+
+data['mwr'].keys() - dims, coords, attrs, data_vars
+---------------------------------------------------------------------------
+data['mwr']['dims'].keys() - range, time, time_integrated, time_surface
+data['mwr']['dims']['range'] - 58
+data['mwr']['dims']['time'] - 143
+data['mwr']['dims']['time_integrated'] - 745
+data['mwr']['dims']['time_surface'] - 745
+---------------------------------------------------------------------------
+data['mwr']['coords'].keys() - range, time, lv2_processor, time_integrated, time_surface
+---
+data['mwr']['coords']['range'].keys() - dims, data, attrs
+data['mwr']['coords']['range']['dims'] - range
+data['mwr']['coords']['range']['data'] - values for range
+data['mwr']['coords']['range']['attrs'].keys() - units, long_name, standard_name
+data['mwr']['coords']['range']['attrs']['units'] - 'm'
+data['mwr']['coords']['range']['attrs']['long_name'] - 'height above the surface'
+data['mwr']['coords']['range']['attrs']['standard_name'] - 'height'
+---
+data['mwr']['coords']['time'].keys() - dims, data, attrs
+data['mwr']['coords']['time']['dims'] - time
+data['mwr']['coords']['time']['data'] - values for time
+data['mwr']['coords']['time']['attrs'].keys() - []
+---
+data['mwr']['coords']['time_integrated'].keys() - dims, data, attrs
+data['mwr']['coords']['time_integrated']['dims'] - time_integrated
+data['mwr']['coords']['time_integrated']['data'] - values for time
+data['mwr']['coords']['time_integrated']['attrs'].keys() - []
+---
+data['mwr']['coords']['time_surface'].keys() - dims, data, attrs
+data['mwr']['coords']['time_surface']['dims'] - time_surface
+data['mwr']['coords']['time_surface']['data'] - values for time
+data['mwr']['coords']['time_surface']['attrs'].keys() - []
+---------------------------------------------------------------------------
+data['mwr']['attrs'].keys() - []
+---------------------------------------------------------------------------
+data['mwr']['data_vars'].keys()
+
+
