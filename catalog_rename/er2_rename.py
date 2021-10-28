@@ -4,6 +4,7 @@ import os
 import shutil
 
 inDir = '/home/disk/funnel/impacts-website/archive/research/er2'
+#inDir = '/home/disk/funnel/impacts-website/archive/research/er2/RevB_images'
 # These pair 'old product name':'new product name'
 products = {'ampr':'AMPR',
             'cosmir_aft_conical':'CoSMIR_aft_conical',
@@ -41,6 +42,7 @@ products = {'ampr':'AMPR',
             'hiwrap_Ku_sw':'HIWRAP_Ku_sw',
             'hiwrap_Ku_vel':'HIWRAP_Ku_vel'}
 outDir = '/home/disk/funnel/impacts-website/archive_ncar/aircraft/NASA_ER2'
+#outDir = '/home/disk/funnel/impacts-website/archive_ncar/aircraft/NASA_ER2_new'
 category_new = 'aircraft'
 platform_new = 'NASA_ER2'
 

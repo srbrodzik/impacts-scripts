@@ -873,14 +873,14 @@ for month in range(2,3):
         last_day = 31
     elif month == 2:
         #first_day = 1
-        first_day = 9
+        first_day = 18
         last_day = 29
     for day in range(first_day,last_day+1):
         if month == 1 and day == first_day:
             #hours = range(4,24)
             hours = range(18,24)
         elif month == 2 and day == first_day:
-            hours = range(19,24)
+            hours = range(8,24)
         else:
             hours = range(0,24)
         for hour in hours:

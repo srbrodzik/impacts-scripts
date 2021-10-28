@@ -8,10 +8,16 @@ from datetime import timedelta
 import pandas as pd
 import xarray
 from netCDF4 import Dataset
+import pickle
 
-inDirBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/csv_by_site_orig'
-outDirCsvBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/csv_by_site_corr'
-outDirNetcdfBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/netcdf_by_site'
+#inDirBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/csv_by_site_orig'
+inDirBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/2020/csv_FIELD/csv_by_site'
+#outDirCsvBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/csv_by_site_corr'
+outDirCsvBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/2020/csv_QC_test'
+#outDirNetcdfBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/netcdf_by_site'
+outDirNetcdfBase = '/home/disk/funnel/impacts-website/data_archive/nys_ground/2020/netcdf_QC_test'
+pickleDir = '/home/disk/bob/impacts/bin/pickle_jar'
+pickleFile = 'nysm.pkl'
 missingValue = -999
 nc_prefix = 'IMPACTS_nys_ground'
 missingValue = -999
@@ -40,7 +46,18 @@ varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'vpres_sat':{'units':'mb','long_name':'saturated vapor pressure'},
            'dp':{'units':'degC','long_name':'2 meter dewpoint temperature'} }
 
+# Read site information from pickle
+with open(pickleDir+'/'+pickleFile,'rb') as f:
+    site_info = pickle.load(f)
+site_info.set_index('stid',inplace=True)
+site_info.rename(columns={'lat [degrees]':'lat', 'lon [degrees]':'lon'},inplace=True)
+
 for site in os.listdir(inDirBase):
+
+    # Get site info
+    site_lat = site_info.at[site.upper(),'lat']
+    site_lon = site_info.at[site.upper(),'lon']
+    
     #if site == 'buff' and os.path.isdir(inDirBase+'/'+site):
     if os.path.isdir(inDirBase+'/'+site):
         inDir = inDirBase+'/'+site
@@ -56,7 +73,8 @@ for site in os.listdir(inDirBase):
                 date_tomorrow = (date_today_obj+timedelta(hours=24)).strftime('%Y%m%d')
                 file_tomorrow = file_today.replace(date_today,date_tomorrow)
                 
-                # Get first valid time
+                # Get first and last valid time
+                # Time stamps refer to end of interval, so 00:00 tomorrow belongs to today
                 first_valid_obj = datetime.strptime(date_today+' 0000','%Y%m%d %H%M')
                 last_valid_obj = datetime.strptime(date_tomorrow+' 0000','%Y%m%d %H%M')
 
@@ -99,6 +117,7 @@ for site in os.listdir(inDirBase):
                 if not os.path.exists(outDirCsv):
                     os.makedirs(outDirCsv)
                 outFileCsv = outDirCsv+'/'+file_today
+                # NOTE: values are not rounded in new file - WHY??
                 df.to_csv(path_or_buf=outFileCsv,index_label='datetime')
 
                 # Save site and site elevation to use as global attributes
@@ -135,9 +154,12 @@ for site in os.listdir(inDirBase):
                 xr = xarray.Dataset.from_dataframe(df)
                 for var in varDict.keys():
                     xr[var].attrs=varDict[var]
+                    
                 # Create dictionary of global attributes and add to xarray
                 globalAttDict = {'site_name_long':station_long,
                                  'site_name_abbr':station_short,
+                                 'site_latitude':site_lat,
+                                 'site_longitude':site_lon,
                                  'site_elevation':station_elev,
                                  'reference':'http://www.nysmesonet.org/networks/standard'}
                 xr.attrs = globalAttDict

@@ -7,8 +7,8 @@ ftpCatalogServer = 'catalog.eol.ucar.edu'
 catalogDestDir = '/pub/incoming/catalog/impacts'
 #localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/NCSU_sonde'
 #localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/SBU_sonde'
-#localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/UILL_sonde'
-localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/SkewT'
+localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/UILL_sonde'
+#localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/SkewT'
 
 ftp = FTP(ftpCatalogServer)
 ftp.login()

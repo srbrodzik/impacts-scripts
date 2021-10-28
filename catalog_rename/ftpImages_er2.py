@@ -6,6 +6,7 @@ from ftplib import FTP
 ftpCatalogServer = 'catalog.eol.ucar.edu'
 catalogDestDir = '/pub/incoming/catalog/impacts'
 localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/aircraft/NASA_ER2'
+#localBaseDir = '/home/disk/funnel/impacts-website/archive_ncar/aircraft/NASA_ER2_new'
 
 ftp = FTP(ftpCatalogServer)
 ftp.login()

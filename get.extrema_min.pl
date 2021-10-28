@@ -17,6 +17,8 @@ unless (-e $yesterdayDir) {
     mkdir $yesterdayDir;
 }
 
+# note for 2021: new maps are in $DIFAX_MIN_PATH."/".$year.$month
+# e.g. /home/disk/data/archive/images/difax/difax_min/202008
 chdir($DIFAX_MIN_PATH."/".$month);
 #print "changed to $DIFAX_MIN_PATH/$month\n";
 foreach $file (<$yesterday*1200.gif>) {

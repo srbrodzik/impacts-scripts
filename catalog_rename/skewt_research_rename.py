@@ -9,6 +9,7 @@ category_new = 'upperair'
 platform_new = {'NCSU':'NCSU_sonde',
                 'SBU':'SBU_sonde',
                 'UIUC_Mobile_Sonde':'UILL_sonde'}    
+#platform_new = {'UIUC_Mobile_Sonde':'UILL_sonde'}    
 product_new = 'skewT'
 
 for date in os.listdir(inDir):

@@ -3,8 +3,8 @@
 import os
 import shutil
 
-inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_mwr_cloud_qc'
-#inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_mwr_ts_qc'
+#inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_mwr_cloud_qc'
+inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_mwr_ts_qc'
 outDirBase = '/home/disk/funnel/impacts-website/archive_ncar/upperair/NYSM_MWR'
 category_new = 'upperair'
 platform_new = 'MWR'
@@ -25,12 +25,12 @@ products = {'alba':'NYSM_Albany_NY',
             'tupp':'NYSM_Tupper_Lake_NY',
             'want':'NYSM_Wantagh_NY',
             'webs':'NYSM_Webster_NY'}
-product_new_suffix = 'cloud'
-#product_new_suffix = 'timeseries'
+#product_new_suffix = 'cloud'
+product_new_suffix = 'timeseries'
             
 # go through dates & files
 for date in os.listdir(inDirBase):
-    if date.startswith('202001'):
+    if date.startswith('202002'):
         if not os.path.isdir(outDirBase+'/'+date):
             os.mkdir(outDirBase+'/'+date)
         for file in os.listdir(inDirBase+'/'+date):

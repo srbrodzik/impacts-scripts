@@ -1,4 +1,9 @@
-#!/usr/bin/python                                                                                                  
+#!/usr/bin/python
+
+# note for 2021: difax versions of these maps are once again being created in
+#    /home/disk/data/images/difax/difax_850, etc
+#    Can use 'get.upper_air.pl' script once again
+#    Check with Joe/Lynn to see which version they prefer
                                                                                                                      
 import sys
 import os

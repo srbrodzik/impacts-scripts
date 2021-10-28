@@ -72,10 +72,9 @@ open (HASH, '>'.$output_file_new);
 	     ["2Ku","gmi"],
 	     ["ALB","APX","BUF","CHH","CHS","DTX","DVN","GRB","GSO","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
 	     ["ALB","APX","BUF","CHH","CHS","DTX","DVN","GRB","GSO","GYX","IAD","ILN","ILX","MHX","MPX","OKX","PIT","RNK","WAL"],
-             #["kalb","kacy","kbos",       "khwv","kbwi",       "kcon",       "kged","khfd","kisp",       "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
-             #["kalb","kacy","kbos",              "kbwi",       "kcon",       "kged",                     "korf","kphl",       "kpwm","kdca","kric","kavp","kwal"],
-	     #["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw",       "kged","khfd","kind","kilx",                     "korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
-	     ["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw","kewr","kged","khfd","kind","kilx","kisp","kjfk","klga","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
+	     #["kalb","kacy","kbos","kbgm","kbuf","kbwi","kcmh","kcon","kdtw","kewr","kged","khfd","kind","kilx","kisp","kjfk","klga","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
+	     #["kalb","kacy","kbgm","kbos","kbdl","kbuf","kbwi","kcmh","kcon","kdet","kged","kind","kisp","kjfk","klga","kilx","kewr","korf","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
+	     ["kalb","kacy","kbgm","kbos","kbdl","kbuf","kbwi","kcmh","kcon","kdet","kged","kind","kisp","kjfk","klga","kewr","korf","kpia","kphl","kpit","kpwm","kdca","kric","kavp","kwal"],
 	     ["ande","bing","brew","broc","buff","elmi","fred","gfld","gfal","ilak","malo","nhud","oswe","pots","redf","sara","stat","ston","wate","west"]);
 #print "products = @{products[0]}\n";
 #print "nproducts = $#(products[0])\n";

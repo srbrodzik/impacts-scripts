@@ -1,0 +1,47 @@
+Time stamps:
+standard files - the time stamp is at the end of the interval (so time 00:00 belongs to previous day)
+profiler files - the time stamp is at the beginning of the interval
+
+profiler json files:
+
+Regarding the profiler data, I currently have 10-min averaged data in a JSON
+format. The JSON format is basically a serialized netCDF file including units
+information. If you happen to be using the Python / xarray module, you would be
+able to ingest the JSON data with just a couple lines of code. Would you like a
+profiler JSON sample? If that won't work, I'll need to make something new for
+you, and it doesn't matter to me if you'd prefer a netCDF file or CSV format.
+Given the 3-D nature of profiler data, netCDF would probably be more
+straightforward.
+
+Please note while most of the profiler sites share names with our standard
+sites, their locations differ by a few hundred feet, as you can see with the
+different lat/lons.   We apply a PROF_ prefix to the station IDs to make this
+distinction.
+
+Profiler data is in JSON format and will come in as 17 files every ~10 minutes.
+They will be named ua-mesonet-proc3.profiler.multi_skewt.PROF_BUFF.json where
+PROF_BUFF will be replaced by the identifier for each profiler.
+
+To convert the xarray data to netcdf, use the to_netcdf method. The xarray
+data model is specifically designed so that netcdf is it's "native" format
+  
+My question
+Also, I'm trying to figure out exactly what each of these files contains.  They come in every 10 minutes but each contains times for an entire day with the most recent time in each file being 10 minutes before the file is available via ldm.  Am I getting this right?  Does each actually contain the last 24 hours of data?  Are these files similar to the surface files in that way except that they contain the last 24 hours of data instead of the last hour of data?  Does the same thing hold true about how bad data is flagged?
+Nathan's Answer:
+We have a basic profiler data page: http://www.nysmesonet.org/data/profiler#?stid=PROF_ALBA. One of the elements we wanted on the page was a dynamic Skew-T that we could animate and zoom. I decided to do that by processing the low-level mwr and lidar data into the parameters needed to create a Skew-T, and then outputting that in JSON since that's easy on the web side of things. We wanted the loop to span 24 hours, so that's why the file contains 24 hours of data. I was already creating this file and had it moving through LDM to get to our web servers, so it was easy to also have it go to you as a first attempt.
+
+The low-level data for each instrument contains timestamps at semi-random intervals. Data is at fixed heights (in meters) above the surface, and the data heights of the MWR don't match the data heights of the lidar. Thus, at a low level, the two instruments can't share a single time coordinate nor a single height coordinate, so I've not seen any benefit to merging them into one netCDF file. The instruments do not report at pressure levels - those levels are derived using the MWR data and then applied to both the MWR data and the lidar data, and that's the pressure data that you see in the JSON files. To make life easier for the webpage, we are averaging the lidar and MWR data into 10-minute "bins", which means now the lidar and MWR could share a time dimension, but they still can't share a height/pressure dimension. You could put them into one netCDF file, but you'd have to either have two separate height dimensions, or do some processing on the data to get the heights to line up between the two instruments.
+
+To more directly address your questions:
+- Currently we are only using the QA algorithms that the instruments themselves do in realtime, so no previously-present data would go missing. However, you could see previously-missing data become available after we recover from a communications outage.
+- The delay in the files is "looser" in terms of timing for our profiler network when compared to our standard network. The low-level data we are collecting is rather large, and it takes a while to download and process the data from each instrument. The software creating those JSON files is not tightly coupled with the ingest process, so the delay can sway a little.
+- I mentioned this above, but each file does contain the last 24 hours of data (or perhaps 23 hours and 50 minutes).
+
+If you want, I can give you the lower-level instrument data, but it is rather large (the lidar outputs 3-D data every few seconds) and won't include pressure levels. The plots titled "4-panel plot" displayed farther down the web page I gave earlier are generated from the lower-level data, so you can see the noise associated with the lower-level data (we've elected to ignore the instrument's QA flag for those plots, and we just plot everything). Or we can figure something else out.
+
+PROBLEM:	       
+One thing I'm curious about this xarray to netcdf conversion is that NaN's are carried into the netcdf files and are not tagged as missing values as I would expect
+ANSWER
+The _FillValue attribute is missing from the dict. If you add a _FillValue
+attribute and set it to np.nan for each variable, then when you save to netCDF,
+you'll see them being filled.

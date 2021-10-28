@@ -3,9 +3,9 @@
 import os
 import shutil
 
-inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_lidar_cnr_qc'
+#inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_lidar_cnr_qc'
 #inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_lidar_horz_wspd_qc'
-#inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_lidar_vert_wspd_qc'
+inDirBase = '/home/disk/funnel/impacts-website/archive/ops/nys_lidar_vert_wspd_qc'
 outDirBase = '/home/disk/funnel/impacts-website/archive_ncar/lidar/DL'
 category_new = 'lidar'
 platform_new = 'DL'
@@ -26,19 +26,19 @@ products = {'alba':'NYSM_Albany_NY',
             'tupp':'NYSM_Tupper_Lake_NY',
             'want':'NYSM_Wantagh_NY',
             'webs':'NYSM_Webster_NY'}
-product_new_suffix = 'cnr'
+#product_new_suffix = 'cnr'
 #product_new_suffix = 'horz_wspd'
-#product_new_suffix = 'vert_wspd'
+product_new_suffix = 'vert_wspd'
             
 # go through dates & files
 for date in os.listdir(inDirBase):
-    if date.startswith('202001'):
+    if date.startswith('202002'):
+        print('date = '+date)
         if not os.path.isdir(outDirBase+'/'+date):
             os.mkdir(outDirBase+'/'+date)
         for file in os.listdir(inDirBase+'/'+date):
             print('file = '+file)
-            basename = os.path.splitext(file)[0]
-            ext = os.path.splitext(file)[1]
+            (basename,ext) = os.path.splitext(file)
             (category_orig,platform_orig,datetime,product_orig) = basename.split('.')
             file_new = category_new+'.'+platform_new+'.'+datetime+'.'+products[product_orig]+'_'+product_new_suffix+ext
             print('file_new = '+file_new)

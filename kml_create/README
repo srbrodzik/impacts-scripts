@@ -1,0 +1,19 @@
+CATALOG MAPS - image file creation
+
+Scripts are in
+/home/bob/impacts/projDir/catalog/scripts
+
+Params files are in
+/home/bob/impacts/projDir/catalog/params
+
+Output written to
+/home/bob/impacts/raw/images
+
+Have not figured out how to name output files so they match required file
+naming conventions.  Use 'rename' scripts in above scripts dir to rename
+files before ftp to catalog.eol.ucar.edu
+
+Also need to automate entire process for next deployment.
+
+SRB, 19 Jan 2021
+

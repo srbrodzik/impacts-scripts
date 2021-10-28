@@ -1,0 +1,22 @@
+NOTE: This is a snapshot of SkewT code from Brody Fuchs, at:
+
+  origin  https://srbrodzik@bitbucket.org/brodyfuchs/skewpy.git (fetch)
+  origin  https://srbrodzik@bitbucket.org/brodyfuchs/skewpy.git (push)
+
+Versions in this directory:
+
+MOST CURRENT: SkewT_test.py
+
+PREVIOUS: SkewT_JoeF.py
+
+Diffs:
+
+- added: from dewpoint_calc import calculate_dewpoint
+
+- added function: mpers2knots
+
+- added ability to input WFF 'rtso' soundings
+
+- non-substantive indention corrections
+
+

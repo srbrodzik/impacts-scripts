@@ -3,38 +3,43 @@
 import os
 import shutil
 
-inDir = '/home/disk/funnel/impacts-website/archive/ops/asos'
-outDir = '/home/disk/funnel/impacts-website/archive_ncar/surface/ASOS'
+#inDir = '/home/disk/funnel/impacts-website/archive/ops/asos'
+inDir = '/home/disk/funnel/impacts-website/archive/ops/asos_isu'
+#outDir = '/home/disk/funnel/impacts-website/archive_ncar/surface/ASOS'
+outDir = '/home/disk/funnel/impacts-website/archive_ncar/surface/Meteogram'
 category_new = 'surface'
 platform_new = 'Meteogram'
 
 # In catalog
 '''
-asos_sites = {'kacy':'Atlantic_City_NJ',
-              'kalb':'Albany_NY',
-              'kavp':'Scranton_PA',
-              'kbos':'Boston_MA',
-              'kbgm':'Binghamton_NY',
-              'kbuf':'Buffalo_NY',
-              'kbwi':'BWI_Airport_MD',
-              'kcmh':'Columbus_OH',
-              'kcon':'Concord_NH',
-              'kdca':'Reagan_Airport_VA',
-              'kdtw':'Detroit_MI',
-              'kewr':'Newark_NJ',
-              'kged':'Georgetown_DE',
-              'khfd':'Hartford_CT',
-              'kilx':'Lincoln_IL',
-              'kind':'Indianapolis_IN',
-              'kisp':'Islip_NY',
-              'kjfk':'JFK_Airport_NY',
-              'klga':'LaGuardia_Airport_NY',
-              'korf':'Norfolk_VA',
-              'kphl':'Philadelphia_PA',
-              'kpit':'Pittsburgh_PA',
-              'kpwm':'Portland_ME',
-              'kric':'Richmond_VA',
-              'kwal':'Wallops_VA'}
+asos_sites = {'kacy':'Atlantic_City_NJ',              X
+              'kalb':'Albany_NY',                     X
+              'kavp':'Scranton_PA',                   X
+              'kbos':'Boston_MA',                     X
+              'kbgm':'Binghamton_NY',                 X
+              'kbuf':'Buffalo_NY',                    X
+              'kbwi':'BWI_Airport_MD',                X
+              'kcmh':'Columbus_OH',                   X
+              'kcon':'Concord_NH',                    X
+              'kdca':'Reagan_Airport_VA',             X
+              'kdtw':'Detroit_MI',                    UW CATALOG (sub kdet)
+              'kewr':'Newark_NJ',                     X
+              'kged':'Georgetown_DE',                 X
+              'khfd':'Hartford_CT',                   UW CATALOG (sub kbdl)
+              'kilx':'Lincoln_IL',                    NODATA (sub kpia or kbmi)
+              'kind':'Indianapolis_IN',               X
+              'kisp':'Islip_NY',                      X
+              'kjfk':'JFK_Airport_NY',                X
+              'klga':'LaGuardia_Airport_NY',          X
+              'korf':'Norfolk_VA',                    X
+              'kphl':'Philadelphia_PA',               X
+              'kpit':'Pittsburgh_PA',                 X
+              'kpwm':'Portland_ME',                   X
+              'kric':'Richmond_VA',                   X
+              'kwal':'Wallops_VA'}                    X
+
+              'kbdl':'Bradley_International_CT'       X
+              'kdet':'Detroit_Coleman_Municipal_MI'   X
 
 '''
 # All sites with images
@@ -183,6 +188,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kpbg':'Plattsburgh_NY',
               'kpeo':'Penn_Yan_NY',
               'kphd':'New_Philadelphia_OH',
+              'kpia':'Peoria_International_IL',
               'kphf':'Newport_News_VA',
               'kphl':'Philadelphia_International_PA',
               'kpit':'Pittsburgh_International_PA',
@@ -218,21 +224,21 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kzzv':'Zanesville_OH'}
 
 for date in os.listdir(inDir):
-    print(date)
-    if not os.path.isdir(outDir+'/'+date):
-        os.mkdir(outDir+'/'+date)
-    for file in os.listdir(inDir+'/'+date):
-        if 'asos' in file:
-            #print(file)
-            basename = os.path.splitext(file)[0]
-            ext = os.path.splitext(file)[1]
-            (category,platform,datetime,site) = basename.split('.')
-            try:
-                file_new = category_new+'.'+platform_new+'.'+datetime+'.ASOS_'+asos_sites[site]+ext
-                #print(file_new)
-                shutil.copy(inDir+'/'+date+'/'+file,outDir+'/'+date+'/'+file_new)
-            except:
-                print(file+': '+site+' not in dict')
+    if date.startswith('20200'):
+        print(date)
+        if not os.path.isdir(outDir+'/'+date):
+            os.mkdir(outDir+'/'+date)
+        for file in os.listdir(inDir+'/'+date):
+            if 'asos' in file:
+                print(file)
+                (basename,ext) = os.path.splitext(file)
+                (category,platform,datetime,site) = basename.split('.')
+                try:
+                    file_new = category_new+'.'+platform_new+'.'+datetime+'.ASOS_'+asos_sites[site]+ext
+                    #print(file_new)
+                    shutil.copy(inDir+'/'+date+'/'+file,outDir+'/'+date+'/'+file_new)
+                except:
+                    print(file+': '+site+' not in dict')
 
 
 

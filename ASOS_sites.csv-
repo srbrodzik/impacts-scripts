@@ -1,0 +1,26 @@
+site_long,site_abbr,lon,lat,alt
+ASOS_Albany_NY,KALB,-73.799, 42.747, 280.0
+ASOS_Atlantic_City_NJ,KACY,-74.566, 39.452, 60.0
+ASOS_Boston_Logan_MA,KBOS,-71.009, 42.36, 12.0
+ASOS_Binghamton_NY,KBGM,-75.98, 42.206, 1595.0
+ASOS_Buffalo_NY,KBUF,-78.735, 42.94, 716.0
+ASOS_BWI_International_MD,KBWI,-76.684, 39.173, 156.0
+ASOS_Columbus_OH,KCMH,-82.877, 39.99, 816.0
+ASOS_Concord_NH,KCON,-71.502, 43.204, 343.0
+ASOS_Detroit_Coleman_Municipal_MI,KDTW,-83.33, 42.231, 631.0
+ASOS_Georgetown_DE,KGED,-75.362, 38.689, 46.0
+ASOS_Bradley_International_CT,KHFD,-72.65, 41.736, 19.0
+ASOS_Indianapolis_International_IN,KIND,-86.281, 39.725, 791.0
+ASOS_Islip_Airport_NY,KISP,-73.101, 40.793, 84.0
+ASOS_JFK_International_NY,KJFK,-73.762, 40.638, 11.0
+ASOS_LaGuardia_Airport_NY,KLGA,-73.88, 40.779, 11.0
+ASOS_Lincoln_IL,KAAA,-89.335,40.1587,589.0
+ASOS_Newark_International_NJ,KEWR,-74.169, 40.682, 7.0
+ASOS_Norfolk_VA,KORF,-76.192, 36.903, 30.0
+ASOS_Philadelphia_International_PA,KPHL,-75.226, 39.873, 10.0
+ASOS_Pittsburgh_International_PA,KPIT,-80.214, 40.484, 1203.0
+ASOS_Portland_ME,KPWM,-70.304, 43.642, 45.0
+ASOS_Reagan_National_VA,KDCA,-77.034, 38.847, 10.0
+ASOS_Richmond_International_VA,KRIC,-77.323, 37.511, 164.0
+ASOS_Scranton_PA,KAVP,-75.726, 41.333, 930.0
+ASOS_Wallops_FF_VA,KWAL,-75.466, 37.937, 46.0
