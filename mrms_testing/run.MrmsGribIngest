@@ -1,0 +1,4 @@
+#!/bin/csh
+
+MrmsGribIngest -v -params MrmsGribIngest.refl_archive -f /home/disk/data/nexrad/mrms/3DRefl/20211111/MRMS_MergedReflectivityQC_*_20211111-225840.grib2
+MrmsGribIngest -v -params MrmsGribIngest.refl_archive -f /home/disk/data/nexrad/mrms/3DRefl/20211111/MRMS_MergedReflectivityQC_*_20211111-231838.grib2

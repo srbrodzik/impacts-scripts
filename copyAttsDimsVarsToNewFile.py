@@ -2,53 +2,57 @@
 
 import netCDF4 as nc
 import numpy as np
-refl_val_prefix = 'ConusMergedReflectivityQC'
+reflValPrefix = 'ConusMergedReflectivityQC'
 
-def copyAttsDimsVarsToNewFile(inFile,outFile,nalts,refl_name):
+def copyAttsDimsVarsToNewFile(inFile,outFile,nalts,reflName,altArr):
     with nc.Dataset(inFile) as src, nc.Dataset(outFile, "w") as dst:
         # copy global attributes
         for name in src.ncattrs():
             dst.setncattr(name, src.getncattr(name))
 
-        # create new dimension 'altitude'
+        # create new dimension 'altitude' and variable 'altitude'
         dst.createDimension('altitude',nalts)
+        altVar = dst.createVariable('altitude','float32',('altitude'))
+        altVar.units = 'km'
+        altVar.long_name = 'altitude'
+        dst['altitude'][:] = altArr
 
         # copy rest of dimensions from src
-        for dim_name, dim_value in src.dimensions.items():
-            print(dim_name, len(dim_value))
-            dst.createDimension(dim_name, len(dim_value) if not dim_value.isunlimited() else None)
+        for dimName, dimValue in src.dimensions.items():
+            print(dimName, len(dimValue))
+            dst.createDimension(dimName, len(dimValue) if not dimValue.isunlimited() else None)
 
         # copy all variables except reflectivity
-        for var_name, varin in src.variables.items():
-            if not var_name.startswith(refl_val_prefix):
+        for varName, varIn in src.variables.items():
+            if not varName.startswith(reflValPrefix):
                 fill_value = None
-                if hasattr(varin,'_FillValue'):
-                    fill_value = varin._FillValue
-                outVar = dst.createVariable(var_name,varin.datatype,
-                                            varin.dimensions,fill_value=fill_value)
-                print(varin.datatype)
-                print(varin.ncattrs())
-                outVar.setncatts({k: varin.getncattr(k) for k in varin.ncattrs() if k not in ['_FillValue']})
-                outVar[:] = varin[:]
+                if hasattr(varIn,'_FillValue'):
+                    fill_value = varIn._FillValue
+                outVar = dst.createVariable(varName,varIn.datatype,
+                                            varIn.dimensions,fill_value=fill_value)
+                print(varIn.datatype)
+                print(varIn.ncattrs())
+                outVar.setncatts({k: varIn.getncattr(k) for k in varIn.ncattrs() if k not in ['_FillValue']})
+                outVar[:] = varIn[:]
             else:
-                #refl_var_name = var_name
-                #[refl_var_name_merge,junk] = refl_var_name.split('_')
-                #refl_var_name_merge = 'DBZ_QC'
-                refl_varin = varin
+                #reflVarName = varName
+                #[reflVarNameMerge,junk] = reflVarName.split('_')
+                #reflVarNameMerge = 'DBZ_QC'
+                reflVarIn = varIn
 
         # create new reflectivity variable
-        # fill value should be 9.999e+20f but it's actually -999
+        # fill_value should be 9.999e+20f but it's actually -999
         #fill_value = None
-        #if hasattr(refl_varin,'_FillValue'):
-        #    fill_value = refl_varin._FillValue
+        #if hasattr(reflVarIn,'_FillValue'):
+        #    fill_value = reflVarIn._FillValue
         fill_value = -999.
-        outVar = dst.createVariable(refl_name,refl_varin.datatype,
+        outVar = dst.createVariable(reflName,reflVarIn.datatype,
                                     ('time','altitude','latitude','longitude'),
                                     fill_value=fill_value,zlib=True)
-        [shortname,junk] = (refl_varin.short_name).split('_')
-        outVar.short_name = shortname
-        outVar.long_name = refl_varin.long_name
-        outVar.units = refl_varin.units
+        [short_name,junk] = (reflVarIn.short_name).split('_')
+        outVar.short_name = short_name
+        outVar.long_name = reflVarIn.long_name
+        outVar.units = reflVarIn.units
 
         
         

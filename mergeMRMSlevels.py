@@ -7,11 +7,12 @@ import sys
 import shutil
 from copyAttsDimsVarsToNewFile import copyAttsDimsVarsToNewFile
 
-if len(sys.argv) != 2:
-    errMsg = 'Usage: '+sys.argv[0]+': [grib2 filename]'
-    sys.exit(errMsg)
-else:
-    file = sys.argv[1]
+#if len(sys.argv) != 2:
+#    errMsg = 'Usage: '+sys.argv[0]+': [grib2 filename]'
+#    sys.exit(errMsg)
+#else:
+#    file = sys.argv[1]
+file = 'MRMS_MergedReflectivityQC_19.00_20211027-000037.grib2.gz'
 
 tempdir = '/tmp'
 outdirbase = '/home/disk/bob/impacts/netcdf/mrms'
@@ -24,6 +25,10 @@ levelDict = {'00.50':0,'00.75':1,'01.00':2,'01.25':3,'01.50':4,'01.75':5,
              '07.00':18,'07.50':19,'08.00':20,'08.50':21,'09.00':22,'10.00':23,
              '11.00':24,'12.00':25,'13.00':26,'14.00':27,'15.00':28,'16.00':29,
              '17.00':30,'18.00':31,'19.00':32}
+altList = []
+for alt in levelDict.keys():
+    altList.append(float(alt))
+    altArr = np.array(altList)
           
 if file.endswith('grib2.gz'):
 
@@ -46,7 +51,8 @@ if file.endswith('grib2.gz'):
     os.system(command)
 
     # reduce dimensions of ncFile
-    command = 'ncea -d latitude,25.,50. -d longitude,-105.,-65. '+ncFile+' '+ncFile+'.new'
+    #command = 'ncea -d latitude,25.,50. -d longitude,-105.,-65. '+ncFile+' '+ncFile+'.new'
+    command = 'ncea -d latitude,32.,47. -d longitude,-93.,-67. '+ncFile+' '+ncFile+'.new'
     os.system(command)
     shutil.move(ncFile+'.new',ncFile)
     
@@ -60,7 +66,7 @@ if file.endswith('grib2.gz'):
 
     # create merge file if it doesn't exist
     if not os.path.isfile(ncFile_out):
-        copyAttsDimsVarsToNewFile(ncFile,ncFile_out,nalts,refl_name)
+        copyAttsDimsVarsToNewFile(ncFile,ncFile_out,nalts,refl_name,altArr)
 
     # copy refl data from input file to appropriate level of output file
     with nc.Dataset(ncFile) as src:
