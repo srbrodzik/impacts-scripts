@@ -17,3 +17,18 @@ Also need to automate entire process for next deployment.
 
 SRB, 19 Jan 2021
 
+
+
+In the field, these scripts must be run locally from
+
+   /home/snowband/impacts/git/lrose-impacts/projDir/catalog/scripts
+
+You can run them all together with
+
+    create_catMaps_all.py <start> <end>
+
+The output goes to
+
+    /media/usb/data/raw/images
+
+SRB, 18 Jan 2022

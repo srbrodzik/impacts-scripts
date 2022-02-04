@@ -1,0 +1,8 @@
+Copied 2020 versions of skewt code here because they output temperature axis
+values properly.  Code is in python2.
+
+Wanted to use a different directory because we've added additional naming
+convention things and new sounding formats in 2022.
+
+Stacy Brodzik, 8 JAN 2022
+

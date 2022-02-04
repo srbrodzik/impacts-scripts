@@ -5,8 +5,8 @@ from datetime import datetime
 from datetime import timedelta
 
 # User inputs
-start_time_str = '202002010000'
-end_time_str   = '202003010000'
+start_time_str = '202201181900'
+end_time_str   = '202201181900'
 minutes_between_images = 10
 
 # Get some environment variables

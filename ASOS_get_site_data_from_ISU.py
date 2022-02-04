@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-# NOTE: CHANGE date_time COLUMN NAME TO time TO ENABLE PLOTTING TO WORK WITH csv FILES
-
-# NOTE: Need to add KPIA to ASOS pickle file.  Right now info is in ASOS_stations_extra.pkl
-
 import os 
 import pandas as pd
 from io import StringIO 
@@ -30,9 +26,19 @@ SECS_IN_MIN = 60
 MINS_IN_HOUR = 60
 HRS_IN_DAY = 24
 missingValue = -999.
-start_date = '20191229'
-stop_date = '20200229'
-csv_dir = '/home/disk/funnel/impacts/data_archive/asos_isu'
+
+# ARCHIVE MODE
+#start_date = '20211229'
+#stop_date  = '20220121'
+
+# REALTIME MODE
+now = datetime.utcnow()
+twelve_hrs_ago = now - timedelta(hours=12)
+start_date = twelve_hrs_ago.strftime("%Y%m%d")
+stop_date = now.strftime("%Y%m%d")
+
+#csv_dir = '/home/disk/funnel/impacts/data_archive/asos_isu'
+csv_dir = '/home/disk/bob/impacts/raw/asos_isu'
 
 # Get sitelist
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar/'
@@ -52,8 +58,8 @@ for i in range(0,total_days):
     new_date_obj = start_date_obj + timedelta(days=i)
     new_date_str = new_date_obj.strftime('%Y%m%d')
     datelist.append( new_date_str  )
-# FOR TESTING
-# datelist = ['20200925']
+#FOR TESTING
+#datelist = ['20200925']
 
 def load_and_save_station_data(site):
     '''Given a site station ID, returns 3-day DataFrame of specified weather variables. Also saves a each day's
@@ -111,14 +117,17 @@ def load_and_save_station_data(site):
         print("Problem reading data for %s. Data was not updated" % site)
         return 0
 
-    # Rename 'valid' column name to 'date_time'
-    new_data.rename(columns={'valid':'date_time'}, inplace=True)
+    # Rename 'valid' column name to 'time'
+    #new_data.rename(columns={'valid':'date_time'}, inplace=True)
+    new_data.rename(columns={'valid':'time'}, inplace=True)
     
     # Convert date_time strings to datetime objects
-    new_data['date_time'] = pd.to_datetime(new_data['date_time'])
+    #new_data['date_time'] = pd.to_datetime(new_data['date_time'])
+    new_data['time'] = pd.to_datetime(new_data['time'])
     
-    # Set date_time as index
-    new_data.set_index('date_time',inplace=True)
+    # Set time as index
+    #new_data.set_index('date_time',inplace=True)
+    new_data.set_index('time',inplace=True)
 
     # Standaradize the format of all the ASOS csv files
     try: 
@@ -146,4 +155,5 @@ def load_and_save_station_data(site):
 for date in datelist:
     for i,site in enumerate(sitelist):
         print(date,site)
-        df = load_and_save_station_data(site)
+        #df = load_and_save_station_data(site)
+        load_and_save_station_data(site)

@@ -18,7 +18,8 @@ Data is read from csv files created by ASOS_get_site_data_from_ISU.py
 3-day plots, every hour, 
 save to: '/home/disk/funnel/impacts/archive/ops/asos_isu'
 '''
-import os 
+import os
+import sys
 import pandas as pd 
 import urllib 
 import urllib.parse
@@ -35,54 +36,281 @@ import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt 
 import pickle
 from metpy.plots import (StationPlot, StationPlotLayout, wx_code_map, current_weather)
+from ftplib import FTP
+
+if len(sys.argv) != 3:
+    print('Usage: sys.argv[0] [startdate(YYYYMMDD)] [enddate(YYYYMMDD)]')
+    sys.exit()
+else:
+    date_start_str = sys.argv[1]
+    date_end_str = sys.argv[2]
+
+test = False
+debug = True
+
+# In catalog
+asos_for_cat = ['kacy','kalb','kavp','kbdl','kbos','kbgm','kbuf','kbwi','kcmh','kcon',
+                'kdca','kdet','kewr','kged','kind','kisp','kjfk','klga','korf','kphl',
+                'kpit','kpwm','kric','kwal']
+
+asos_sites = {'kacy':'Atlantic_City_NJ',
+              'kalb':'Albany_NY',
+              'kavp':'Scranton_PA',
+              'kbdl':'Bradley_International_CT',       # sub for khfd
+              'kbos':'Boston_Logan_MA',                # NEW
+              'kbgm':'Binghamton_NY',
+              'kbuf':'Buffalo_NY',
+              'kbwi':'BWI_International_MD',
+              'kcmh':'Columbus_OH',
+              'kcon':'Concord_NH',
+              'kdca':'Reagan_National_VA',
+              'kdet':'Detroit_Coleman_Municipal_MI',   # sub for kdtw
+              #'kdtw':'Detroit_Metropolitan_MI',
+              'kewr':'Newark_International_NJ',
+              'kged':'Georgetown_DE',
+              #'khfd':'Hartford_CT',
+              'kilx':'Lincoln_IL',
+              'kind':'Indianapolis_International_IN',
+              'kisp':'Islip_Airport_NY',
+              'kjfk':'JFK_International_NY',
+              'klga':'LaGuardia_Airport_NY',
+              'korf':'Norfolk_VA',
+              'kphl':'Philadelphia_International_PA',
+              #'kpia':'Peoria_International_IL',        # sub for kilx but not working
+              'kpit':'Pittsburgh_International_PA',
+              'kpwm':'Portland_ME',
+              'kric':'Richmond_International_VA',
+              'kwal':'Wallops_FF_VA'}
+
+"""
+# All sites with images - process later
+asos_sites = {'k1v4':'Saint_Johnsbury_VT',
+              'kabe':'Allentown_PA',
+              'kack':'Nantucket_MA',
+              'kacy':'Atlantic_City_NJ',
+              'kadg':'Adrian_MI',
+              'kafn':'Jaffrey_NH',
+              'kagc':'Pittsburgh_Allegheny_PA',
+              'kakq':'Wakefield_VA',
+              'kakr':'Akron_OH',
+              'kalb':'Albany_NY',
+              'kanj':'Sault_Ste_Marie_MI',
+              'kaoh':'Lima_OH',
+              'kaoo':'Altoona_PA',
+              'kapn':'Alpena_MI',
+              'kart':'Watertown_NY',
+              'kaug':'Augusta_ME',
+              'kavp':'Scranton_PA',
+              'kazo':'Kalamazoo_MI',
+              'kbdl':'Bradley_International_CT',
+              'kbed':'Bedford_MA',
+              'kbeh':'Benton_Harbor_MI',
+              'kbfd':'Bradford_PA',
+              'kbgm':'Binghamton_NY',
+              'kbgr':'Bangor_ME',
+              'kbiv':'Holland_MI',
+              'kbjj':'Wooster_OH',
+              'kbkw':'Beckley_WV',
+              'kblf':'Bluefield_WV',
+              'kbmg':'Bloomington_IN',
+              'kbml':'Berlin_NH',
+              'kbos':'Boston_Logan_MA',
+              'kbtl':'Battle_Creek_MI',
+              'kbtv':'Burlington_VT',
+              'kbuf':'Buffalo_NY',
+              'kbwg':'Bowling_Green_KY',
+              'kbwi':'BWI_International_MD',
+              'kcar':'Caribou_ME',
+              'kcho':'Charlottesville_VA',
+              'kckb':'Clarksburg_WV',
+              'kcle':'Cleveland_OH',
+              'kcmh':'Columbus_OH',
+              'kcmx':'Hancock_MI',
+              'kcon':'Concord_NH',
+              'kcrw':'Charleston_WV',
+              'kdan':'Danville_VA',
+              'kdaw':'Rochester_NH',
+              'kday':'Dayton_OH',
+              'kdca':'Reagan_National_VA',
+              'kdet':'Detroit_Coleman_Municipal_MI',
+              'kdfi':'Defiance_OH',
+              'kdkk':'Dunkirk_NY',
+              'kdsv':'Dansville_NY',
+              'kdtw':'Detroit_Metropolitan_MI',
+              'kduj':'DuBois_PA',
+              'kdxr':'Danbury_CT',
+              'kdyl':'Doylestown_PA',
+              'kekn':'Elkins_WV',
+              'kelm':'Elmira_NY',
+              'kelz':'Wellsville_NY',
+              'keri':'Erie_PA',
+              'kevv':'Evansville_IN',
+              'kewr':'Newark_International_NJ',
+              'kfdy':'Findlay_OH',
+              'kfft':'Frankfort_KY',
+              'kfig':'Clearfield_PA',
+              'kfit':'Fitchburg_MA',
+              'kfnt':'Flint_MI',
+              'kfrg':'Farmingdale_NY',
+              'kfve':'Frenchville_ME',
+              'kfwa':'Fort_Wayne_International_IN',
+              'kfzy':'Fulton_NY',
+              'kged':'Georgetown_DE',
+              'kgez':'Shelbyville_IN',
+              'kgfl':'Glens_Falls_NY',
+              'kgkj':'Meadville_PA',
+              'kglr':'Gaylord_MI',
+              'kgnr':'Greenville_ME',
+              'kgrr':'Grand_Rapids_MI',
+              'kgsh':'Goshen_IN',
+              'khao':'Hamilton_OH',
+              'khfd':'Hartford_CT',
+              'khgr':'Hagerstown_MD',
+              'khie':'Whitefield_NH',
+              'khlg':'Wheeling_WV',
+              'khpn':'White_Plains_NY',
+              'khtl':'Houghton_Lake_MI',
+              'khts':'Huntington_WV',
+              'khuf':'Terre_Haute',
+              'khul':'Houlton_ME',
+              'khzy':'Ashtabula_OH',
+              'kiad':'Washington_Dulles_International_VA',
+              'kiag':'Niagara_Falls_NY',
+              'kijd':'Willimantic_CT',
+              'kilg':'Wilmington_DE',
+              'kiln':'Wilmington_Air_Park_OH',
+              'kilx':'Lincoln_IL',        # not defined on site; check
+              'kimt':'Iron_Mountain_MI',
+              'kind':'Indianapolis_International_IN',
+              'kipt':'Williamsport_PA',
+              'kisp':'Islip_Airport_NY',
+              'kiwi':'Wiscasset_ME',
+              'kizg':'Fryeburg_ME',
+              'kjfk':'JFK_International_NY',
+              'kjkl':'Jackson_KY',
+              'kjst':'Johnstown_PA',
+              'kjxn':'Jackson_MI',
+              'klaf':'Lafayette_IN',
+              'klan':'Lansing_MI',
+              'kleb':'Lebanon_NH',
+              'klex':'Lexington_KY',
+              'klga':'LaGuardia_Airport_NY',
+              'klhq':'Lancaster_OH',
+              'klns':'Lancaster_PA',
+              'kloz':'London_KY',
+              'klpr':'Lorain_OH',
+              'klyh':'Lynchburg_VA',
+              'kmbs':'Saginaw_International_MI',
+              'kmdt':'Harrisburg_International_PA',
+              'kmfd':'Mansfield_OH',
+              'kmgj':'Montgomery_NY',
+              'kmgw':'Morganstown_WV',
+              'kmgy':'Dayton_OH',
+              'kmht':'Manchester_NH',
+              'kmie':'Muncie_IN',
+              'kmiv':'Millville_NJ',
+              'kmkg':'Muskegon_MI',
+              'kmlt':'Millinocket_ME',
+              'kmmk':'Meriden_CT',
+              'kmnn':'Marion_OH',
+              'kmpv':'Montpelier_VT',
+              'kmrb':'Martinsburg_WV',
+              'kmss':'Massena_NY',
+              'kmtp':'Montauk_Airport_NY',
+              'kmvl':'Morrisville_VT',
+              'kmvy':'Marthas_Vineyard_MA',
+              'kore':'Orange_MA',
+              'korf':'Norfolk_VA',
+              'korh':'Worcester_MA',
+              'koxb':'Ocean_City_MD',
+              'kp58':'Port_Hope_MI',
+              'kp59':'Copper_Harbor_MI',
+              'kpah':'Paducah_KY',
+              'kpbg':'Plattsburgh_NY',
+              'kpeo':'Penn_Yan_NY',
+              'kphd':'New_Philadelphia_OH',
+              'kpia':'Peoria_International_IL',
+              'kphf':'Newport_News_VA',
+              'kphl':'Philadelphia_International_PA',
+              'kpit':'Pittsburgh_International_PA',
+              'kpkb':'Parkersburg_WV',
+              'kpln':'Pellston_MI',
+              'kpou':'Poughkeepsie_NY',
+              'kpsf':'Pittsfield_MA',
+              'kptk':'Pontiac_MI',
+              'kptw':'Pottstown_PA',
+              'kpwm':'Portland_ME',
+              'krdg':'Reading_PA',
+              'kric':'Richmond_International_VA',
+              'krme':'Rome_NY',
+              'kroa':'Roanoke_VA',
+              'kroc':'Rochester_NY',
+              'ksbn':'South_Bend_IN',
+              'ksby':'Salisbury_MD',
+              'ksdf':'Louisville_International_KY',
+              'kseg':'Selinsgrove_PA',
+              'kslk':'Saranac_Lake_NY',
+              'ksmq':'Somerville_NJ',
+              'ksyr':'Syracuse_Airport_NY',
+              'ktdz':'Toledo_OH',
+              'kthv':'York_PA',
+              'ktol':'Toledo_OH',
+              'kttn':'Trenton_NJ',
+              'ktvc':'Traverse_City_MI',
+              'kvpz':'Valparaiso_IN',
+              'kvsf':'Springfield_VT',
+              'kvta':'Newark_OH',
+              'kwal':'Wallops_FF_VA',
+              'kyng':'Youngstown_OH',
+              'kzzv':'Zanesville_OH'}
+"""
+
+"""
+# Field Catalog inputs
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
+"""
 
 # Get sitelist
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar/'
 infile = open(pickle_jar + "sitelist.pkl",'rb')
 sitelist = pickle.load(infile)
 infile.close()
-# FOR TESTING
-#sitelist = ['KCMH']
-#sitelist = ['KBGM']
-#sitelist = ['KMRB']
-#sitelist = ['KMBS']
-#sitelist = ['KANJ']
-#sitelist = ['KPIA']
 
 # Get sitetitles
 infile2 = open(pickle_jar + 'sitetitles.pkl','rb')
 sitetitles = pickle.load(infile2)
 infile.close()
-# FOR TESTING
-#sitetitles = ['PORT COLUMBUS INTL AP']
-#sitetitles = ['BINGHAMTON GREATER AP']
-#sitetitles = ['EASTERN WV REG AP']
-#sitetitles = ['SAGINAW MBS INTL AP']
-#sitetitles = ['SAULT STE MARIE SNDRSN']
-#sitetitles = ['PEORIA INTL AP']
 
 # Get datelist
-date_start_str = '20200101'
-#date_start_str = '20200204'
-date_end_str = '20200229'
+#-------------
+# ARCHIVE MODE
+#date_start_str = '20220109'
+#date_end_str = '20220109'
+
 date_end_obj = datetime.strptime(date_end_str,'%Y%m%d')
 date_str = date_start_str
+
 date_obj = datetime.strptime(date_str,'%Y%m%d')
 datelist = []
 while date_obj <= date_end_obj:
     datelist.append(date_str)
     date_obj = date_obj + timedelta(days=1)
     date_str = date_obj.strftime('%Y%m%d')
-# FOR TESTING
-#datelist = ['20200112']
-#datelist = ['20200207']
-#datelist = ['20200101']
-#datelist = ['20200111']
-#datelist = ['20200203']
+print('{} {}'.format('datelist =',datelist))
 
 # Directories of interest
-csv_dir = '/home/disk/funnel/impacts/data_archive/asos_isu'
-plot_dir = '/home/disk/funnel/impacts/archive/ops/asos_isu'
+#csv_dir = '/home/disk/funnel/impacts/data_archive/asos_isu'
+csv_dir = '/home/disk/bob/impacts/raw/asos_isu'
+#plot_dir = '/home/disk/funnel/impacts/archive/ops/asos_isu'
+plot_dir = '/home/disk/bob/impacts/images/asos_isu'
 
 #From metpy.plots.wxsymbols:
 wx_codes = {'': 0, 'M': 0, 'TSNO': 0, 'TS': 0, 'VA': 4, 'FU': 4, 'HZ': 5,
@@ -152,20 +380,20 @@ def load_station_data(date,hour,site):
     #figuring out if most of last 3-day data already exists, and if so, grabbing it from os
     if os.path.exists(path3_file) and os.path.exists(path2_file) and os.path.exists(path1_file) and os.path.exists(path0_file):
         three_days_ago_all = pd.read_csv(path3_file)
-        three_days_ago_all['date_time'] = pd.to_datetime(three_days_ago_all['date_time'])
-        three_days_ago_all = three_days_ago_all.set_index('date_time')
+        three_days_ago_all['time'] = pd.to_datetime(three_days_ago_all['time'])
+        three_days_ago_all = three_days_ago_all.set_index('time')
         
         two_days_ago_all = pd.read_csv(path2_file)
-        two_days_ago_all['date_time'] = pd.to_datetime(two_days_ago_all['date_time'])
-        two_days_ago_all = two_days_ago_all.set_index('date_time')
+        two_days_ago_all['time'] = pd.to_datetime(two_days_ago_all['time'])
+        two_days_ago_all = two_days_ago_all.set_index('time')
         
         yesterday_all = pd.read_csv(path1_file)
-        yesterday_all['date_time'] = pd.to_datetime(yesterday_all['date_time'])
-        yesterday_all = yesterday_all.set_index('date_time')
+        yesterday_all['time'] = pd.to_datetime(yesterday_all['time'])
+        yesterday_all = yesterday_all.set_index('time')
         
         today_all = pd.read_csv(path0_file)
-        today_all['date_time'] = pd.to_datetime(today_all['date_time'])
-        today_all = today_all.set_index('date_time')
+        today_all['time'] = pd.to_datetime(today_all['time'])
+        today_all = today_all.set_index('time')
 
         # concatenate three DataFrame objects into one
         frames = [three_days_ago_all, two_days_ago_all, yesterday_all, today_all]
@@ -335,7 +563,7 @@ def plot_station_data(date,site,sitetitle,df):
     if 'p01m' in df.keys():
         df['p01m'] = df['p01m'].fillna(0)
         last_val = df.iloc[0]['p01m']
-        last_time = df.iloc[0]['date_time']
+        last_time = df.iloc[0]['time']
         last_hour = last_time.strftime('%H')
         last_minute = last_time.strftime('%M')
         precip_inc = [last_val]
@@ -346,7 +574,7 @@ def plot_station_data(date,site,sitetitle,df):
         for index in range(1,len(df)):
         #for index in range(1,12):
             val = df.iloc[index]['p01m']
-            time = df.iloc[index]['date_time']
+            time = df.iloc[index]['time']
             hour = time.strftime('%H')
             minute = time.strftime('%M')
             #print('LAST: val=',last_val,' hour=',last_hour,' minute=',last_minute)
@@ -391,7 +619,7 @@ def plot_station_data(date,site,sitetitle,df):
         max_precip = sum(precip_inc)
         # max_precip is also precip_accum_list[-1]
         #p01m_mod = list(df['p01m_mod'].values)
-        p01m_mod_dt = list(df['date_time'].values)
+        p01m_mod_dt = list(df['time'].values)
         
         #max_precip = max(precip_accum_list)
         labelname = 'Precip (' + str(round(max_precip,2)) + 'mm)'
@@ -407,7 +635,7 @@ def plot_station_data(date,site,sitetitle,df):
         df['wxcodes'] = df['wxcodes'].fillna('')
         wxcodes_wto = []
         for index in range(0,len(df)):
-            time = df.iloc[index]['date_time']
+            time = df.iloc[index]['time']
             minute = time.strftime('%M')
             #if minute == '53':
             if minute > '50' and minute < '55':
@@ -429,7 +657,7 @@ def plot_station_data(date,site,sitetitle,df):
             wxcodes_wto.append(wxcode_num)
         #df['wxcodes_wto'] = wxcode_wto
         #wxcodes_wto = list(df['wxcodes_wto'].values)
-        wxcodes_wto_dt = list(df['date_time'].values)
+        wxcodes_wto_dt = list(df['time'].values)
 
         if max_precip > 0:
             dummy_y_vals = np.ones(len(wxcodes_wto)) * (0.10*max_precip)
@@ -468,24 +696,50 @@ def plot_station_data(date,site,sitetitle,df):
     if not os.path.exists(plot_path):
             os.makedirs(plot_path)
     try:
-        plt.savefig(plot_path+'/ops.asos.'+timestamp_end+'.'+lower_site+'.png',bbox_inches='tight')
+        catalogName = 'surface.Meteogram.'+timestamp_end+'.ASOS_'+asos_sites[lower_site]+'.png'
+        #plt.savefig(plot_path+'/ops.asos.'+timestamp_end+'.'+lower_site+'.png',bbox_inches='tight')
+        plt.savefig(plot_path+'/'+catalogName,bbox_inches='tight')
     except:
         print("Problem saving figure for %s. Usually a maxticks problem" %site)
     plt.close()
 
+    """
+    # ftp plot if in asos_for_cat list
+    if lower_site in asos_for_cat:
+        
+        # Open ftp connection
+        if test:
+            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+            catalogFTP.cwd(catalogDestDir)
+        else:
+            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+            catalogFTP.cwd(catalogDestDir)
+
+        # ftp image
+        ftpFile = open(os.path.join(plot_path,catalogName),'rb')
+        catalogFTP.storbinary('STOR '+catalogName,ftpFile)
+        ftpFile.close()
+
+        # Close ftp connection
+        catalogFTP.quit()
+    """
+
+
+
+#-----------------------------### MAIN CODE ###-----------------------------
+        
 for date in datelist:
     for hour in range(0,24):
-    # FOR TESTING
-    #for hour in range(22,24):
-    #for hour in range(8,24):
-    #for hour in range(15,24):
         hour = str(hour)
         if hour < '10':
             hour = '0'+hour
         print(f'date = {date} and hour = {hour}')
         for isite,site in enumerate(sitelist):
-            if site != 'K1V4' and site != 'KACY':
-                sitetitle = sitetitles[isite]
-                print(f'site = {site} and sitetitle = {sitetitle}')
-                df = load_station_data(date,hour,site)
-                plot_station_data(date,site,sitetitle,df)
+            #if site != 'K1V4' and site != 'KACY':
+            if site == 'KRIC':
+                if site.lower() in asos_sites:
+                    sitetitle = sitetitles[isite]
+                    #sitelocation = sitelocations[isite]
+                    print(f'site = {site} and sitetitle = {sitetitle}')
+                    df = load_station_data(date,hour,site)
+                    plot_station_data(date,site,sitetitle,df)

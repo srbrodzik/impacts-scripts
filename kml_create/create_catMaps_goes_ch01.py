@@ -4,12 +4,23 @@
 # mput gis.*.vis_ch01.png
 
 import os
+import sys
 from datetime import datetime
 from datetime import timedelta
 
+if len(sys.argv) != 3:
+    print('{} {} {}'.format('Useage: ',sys.argv[0],'<start_time_str> <end_time_str>'))
+    sys.exit()
+else:
+    start_time_str = sys.argv[1]
+    end_time_str = sys.argv[2]
+
+print('{} {}'.format('StartTime = ',start_time_str))
+print('{} {}'.format('  EndTime = ',end_time_str))
+    
 # User inputs
-start_time_str = '202002291200'
-end_time_str   = '202003010000'
+#start_time_str = '202201181900'
+#end_time_str   = '202201181900'
 minutes_between_images = 10
 
 # Get some environment variables

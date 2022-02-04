@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+ <name>IMPACTS Research Skewt Plots at 202201171500</name>
+ <Style id="site">
+  <IconStyle>
+   <scale>1</scale>
+   <Icon>
+    <href>http://catalog.eol.ucar.edu/kmlicons/scout_blank.png</href>
+   </Icon>
+  </IconStyle>
+ </Style>
+ <Folder>
+  <name></name>
+  <open>1</open>
+  <Placemark>
+   <description><![CDATA[ <b>Date: 20220117/15Z</b><br><b>Site: UILL</b><br><b>Location:</b> 42.800N 77.812W<br>
+  <a width=700 href="http://catalog.eol.ucar.edu/impacts_2022/upperair/uill_sonde/20220117/15/upperair.UILL_sonde.202201171500.skewT.png" target="blank">
+<img width=700  src="http://catalog.eol.ucar.edu/impacts_2022/upperair/uill_sonde/20220117/15/upperair.UILL_sonde.202201171500.skewT.png">]]></description>
+   <styleUrl>#site</styleUrl>
+   <Point>
+   <altitudeMode>absolute</altitudeMode>
+   <coordinates>-77.812,42.800,0.0</coordinates>
+   </Point>
+  </Placemark>
+ </Folder>
+</Document>
+</kml>

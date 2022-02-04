@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+ <name>IMPACTS Research Skewt Plots at 202201170300</name>
+ <Style id="site">
+  <IconStyle>
+   <scale>1</scale>
+   <Icon>
+    <href>http://catalog.eol.ucar.edu/kmlicons/scout_blank.png</href>
+   </Icon>
+  </IconStyle>
+ </Style>
+ <Folder>
+  <name></name>
+  <open>1</open>
+  <Placemark>
+   <description><![CDATA[ <b>Date: 20220117/03Z</b><br><b>Site: SBU</b><br><b>Location:</b> 42.174N 76.872W<br>
+  <a width=700 href="http://catalog.eol.ucar.edu/impacts_2022/upperair/sbu_sonde/20220117/03/upperair.SBU_sonde.202201170337.skewT.png" target="blank">
+<img width=700  src="http://catalog.eol.ucar.edu/impacts_2022/upperair/sbu_sonde/20220117/03/upperair.SBU_sonde.202201170337.skewT.png">]]></description>
+   <styleUrl>#site</styleUrl>
+   <Point>
+   <altitudeMode>absolute</altitudeMode>
+   <coordinates>-76.872,42.174,0.0</coordinates>
+   </Point>
+  </Placemark>
+  <Placemark>
+   <description><![CDATA[ <b>Date: 20220117/03Z</b><br><b>Site: UMILL</b><br><b>Location:</b> 39.999N 76.350W<br>
+  <a width=700 href="http://catalog.eol.ucar.edu/impacts_2022/upperair/umill_windsonde1/20220117/03/upperair.UMILL_windsonde1.202201170300.skewT.png" target="blank">
+<img width=700  src="http://catalog.eol.ucar.edu/impacts_2022/upperair/umill_windsonde1/20220117/03/upperair.UMILL_windsonde1.202201170300.skewT.png">]]></description>
+   <styleUrl>#site</styleUrl>
+   <Point>
+   <altitudeMode>absolute</altitudeMode>
+   <coordinates>-76.3504,39.9996,0.0</coordinates>
+   </Point>
+  </Placemark>
+ </Folder>
+</Document>
+</kml>

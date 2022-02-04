@@ -1,0 +1,1 @@
+run.get_goes_sat_plots.csh

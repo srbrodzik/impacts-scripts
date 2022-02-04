@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+ <name>IMPACTS Research Skewt Plots at 202201292000</name>
+ <Style id="site">
+  <IconStyle>
+   <scale>1</scale>
+   <Icon>
+    <href>http://catalog.eol.ucar.edu/kmlicons/scout_blank.png</href>
+   </Icon>
+  </IconStyle>
+ </Style>
+ <Folder>
+  <name></name>
+  <open>1</open>
+  <Placemark>
+   <description><![CDATA[ <b>Date: 20220129/20Z</b><br><b>Site: SBU</b><br><b>Location:</b> 40.897N 73.127W<br>
+  <a width=700 href="http://catalog.eol.ucar.edu/impacts_2022/upperair/sbu_sonde/20220129/19/upperair.SBU_sonde.202201291919.Stonybrook_NY_skewT.png" target="blank">
+<img width=700  src="http://catalog.eol.ucar.edu/impacts_2022/upperair/sbu_sonde/20220129/19/upperair.SBU_sonde.202201291919.Stonybrook_NY_skewT.png">]]></description>
+   <styleUrl>#site</styleUrl>
+   <Point>
+   <altitudeMode>absolute</altitudeMode>
+   <coordinates>-73.127,40.897,0.0</coordinates>
+   </Point>
+  </Placemark>
+  <Placemark>
+   <description><![CDATA[ <b>Date: 20220129/20Z</b><br><b>Site: UIUC</b><br><b>Location:</b> 41.959N 70.671W<br>
+  <a width=700 href="http://catalog.eol.ucar.edu/impacts_2022/upperair/uill_sonde/20220129/19/upperair.UILL_sonde.202201291920.skewT.png" target="blank">
+<img width=700  src="http://catalog.eol.ucar.edu/impacts_2022/upperair/uill_sonde/20220129/19/upperair.UILL_sonde.202201291920.skewT.png">]]></description>
+   <styleUrl>#site</styleUrl>
+   <Point>
+   <altitudeMode>absolute</altitudeMode>
+   <coordinates>-70.671,41.959,0.0</coordinates>
+   </Point>
+  </Placemark>
+  <Placemark>
+   <description><![CDATA[ <b>Date: 20220129/20Z</b><br><b>Site: UMILL</b><br><b>Location:</b> 40.056N 74.164W<br>
+  <a width=700 href="http://catalog.eol.ucar.edu/impacts_2022/upperair/umill_sonde/20220129/19/upperair.UMILL_sonde.202201291906.skewT.png" target="blank">
+<img width=700  src="http://catalog.eol.ucar.edu/impacts_2022/upperair/umill_sonde/20220129/19/upperair.UMILL_sonde.202201291906.skewT.png">]]></description>
+   <styleUrl>#site</styleUrl>
+   <Point>
+   <altitudeMode>absolute</altitudeMode>
+   <coordinates>-74.164,40.056,0.0</coordinates>
+   </Point>
+  </Placemark>
+ </Folder>
+</Document>
+</kml>
