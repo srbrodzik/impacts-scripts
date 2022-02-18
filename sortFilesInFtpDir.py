@@ -43,7 +43,10 @@ else:
 for file in os.listdir(ftpDir):
     print('file =', file)
     if os.path.isfile(ftpDir+'/'+file):
-        if file.endswith('tar'):
+        if file.endswith('tar.xz'):
+            shutil.move(ftpDir+'/'+file,
+                        '/home/disk/bob/impacts/raw/raxpol')            
+        elif file.endswith('tar'):
             shutil.move(ftpDir+'/'+file,
                         '/home/disk/bob/impacts/radar/er2/postFlight')
         elif file.startswith('aircraft.NASA_P3') and file.endswith('gif'):

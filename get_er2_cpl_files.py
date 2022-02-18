@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import sys
@@ -8,8 +8,8 @@ from datetime import timedelta
 import shutil
 from ftplib import FTP
 
-if len(sys.argv) != 4:
-    print('Usage: sys.argv[0] [YYYYMMDD] [takeoff Time] [first seg time]')
+if len(sys.argv) != 5:
+    print('Usage: sys.argv[0] [YYYYMMDD] [takeoff Time] [first seg time] [dateID]')
     sys.exit()
 else:
     dateStr = sys.argv[1]
@@ -19,14 +19,15 @@ else:
     timeStr = sys.argv[2]
     segStartStr = dateStr+sys.argv[3]
     segStartObj = datetime.strptime(segStartStr,"%Y%m%d%H%M")
+    dateID = sys.argv[4]
 
 # User inputs
-test = True
+test = False
 debug = True
 segDelta = 30   #minutes
 tempDir = '/tmp'
 #holdDir = '/home/disk/bob/impacts/er2/CPL'
-holdDir = '/home/disk/bob/impacts/lidar/er2'
+holdDirBase = '/home/disk/bob/impacts/lidar/er2'
 url_trk = 'https://cpl.gsfc.nasa.gov/impacts22/Support_data'
 urlBase = 'https://cpl.gsfc.nasa.gov/impacts22/Analy_quick'
 catalogPrefix = 'aircraft.NASA_ER2'
@@ -61,6 +62,9 @@ else:
     catalogFTP.cwd(catalogDestDir)
 
 os.chdir(tempDir)
+holdDir = holdDirBase+'/'+dateStr
+if not os.path.exists(holdDir):
+    os.makedirs(holdDir)
 
 # Download segment images
 for val in range(1,20):
@@ -69,7 +73,7 @@ for val in range(1,20):
     else:
         val = '0'+str(val)
     print('val =',val)
-    file = 'imgseg'+val+'_22921_'+date+'.png'
+    file = 'imgseg'+val+'_'+dateID+'_'+date+'.png'
     print('file =',file)
     url = urlBase+'/'+file
     try:
@@ -84,20 +88,19 @@ for val in range(1,20):
 
         #rename file
         shutil.move(tempDir+'/'+file,
-                    tempDir+'/'+catFile)   
+                    holdDir+'/'+catFile)   
 
         #ftp file & remove
-        ftpFile = open(os.path.join(tempDir,catFile),'rb')
+        ftpFile = open(os.path.join(holdDir,catFile),'rb')
         catalogFTP.storbinary('STOR '+catFile,ftpFile)
         ftpFile.close()
-        os.remove(tempDir+'/'+catFile)
     except:
         print('file =',file,'unavailable')
         continue
 
 # Process summary images
 for val in sumDict.keys():
-    file = 'imgsum_22921_'+date+'_'+val+'.png'
+    file = 'imgsum_'+dateID+'_'+date+'_'+val+'.png'
     url = urlBase+'/'+file
     try:
         command = 'wget '+url
@@ -114,18 +117,17 @@ for val in sumDict.keys():
 
         #rename file
         shutil.move(tempDir+'/'+file,
-                    tempDir+'/'+catFile)
+                    holdDir+'/'+catFile)
 
         #ftp file & remove
-        ftpFile = open(os.path.join(tempDir,catFile),'rb')
+        ftpFile = open(os.path.join(holdDir,catFile),'rb')
         catalogFTP.storbinary('STOR '+catFile,ftpFile)
         ftpFile.close()
-        os.remove(tempDir+'/'+catFile)
     except:
         print('file =',file,'unavailable')
 
 # Process track image
-file = 'map_22921_'+date+'.png'
+file = 'map_'+dateID+'_'+date+'.png'
 print('file =',file)
 url = url_trk+'/'+file
 try:
@@ -136,13 +138,12 @@ try:
     
     #rename file
     shutil.move(tempDir+'/'+file,
-                tempDir+'/'+catFile)
+                holdDir+'/'+catFile)
 
     #ftp file & remove
-    ftpFile = open(os.path.join(tempDir,catFile),'rb')
+    ftpFile = open(os.path.join(holdDir,catFile),'rb')
     catalogFTP.storbinary('STOR '+catFile,ftpFile)
     ftpFile.close()
-    os.remove(tempDir+'/'+catFile)
 except:
     print('file =',file,'unavailable')
  

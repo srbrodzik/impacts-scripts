@@ -9,9 +9,14 @@ import shutil
 from datetime import datetime
 import pandas as pd
 
+if len(sys.argv) != 2:
+    print('Usage: sys.argv[0] [date(YYYYMMDD)]')
+    sys.exit()
+else:
+    date = sys.argv[1]
+
 inDirBase = '/home/disk/bob/impacts/upperair/valpo'
 outDirBase = inDirBase
-date = '20220203'
 inDir = inDirBase+'/'+date
 outDir = outDirBase+'/'+date
 csvPrefix = 'upperair.VALPO_sonde'

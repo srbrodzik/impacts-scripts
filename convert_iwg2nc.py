@@ -9,7 +9,7 @@ import xarray
 from netCDF4 import Dataset
 
 if len(sys.argv) != 2:
-    print('Useage:', sys.argv[0], '<date (YYYYMMDD)>')
+    print('Useage: {} <date YYYYMMDD)>'.format(sys.argv[0]))
     sys.exit()
 else:
     date = sys.argv[1]

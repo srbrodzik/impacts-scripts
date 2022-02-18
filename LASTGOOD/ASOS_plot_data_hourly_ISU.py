@@ -41,11 +41,41 @@ test = False
 debug = True
 
 # In catalog
-asos_for_cat = ['kacy','kalb','kavp','kbos','kbgm','kbuf','kbwi','kcmh','kcon','kdca',
-                'kdtw','kewr','kged','khfd','kilx','kind','kisp','kjfk','klga','korf',
-                'kphl','kpit','kpwm','kric','kwal','kbdl','kdet']
+asos_for_cat = ['kacy','kalb','kavp','kbdl','kbos','kbgm','kbuf','kbwi','kcmh','kcon',
+                'kdca','kdet','kewr','kged','kind','kisp','kjfk','klga','korf','kphl',
+                'kpia','kpit','kpwm','kric','kwal']
 
-# All sites with images
+asos_sites = {'kacy':'Atlantic_City_NJ',
+              'kalb':'Albany_NY',
+              'kavp':'Scranton_PA',
+              'kbdl':'Bradley_International_CT',       # sub for khfd
+              'kbos':'Boston_Logan_MA',                # NEW
+              'kbgm':'Binghamton_NY',
+              'kbuf':'Buffalo_NY',
+              'kbwi':'BWI_International_MD',
+              'kcmh':'Columbus_OH',
+              'kcon':'Concord_NH',
+              'kdca':'Reagan_National_VA',
+              'kdet':'Detroit_Coleman_Municipal_MI',   # sub for kdtw
+              #'kdtw':'Detroit_Metropolitan_MI',
+              'kewr':'Newark_International_NJ',
+              'kged':'Georgetown_DE',
+              #'khfd':'Hartford_CT',
+              #'kilx':'Lincoln_IL',
+              'kind':'Indianapolis_International_IN',
+              'kisp':'Islip_Airport_NY',
+              'kjfk':'JFK_International_NY',
+              'klga':'LaGuardia_Airport_NY',
+              'korf':'Norfolk_VA',
+              'kphl':'Philadelphia_International_PA',
+              'kpia':'Peoria_International_IL',        # sub for kilx
+              'kpit':'Pittsburgh_International_PA',
+              'kpwm':'Portland_ME',
+              'kric':'Richmond_International_VA',
+              'kwal':'Wallops_FF_VA'}
+
+"""
+# All sites with images for DAAC - process later
 asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kabe':'Allentown_PA',
               'kack':'Nantucket_MA',
@@ -225,6 +255,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kwal':'Wallops_FF_VA',
               'kyng':'Youngstown_OH',
               'kzzv':'Zanesville_OH'}
+"""
 
 # Field Catalog inputs
 if test:
@@ -253,8 +284,9 @@ infile.close()
 # REALTIME MODE
 now = datetime.utcnow()
 start = now - timedelta(hours=0.5)
-date_start_str = now.strftime("%Y%m%d")
-date_end_str = start.strftime("%Y%m%d")
+date_start_str = start.strftime("%Y%m%d")
+date_end_str = now.strftime("%Y%m%d")
+
 hour = start.strftime("%H")
 
 date_end_obj = datetime.strptime(date_end_str,'%Y%m%d')
@@ -266,6 +298,7 @@ while date_obj <= date_end_obj:
     datelist.append(date_str)
     date_obj = date_obj + timedelta(days=1)
     date_str = date_obj.strftime('%Y%m%d')
+print('{} {}'.format('datelist =',datelist))
 
 # Directories of interest
 #csv_dir = '/home/disk/funnel/impacts/data_archive/asos_isu'
@@ -664,24 +697,27 @@ def plot_station_data(date,site,sitetitle,df):
         print("Problem saving figure for %s. Usually a maxticks problem" %site)
     plt.close()
 
+    # DON'T NEED THIS CHECK FOR RT PROCESSING
     # ftp plot if in asos_for_cat list
-    if lower_site in asos_for_cat:
+    #if lower_site in asos_for_cat:
+    
+    # Open ftp connection
+    if test:
+        catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+        catalogFTP.cwd(catalogDestDir)
+    else:
+        catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+        catalogFTP.cwd(catalogDestDir)
+
+    catalogFTP.set_pasv(False)
         
-        # Open ftp connection
-        if test:
-            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-            catalogFTP.cwd(catalogDestDir)
-        else:
-            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-            catalogFTP.cwd(catalogDestDir)
+    # ftp image
+    ftpFile = open(os.path.join(plot_path,catalogName),'rb')
+    catalogFTP.storbinary('STOR '+catalogName,ftpFile)
+    ftpFile.close()
 
-        # ftp image
-        ftpFile = open(os.path.join(plot_path,catalogName),'rb')
-        catalogFTP.storbinary('STOR '+catalogName,ftpFile)
-        ftpFile.close()
-
-        # Close ftp connection
-        catalogFTP.quit()
+    # Close ftp connection
+    catalogFTP.quit()
 
 
 
@@ -690,9 +726,11 @@ def plot_station_data(date,site,sitetitle,df):
 for date in datelist:
     print(f'date = {date} and hour = {hour}')
     for isite,site in enumerate(sitelist):
-        if site != 'K1V4' and site != 'KACY':
-            sitetitle = sitetitles[isite]
-            #sitelocation = sitelocations[isite]
-            print(f'site = {site} and sitetitle = {sitetitle}')
-            df = load_station_data(date,hour,site)
-            plot_station_data(date,site,sitetitle,df)
+        #if site != 'K1V4' and site != 'KACY':
+        if site != 'K1V4':
+            if site.lower() in asos_sites:
+                sitetitle = sitetitles[isite]
+                #sitelocation = sitelocations[isite]
+                print(f'site = {site} and sitetitle = {sitetitle}')
+                df = load_station_data(date,hour,site)
+                plot_station_data(date,site,sitetitle,df)

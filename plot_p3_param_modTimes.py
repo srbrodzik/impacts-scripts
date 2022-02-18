@@ -15,8 +15,10 @@ from matplotlib.dates import DayLocator, HourLocator, MinuteLocator, DateFormatt
 import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 
+M2FT = 3.281
+
 if len(sys.argv) != 3:
-    print('Useage: ', sys.argv[0], '<date>(YYYYMMDD) <firstRowData>(True or False)')
+    print('Useage: {} <date>(YYYYMMDD) <firstRowData>(True or False)'.format(sys.argv[0]))
     sys.exit()
 else:
     date = sys.argv[1]
@@ -66,9 +68,15 @@ fig, ax = plt.subplots()
 fig.set_size_inches(18,4)
 ax.set_title('P3 Altitude '+graphtimestamp_start+' - '+graphtimestamp_end)
 ax.plot_date(dt_new,vals,'o-',label=paramName,color="blue",linewidth=linewidth,markersize=markersize)
-
 ax.set_ylabel('Altitude (m)')
-ax.legend(loc='best',ncol=1)
+
+# Make second y-axis
+ax2 = ax.twinx()
+min, max = ax.get_ylim()
+ax2.set_ylim((min*M2FT)/1000,(max*M2FT)/1000)
+ax2.set_ylabel('Altitude (kft)')
+
+#ax.legend(loc='best',ncol=1)
 
 # Prints labels every 15 minutes
 #ax.xaxis.set_major_locator( MinuteLocator(np.linspace(0,60,5)) )

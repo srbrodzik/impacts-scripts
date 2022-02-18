@@ -18,7 +18,8 @@ Data is read from csv files created by ASOS_get_site_data_from_ISU.py
 3-day plots, every hour, 
 save to: '/home/disk/funnel/impacts/archive/ops/asos_isu'
 '''
-import os 
+import os
+import sys
 import pandas as pd 
 import urllib 
 import urllib.parse
@@ -37,67 +38,76 @@ import pickle
 from metpy.plots import (StationPlot, StationPlotLayout, wx_code_map, current_weather)
 from ftplib import FTP
 
+if len(sys.argv) != 3:
+    print('Usage: sys.argv[0] [startdate(YYYYMMDD)] [enddate(YYYYMMDD)]')
+    sys.exit()
+else:
+    date_start_str = sys.argv[1]
+    date_end_str = sys.argv[2]
+
 test = False
 debug = True
 
 # In catalog
-asos_for_cat = ['kacy','kalb','kavp','kbos','kbgm','kbuf','kbwi','kcmh','kcon','kdca',
-                'kdtw','kewr','kged','khfd','kilx','kind','kisp','kjfk','klga','korf',
-                'kphl','kpit','kpwm','kric','kwal','kbdl','kdet']
+asos_for_cat = ['kacy','kalb','kavp','kbdl','kbos','kbgm','kbuf','kbwi','kcmh','kcon',
+                'kdca','kdet','kewr','kged','kind','kisp','kjfk','klga','korf','kphl',
+                'kpit','kpwm','kric','kwal']
 
+"""
 asos_sites = {'kacy':'Atlantic_City_NJ',
               'kalb':'Albany_NY',
               'kavp':'Scranton_PA',
-              'kbos':'Boston_MA',
+              'kbdl':'Bradley_International_CT',       # sub for khfd
+              'kbos':'Boston_Logan_MA',                # NEW
               'kbgm':'Binghamton_NY',
               'kbuf':'Buffalo_NY',
-              'kbwi':'BWI_Airport_MD',
+              'kbwi':'BWI_International_MD',
               'kcmh':'Columbus_OH',
               'kcon':'Concord_NH',
-              'kdca':'Reagan_Airport_VA',
-              'kdtw':'Detroit_MI',
-              'kewr':'Newark_NJ',
+              'kdca':'Reagan_National_VA',
+              'kdet':'Detroit_Coleman_Municipal_MI',   # sub for kdtw
+              #'kdtw':'Detroit_Metropolitan_MI',
+              'kewr':'Newark_International_NJ',
               'kged':'Georgetown_DE',
-              'khfd':'Hartford_CT',
+              #'khfd':'Hartford_CT',
               'kilx':'Lincoln_IL',
-              'kind':'Indianapolis_IN',
-              'kisp':'Islip_NY',
-              'kjfk':'JFK_Airport_NY',
+              'kind':'Indianapolis_International_IN',
+              'kisp':'Islip_Airport_NY',
+              'kjfk':'JFK_International_NY',
               'klga':'LaGuardia_Airport_NY',
               'korf':'Norfolk_VA',
-              'kphl':'Philadelphia_PA',
-              'kpit':'Pittsburgh_PA',
+              'kphl':'Philadelphia_International_PA',
+              #'kpia':'Peoria_International_IL',        # sub for kilx but not working
+              'kpit':'Pittsburgh_International_PA',
               'kpwm':'Portland_ME',
-              'kric':'Richmond_VA',
-              'kwal':'Wallops_VA',
-              'kbdl':'Bradley_International_CT',
-              'kdet':'Detroit_Coleman_Municipal_MI'}
+              'kric':'Richmond_International_VA',
+              'kwal':'Wallops_FF_VA'}
 
 """
 # All sites with images - process later
 asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kabe':'Allentown_PA',
               'kack':'Nantucket_MA',
-              'kacy':'Atlantic_City_NJ',
+              #'kacy':'Atlantic_City_NJ',
               'kadg':'Adrian_MI',
               'kafn':'Jaffrey_NH',
               'kagc':'Pittsburgh_Allegheny_PA',
               'kakq':'Wakefield_VA',
               'kakr':'Akron_OH',
-              'kalb':'Albany_NY',
+              #'kalb':'Albany_NY',
               'kanj':'Sault_Ste_Marie_MI',
               'kaoh':'Lima_OH',
               'kaoo':'Altoona_PA',
               'kapn':'Alpena_MI',
               'kart':'Watertown_NY',
               'kaug':'Augusta_ME',
-              'kavp':'Scranton_PA',
+              #'kavp':'Scranton_PA',
               'kazo':'Kalamazoo_MI',
-              'kbdl':'Bradley_International_CT',
+              #'kbdl':'Bradley_International_CT',       # sub for khfd
               'kbed':'Bedford_MA',
               'kbeh':'Benton_Harbor_MI',
               'kbfd':'Bradford_PA',
-              'kbgm':'Binghamton_NY',
+              #'kbgm':'Binghamton_NY',
               'kbgr':'Bangor_ME',
               'kbiv':'Holland_MI',
               'kbjj':'Wooster_OH',
@@ -105,29 +115,29 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kblf':'Bluefield_WV',
               'kbmg':'Bloomington_IN',
               'kbml':'Berlin_NH',
-              'kbos':'Boston_Logan_MA',
+              #'kbos':'Boston_Logan_MA',                # NEW
               'kbtl':'Battle_Creek_MI',
               'kbtv':'Burlington_VT',
-              'kbuf':'Buffalo_NY',
+              #'kbuf':'Buffalo_NY',
               'kbwg':'Bowling_Green_KY',
-              'kbwi':'BWI_International_MD',
+              #'kbwi':'BWI_International_MD',
               'kcar':'Caribou_ME',
               'kcho':'Charlottesville_VA',
               'kckb':'Clarksburg_WV',
               'kcle':'Cleveland_OH',
-              'kcmh':'Columbus_OH',
+              #'kcmh':'Columbus_OH',
               'kcmx':'Hancock_MI',
-              'kcon':'Concord_NH',
+              #'kcon':'Concord_NH',
               'kcrw':'Charleston_WV',
               'kdan':'Danville_VA',
               'kdaw':'Rochester_NH',
               'kday':'Dayton_OH',
-              'kdca':'Reagan_National_VA',
-              'kdet':'Detroit_Coleman_Municipal_MI',
+              #'kdca':'Reagan_National_VA',
+              #'kdet':'Detroit_Coleman_Municipal_MI',   # sub for kdtw
               'kdfi':'Defiance_OH',
               'kdkk':'Dunkirk_NY',
               'kdsv':'Dansville_NY',
-              'kdtw':'Detroit_Metropolitan_MI',
+              ##'kdtw':'Detroit_Metropolitan_MI',
               'kduj':'DuBois_PA',
               'kdxr':'Danbury_CT',
               'kdyl':'Doylestown_PA',
@@ -136,7 +146,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kelz':'Wellsville_NY',
               'keri':'Erie_PA',
               'kevv':'Evansville_IN',
-              'kewr':'Newark_International_NJ',
+              #'kewr':'Newark_International_NJ',
               'kfdy':'Findlay_OH',
               'kfft':'Frankfort_KY',
               'kfig':'Clearfield_PA',
@@ -146,7 +156,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kfve':'Frenchville_ME',
               'kfwa':'Fort_Wayne_International_IN',
               'kfzy':'Fulton_NY',
-              'kged':'Georgetown_DE',
+              #'kged':'Georgetown_DE',
               'kgez':'Shelbyville_IN',
               'kgfl':'Glens_Falls_NY',
               'kgkj':'Meadville_PA',
@@ -155,7 +165,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kgrr':'Grand_Rapids_MI',
               'kgsh':'Goshen_IN',
               'khao':'Hamilton_OH',
-              'khfd':'Hartford_CT',
+              ##'khfd':'Hartford_CT',
               'khgr':'Hagerstown_MD',
               'khie':'Whitefield_NH',
               'khlg':'Wheeling_WV',
@@ -170,14 +180,14 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kijd':'Willimantic_CT',
               'kilg':'Wilmington_DE',
               'kiln':'Wilmington_Air_Park_OH',
-              'kilx':'Lincoln_IL',        # not defined on site; check
+              #'kilx':'Lincoln_IL',        # not defined on site; check
               'kimt':'Iron_Mountain_MI',
-              'kind':'Indianapolis_International_IN',
+              #'kind':'Indianapolis_International_IN',
               'kipt':'Williamsport_PA',
-              'kisp':'Islip_Airport_NY',
+              #'kisp':'Islip_Airport_NY',
               'kiwi':'Wiscasset_ME',
               'kizg':'Fryeburg_ME',
-              'kjfk':'JFK_International_NY',
+              #'kjfk':'JFK_International_NY',
               'kjkl':'Jackson_KY',
               'kjst':'Johnstown_PA',
               'kjxn':'Jackson_MI',
@@ -185,7 +195,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'klan':'Lansing_MI',
               'kleb':'Lebanon_NH',
               'klex':'Lexington_KY',
-              'klga':'LaGuardia_Airport_NY',
+              #'klga':'LaGuardia_Airport_NY',
               'klhq':'Lancaster_OH',
               'klns':'Lancaster_PA',
               'kloz':'London_KY',
@@ -211,7 +221,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kmvl':'Morrisville_VT',
               'kmvy':'Marthas_Vineyard_MA',
               'kore':'Orange_MA',
-              'korf':'Norfolk_VA',
+              #'korf':'Norfolk_VA',
               'korh':'Worcester_MA',
               'koxb':'Ocean_City_MD',
               'kp58':'Port_Hope_MI',
@@ -220,19 +230,19 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kpbg':'Plattsburgh_NY',
               'kpeo':'Penn_Yan_NY',
               'kphd':'New_Philadelphia_OH',
-              'kpia':'Peoria_International_IL',
+              ##'kpia':'Peoria_International_IL',        # sub for kilx but not working
               'kphf':'Newport_News_VA',
-              'kphl':'Philadelphia_International_PA',
-              'kpit':'Pittsburgh_International_PA',
+              #'kphl':'Philadelphia_International_PA',
+              #'kpit':'Pittsburgh_International_PA',
               'kpkb':'Parkersburg_WV',
               'kpln':'Pellston_MI',
               'kpou':'Poughkeepsie_NY',
               'kpsf':'Pittsfield_MA',
               'kptk':'Pontiac_MI',
               'kptw':'Pottstown_PA',
-              'kpwm':'Portland_ME',
+              #'kpwm':'Portland_ME',
               'krdg':'Reading_PA',
-              'kric':'Richmond_International_VA',
+              #'kric':'Richmond_International_VA',
               'krme':'Rome_NY',
               'kroa':'Roanoke_VA',
               'kroc':'Rochester_NY',
@@ -251,11 +261,11 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kvpz':'Valparaiso_IN',
               'kvsf':'Springfield_VT',
               'kvta':'Newark_OH',
-              'kwal':'Wallops_FF_VA',
+              #'kwal':'Wallops_FF_VA',
               'kyng':'Youngstown_OH',
               'kzzv':'Zanesville_OH'}
-"""
 
+"""
 # Field Catalog inputs
 if test:
     ftpCatalogServer = 'ftp.atmos.washington.edu'
@@ -266,6 +276,7 @@ else:
     ftpCatalogServer = 'catalog.eol.ucar.edu'
     ftpCatalogUser = 'anonymous'
     catalogDestDir = '/pub/incoming/catalog/impacts'
+"""
 
 # Get sitelist
 pickle_jar = '/home/disk/bob/impacts/bin/pickle_jar/'
@@ -281,8 +292,8 @@ infile.close()
 # Get datelist
 #-------------
 # ARCHIVE MODE
-date_start_str = '20220109'
-date_end_str = '20220109'
+date_start_str = '20220101'
+date_end_str = '20220214'
 
 date_end_obj = datetime.strptime(date_end_str,'%Y%m%d')
 date_str = date_start_str
@@ -724,10 +735,12 @@ for date in datelist:
             hour = '0'+hour
         print(f'date = {date} and hour = {hour}')
         for isite,site in enumerate(sitelist):
-            if site != 'K1V4' and site != 'KACY':
-                if site.lower() in asos_sites:
-                    sitetitle = sitetitles[isite]
-                    #sitelocation = sitelocations[isite]
-                    print(f'site = {site} and sitetitle = {sitetitle}')
-                    df = load_station_data(date,hour,site)
-                    plot_station_data(date,site,sitetitle,df)
+            #if site != 'K1V4' and site != 'KACY':
+            #if site != 'K1V4':
+            #if site == 'KRIC':
+            if site.lower() in asos_sites:
+                sitetitle = sitetitles[isite]
+                #sitelocation = sitelocations[isite]
+                print(f'site = {site} and sitetitle = {sitetitle}')
+                df = load_station_data(date,hour,site)
+                plot_station_data(date,site,sitetitle,df)

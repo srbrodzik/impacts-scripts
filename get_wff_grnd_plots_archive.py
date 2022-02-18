@@ -8,16 +8,16 @@ from ftplib import FTP
 test = False
 debug = True
 year = '2022'
-months = ['01']
+months = ['02']
 days = []
-for day in range(31,32):
+for day in range(11,15):
     if day < 10:
         day = '0'+str(day)
     else:
         day = str(day)
     days.append(day)
     
-startMMDD = '0131'
+startMMDD = '0211'
 tempDir = '/tmp'
 baseDir = '/home/disk/meso-home/wolff/Ground_Instruments/Plots'
 wff_instr = ['apu05','apu07','apu08','apu09',

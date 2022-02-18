@@ -12,6 +12,15 @@ from datetime import datetime
 from datetime import timedelta
 import pandas as pd
 
+# Read input args
+numargs = len(sys.argv)
+if numargs != 2:
+    print('Usage: {} [takeoffDate]'.format(sys.argv[0]))
+    exit()
+else:
+    takeoffDate = sys.argv[1]
+    print('takeoffDate = {}'.format(takeoffDate))
+    
 M2KFT = 0.003281
 
 inDirBase = '/home/disk/bob/impacts/raw/aircraft'
@@ -22,7 +31,6 @@ kmlPrefix = 'gis.'
 #planes = {'N809NA':'NASA_ER2',
 #          'N426NA':'NASA_P3'}
 planes = {'N426NA':'NASA_P3'}
-flightDates = ['20220203','202230204']
 missingValue = -999
 varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'lat':{'units':'degN','long_name':'latitude'},
@@ -56,6 +64,11 @@ varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'sun_el_ac':{'units':'deg','long_name':'sun elevation from aircraft'},
            'sun_az_grnd':{'units':'deg','long_name':'sun azimuth from ground'},
            'sun_az_ac':{'units':'deg','long_name':'sun azimuth from aircraft'} }
+
+takeoffDateObj = datetime.strptime(takeoffDate,"%Y%m%d")
+nextDateObj = takeoffDateObj + timedelta(days=1)
+nextDate = nextDateObj.strftime("%Y%m%d")
+flightDates = [takeoffDate,nextDate]
 
 now = datetime.utcnow()
 now_str = now.strftime("%Y%m%d%H%M")

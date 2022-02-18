@@ -33,7 +33,7 @@ secsPerDay = 86400
 #    0 -> start now
 #    1 -> start at startDate
 startFlag = 1
-startDate = '20220114'
+startDate = '20220208'
 # set number of days to go back from startDate
 num_days = 1
 hourList = ['00','03','06','09','12','15','18','21']

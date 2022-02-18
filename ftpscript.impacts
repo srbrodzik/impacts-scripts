@@ -1,0 +1,37 @@
+#!/usr/local/bin/perl
+open(FTP, ">/tmp/ftp$$");
+
+print FTP <<"END";
+ open catalog.eol.ucar.edu
+ user anonymous brodzik@uw.edu
+ cd /pub/incoming/catalog/impacts
+ binary
+ prompt
+ mput *.png
+ lcd ../20220113
+ mput *.png
+ lcd ../20220114
+ mput *.png
+ lcd ../20220115
+ mput *.png
+ lcd ../20220116
+ mput *.png
+ lcd ../20220117
+ mput *.png
+ lcd ../20220118
+ mput *.png
+ lcd ../20220119
+ mput *.png
+ lcd ../20220120
+ mput *.png
+
+ quit
+END
+
+close FTP;
+
+system("ftp -n </tmp/ftp$$");
+unlink "/tmp/ftp$$";
+
+exit(0);
+

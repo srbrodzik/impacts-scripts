@@ -7,7 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 
 if len(sys.argv) != 3:
-    print('Usage: sys.argv[0] [YYYYMMDD] [Ka|Ku]')
+    print('Usage: {} [YYYYMMDD] [ka/ku]'.format(sys.argv[0]))
     sys.exit()
 else:
     date = sys.argv[1]
@@ -41,6 +41,14 @@ elif date == '20220119':
                 'xfeature10':'1518',
                 'xfeature11':'1535',
                 'xfeature12':'1547'}
+elif date == '20220129':
+    features = {'xfeature01':'2310',
+                'xfeature02':'0033',
+                'xfeature03':'0045',
+                'xfeature04':'0055',
+                'xfeature05':'0116',
+                'xfeature06':'0133',
+                'xfeature07':'0201'}
 else:
     print('Date = '+date+' not recognized')
     sys.exit()
@@ -58,7 +66,7 @@ for file in os.listdir(indir+'/'+date):
         ext = os.path.splitext(file)[1]
         basename = basename.replace('HIWRAP_'+band.upper()+'_'+band.upper()+'_','')
         (feature,junk,field) = basename.split('_')
-        if date == '20200225' and features[feature] < '1000':
+        if date == '20220129' and features[feature] < '1000':
             date_new_obj = date_obj + timedelta(days=1)
             date_new = date_new_obj.strftime('%Y%m%d')
         else:

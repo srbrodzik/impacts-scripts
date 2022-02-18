@@ -28,6 +28,7 @@ import numpy as np
 import pickle
 import geopy.distance 
 import os
+import sys
 import scipy
 from scipy import stats
 import glob
@@ -35,6 +36,13 @@ from datetime import datetime
 from datetime import timedelta
 from shutil import copy2
 import pandas as pd
+
+if len(sys.argv) != 3:
+    print('Usage: sys.argv[0] [startdate(YYYYMMDD)] [enddate(YYYYMMDD)]')
+    sys.exit()
+else:
+    date_start_str = sys.argv[1]
+    date_end_str = sys.argv[2]
 
 #################GLOBAL###############################
 buffer = 25 #The distance between stations which dictates whether the station is displayed 
@@ -65,8 +73,6 @@ buffer = 25 #The distance between stations which dictates whether the station is
 field = 7
 
 # Since this is for archive and not real time plotting, go through dates of interest
-date_start_str = '20220129'
-date_end_str = '20220130'
 date_end_obj = datetime.strptime(date_end_str,'%Y%m%d')
 date_str = date_start_str
 date_obj = datetime.strptime(date_str,'%Y%m%d')
@@ -75,8 +81,6 @@ while date_obj <= date_end_obj:
     datelist.append(date_str)
     date_obj = date_obj + timedelta(days=1)
     date_str = date_obj.strftime('%Y%m%d')
-# FOR TESTING ONLY
-#datelist = ['20200207','20200208']
 
 #########################################################################
 ######################           PATHS           ########################

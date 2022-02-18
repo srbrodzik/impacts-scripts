@@ -15,6 +15,8 @@ from matplotlib.dates import DayLocator, HourLocator, MinuteLocator, DateFormatt
 import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 
+M2FT = 3.281
+
 if len(sys.argv) != 3:
     print('Useage: ', sys.argv[0], '<date>(YYYYMMDD) <firstRowData>(True or False)')
     sys.exit()
@@ -41,6 +43,14 @@ if firstRowData:
 else:
     df = pd.read_csv(inDir+'/'+inFile)
 
+# Add another column for alt in kft
+#df['kft'] = df['alt']
+#df['kft'] = df['kft'].apply(lambda x: format((x*M2FT/1000),'.3f'))
+
+# Add another column for alt in ft
+#df['ft'] = df['alt']
+#df['ft'] = df['ft'].apply(lambda x: format((x*M2FT),'.0f'))
+
 # Assign datatime index
 df.index = pd.to_datetime(df["date_string"], format="%Y-%m-%dT%H:%M:%S.%f")
 df = df.drop(columns=["date_string"])
@@ -49,6 +59,8 @@ df = df.drop(columns=["date_string"])
 df_new = df[df['alt']>20]
 dt_new = df_new.index[:]
 vals = df_new[paramName]
+#kft_vals = df_new['kft']
+#ft_vals = df_new['ft']
 
 # Plot data - simple plot
 #df_new.plot(figsize=(15,4),grid=True,y="alt",title="P3 Altitude - 20200201")
@@ -66,9 +78,17 @@ fig, ax = plt.subplots()
 fig.set_size_inches(18,4)
 ax.set_title('P3 Altitude '+graphtimestamp_start+' - '+graphtimestamp_end)
 ax.plot_date(dt_new,vals,'o-',label=paramName,color="blue",linewidth=linewidth,markersize=markersize)
-
 ax.set_ylabel('Altitude (m)')
-ax.legend(loc='best',ncol=1)
+
+# Make second y-axis
+ax2 = ax.twinx()
+min, max = ax.get_ylim()
+ax2.set_ylim((min*M2FT)/1000,(max*M2FT)/1000)
+ax2.set_ylabel('Altitude (kft)')
+#ax2.set_ylim((min*M2FT),(max*M2FT))
+#ax2.set_ylabel('Altitude (ft)')
+
+#ax.legend(loc='best',ncol=1)
 
 ax.xaxis.set_major_locator( MinuteLocator(np.linspace(0,60,5)) )
 ax.xaxis.set_major_formatter( DateFormatter('%H:%M') )

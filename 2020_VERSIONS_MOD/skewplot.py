@@ -5,6 +5,10 @@
 
 #EDITED: Clayton Sasaki, UW, MAY 2019
 # crs326@uw.edu
+
+#EDITED: Stacy Brodzik, UW, Feb 2020
+# added rtso format
+
 #EDITED: Stacy Brodzik, UW, JAN 2022
 
 ## Update the skewT code to be smarter using classes and what not
@@ -165,6 +169,42 @@ for fname in sounding_files:
         figtitle = '{stn} {ln} {t} sounding ({lat:.3f}, {lon:.3f})'.format(stn=stn_id, ln=si['longname'], t=file_time.strftime(title_dt_fmt),
                                                     lat=si['lat'], lon=si['lon'])
     ##Added by Stacy Brodzik (Feb 2020)
+    elif pargs.format == 'rtso':
+
+        # read file header
+        with open(fname) as myfile:
+            head = [next(myfile) for x in xrange(8)]
+            #head = [next(myfile) for x in range(8)]  # for python3: xrange changed to range
+        dateStr = head[2].strip()
+        stationStr = head[3].strip()
+        latlonStr = head[4].strip()
+        #snStr = head[5].strip()
+
+        # get file time
+        temp = dateStr.split(' ')
+        datetimeStr = temp[1]+' '+temp[4]
+        file_time = datetime.datetime.strptime(datetimeStr,'%m/%d/%Y %H:%M:%S')
+
+        # get station id
+        stn_id = stationStr
+        if stn_id == 'N-179':
+            stn_id_file = 'Wallops_VA'
+            stn_id_plot = 'WAL'
+        
+        # get lat/lon
+        temp = latlonStr.split(' ')
+        lat = abs(float(temp[2][:-1]))
+        if temp[2][-1] == 'S':
+            lat = -lat
+        lon = abs(float(temp[4][:-1]))
+        if temp[4][-1] == 'W':
+            lon = -lon
+
+        # define out_fname and figtitle
+        out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id_file)
+        figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id_plot, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
+
+    ##Added by Stacy Brodzik (Feb 2020 & Feb 2022)
     elif pargs.format == 'NCSU' or pargs.format == 'Purdue':
 
         if pargs.format == 'NCSU':

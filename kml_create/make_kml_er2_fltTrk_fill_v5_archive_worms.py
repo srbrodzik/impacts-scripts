@@ -13,8 +13,16 @@ from datetime import datetime
 from datetime import timedelta
 import pandas as pd
 
+# Read input args
+numargs = len(sys.argv)
+if numargs != 2:
+    print('Usage: {} [takeoffDate]'.format(sys.argv[0]))
+    exit()
+else:
+    takeoffDate = sys.argv[1]
+    print('takeoffDate = {}'.format(takeoffDate))
+    
 inDirBase = '/home/disk/bob/impacts/raw/aircraft'
-
 # Use this path if we've gotten post flight tar files from Peter
 #imageDirBase = '/home/disk/bob/impacts/radar/er2/postFlight/realtime/radar_merge'
 # Use this path if we only have realtime image downloads
@@ -28,7 +36,6 @@ catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/aircraft/nasa_er2'
 missingValue = -999
 kmlPrefix = 'gis.'
 planes = {'N809NA':'NASA_ER2'}
-flightDates = ['20220203','20220204']
 missingValue = -999
 trackLenMinutes = 30  # desired length of tracks in minutes
 varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
@@ -63,6 +70,11 @@ varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'sun_el_ac':{'units':'deg','long_name':'sun elevation from aircraft'},
            'sun_az_grnd':{'units':'deg','long_name':'sun azimuth from ground'},
            'sun_az_ac':{'units':'deg','long_name':'sun azimuth from aircraft'} }
+
+takeoffDateObj = datetime.strptime(takeoffDate,"%Y%m%d")
+nextDateObj = takeoffDateObj + timedelta(days=1)
+nextDate = nextDateObj.strftime("%Y%m%d")
+flightDates = [takeoffDate,nextDate]
 
 now = datetime.utcnow()
 now_str = now.strftime("%Y%m%d%H%M")

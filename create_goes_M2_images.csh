@@ -1,17 +1,18 @@
 #!/bin/csh
 
-/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220128 21 /home/disk/data/images/sat_east_meso_impacts
-/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220128 22 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220128 23 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 00 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 01 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 02 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 03 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 04 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 05 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 06 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 07 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 08 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 09 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 10 /home/disk/data/images/sat_east_meso_impacts
-#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220129 11 /home/disk/data/images/sat_east_meso_impacts
+#/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 10 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 11 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 12 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 13 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 14 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 15 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 16 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 16 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 17 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 18 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 19 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 20 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 21 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 22 /home/disk/data/images/sat_east_meso_impacts
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20220217 23 /home/disk/data/images/sat_east_meso_impacts
+

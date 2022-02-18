@@ -1395,7 +1395,8 @@ class Sounding(UserDict):
                     print('found dpt')
                 elif 'WSpeed' in key:
                     # convert wspd from m/s to knots
-                    wspd = mpers2knots(df[key][0:])
+                    #wspd = mpers2knots(df[key][0:])
+                    wspd = (df[key][0:])
                     print('found wspd')
                 elif 'WDirn' in key:
                     drct = (df[key][0:])

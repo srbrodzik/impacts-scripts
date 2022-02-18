@@ -1,13 +1,21 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import shutil
 from datetime import datetime
 from datetime import timedelta
 import datetime as dt
 import pytz
 
-indir = '/home/disk/bob/impacts/radar/er2/postFlight/realtime/HIWRAP_KU/20220129'
+if len(sys.argv) != 2:
+    #print('Usage: sys.argv[0] [YYYYMMDD]')
+    print('Usage: {} [YYYYMMDD]'.format(sys.argv[0]))
+    sys.exit()
+else:
+    date = sys.argv[1]
+
+indir = '/home/disk/bob/impacts/radar/er2/postFlight/realtime/HIWRAP_KU'+'/'+date
 prefix = 'aircraft.NASA_ER2'
 suffix = 'HIWRAP_Ku_dBZ_vel'
 convertEasternToUTC = True
