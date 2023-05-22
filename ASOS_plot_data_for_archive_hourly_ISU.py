@@ -217,7 +217,7 @@ asos_sites = {'k1v4':'Saint_Johnsbury_VT',
               'kmss':'Massena_NY',
               'kmtp':'Montauk_Airport_NY',
               'kmvl':'Morrisville_VT',
-              'kmvy':'Marthas_Vineyard_MA',
+              #'kmvy':'Marthas_Vineyard_MA',
               'kore':'Orange_MA',
               #'korf':'Norfolk_VA',
               'korh':'Worcester_MA',
@@ -671,66 +671,63 @@ def plot_station_data(date,site,sitetitle,df):
     ax5.set_ylabel('Precip (mm)')
     axes.append(ax5)
 
-    # Axes formatting
-    for ax in axes: 
-        ax.spines["top"].set_visible(False)  #darker borders on the grids of each subplot
-        ax.spines["right"].set_visible(False)  
-        ax.spines["left"].set_visible(False)
-        ax.spines["bottom"].set_visible(False)
-        ax.tick_params(axis='x',which='both',bottom='on',top='off')     #add ticks at labeled times
-        ax.tick_params(axis='y',which='both',left='on',right='off') 
-
-        ax.xaxis.set_major_locator( DayLocator() )
-        ax.xaxis.set_major_formatter( DateFormatter('%b-%d') )
-        
-        ax.xaxis.set_minor_locator( HourLocator(np.linspace(6,18,3)) )
-        ax.xaxis.set_minor_formatter( DateFormatter('%H') )
-        ax.fmt_xdata = DateFormatter('Y%m%d%H%M%S')
-        ax.yaxis.grid(linestyle = '--')
-        ax.get_yaxis().set_label_coords(-0.06,0.5)
-
-    # Write plot to file
-    plot_path = plot_dir+'/'+today_date
-    if not os.path.exists(plot_path):
-            os.makedirs(plot_path)
     try:
+        # Axes formatting
+        for ax in axes: 
+            ax.spines["top"].set_visible(False)  #darker borders on the grids of each subplot
+            ax.spines["right"].set_visible(False)  
+            ax.spines["left"].set_visible(False)
+            ax.spines["bottom"].set_visible(False)
+            ax.tick_params(axis='x',which='both',bottom='on',top='off')     #add ticks at labeled times
+            ax.tick_params(axis='y',which='both',left='on',right='off') 
+            
+            ax.xaxis.set_major_locator( DayLocator() )
+            ax.xaxis.set_major_formatter( DateFormatter('%b-%d') )
+            
+            ax.xaxis.set_minor_locator( HourLocator(np.linspace(6,18,3)) )
+            ax.xaxis.set_minor_formatter( DateFormatter('%H') )
+            ax.fmt_xdata = DateFormatter('Y%m%d%H%M%S')
+            ax.yaxis.grid(linestyle = '--')
+            ax.get_yaxis().set_label_coords(-0.06,0.5)
+
+        # Write plot to file
+        plot_path = plot_dir+'/'+today_date
+        if not os.path.exists(plot_path):
+            os.makedirs(plot_path)
         catalogName = 'surface.Meteogram.'+timestamp_end+'.ASOS_'+asos_sites[lower_site]+'.png'
         #plt.savefig(plot_path+'/ops.asos.'+timestamp_end+'.'+lower_site+'.png',bbox_inches='tight')
         plt.savefig(plot_path+'/'+catalogName,bbox_inches='tight')
-    except:
-        print("Problem saving figure for %s. Usually a maxticks problem" %site)
-    plt.close()
+        plt.close()
 
-    """
-    # ftp plot if in asos_for_cat list
-    if lower_site in asos_for_cat:
+        """
+        # ftp plot if in asos_for_cat list
+        if lower_site in asos_for_cat:
         
-        # Open ftp connection
-        if test:
-            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-            catalogFTP.cwd(catalogDestDir)
-        else:
-            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-            catalogFTP.cwd(catalogDestDir)
+            # Open ftp connection
+            if test:
+                catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+                catalogFTP.cwd(catalogDestDir)
+            else:
+                catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+                catalogFTP.cwd(catalogDestDir)
 
-        # ftp image
-        ftpFile = open(os.path.join(plot_path,catalogName),'rb')
-        catalogFTP.storbinary('STOR '+catalogName,ftpFile)
-        ftpFile.close()
+            # ftp image
+            ftpFile = open(os.path.join(plot_path,catalogName),'rb')
+            catalogFTP.storbinary('STOR '+catalogName,ftpFile)
+            ftpFile.close()
 
-        # Close ftp connection
-        catalogFTP.quit()
-    """
-
+            # Close ftp connection
+            catalogFTP.quit()
+        """
+    except:
+        print('Problem creating plot . . . continute to next site')
 
 
 #-----------------------------### MAIN CODE ###-----------------------------
         
 for date in datelist:
     for hour in range(0,24):
-        hour = str(hour)
-        if hour < '10':
-            hour = '0'+hour
+        hour = str(hour).zfill(2)
         print(f'date = {date} and hour = {hour}')
         for isite,site in enumerate(sitelist):
             #if site != 'K1V4' and site != 'KACY':

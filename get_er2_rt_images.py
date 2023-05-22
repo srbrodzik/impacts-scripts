@@ -12,10 +12,11 @@ tempDir = '/tmp'
 
 # all real time images will be here
 urlBase = 'https://har.gsfc.nasa.gov/storm/IMPACTS-2022/radar_rt_plot'
+#urlBase = 'https://har.gsfc.nasa.gov/storm/IMPACTS-2023/radar_rt_plot'
 
 # merged files in catalog will be here:
 # catUrlBase/YYYYMMDD/HH/aircraft.NASA_ER2.<datetime>.radar_all_refl.png
-catUrlBase = 'http://catalog.eol.ucar.edu/impacts_2022/aircraft/nasa_er2'
+catUrlBase = 'http://catalog.eol.ucar.edu/impacts_2023/aircraft/nasa_er2'
 
 # local base directory for merged radar product
 mergeDirBase = '/home/disk/bob/impacts/radar/er2'
@@ -27,6 +28,7 @@ radarDirBase = '/home/disk/bob/impacts/radar/er2/radars'
 #     'HIWRAP_KA':'orig':'HIWRAP_KA_rt_current.png','catalog':'aircraft.NASA_ER2.<datetime>.HIWRAP_Ka_dBZ_vel.png'},
 #     'HIWRAP_KU': 'orig':'HIWRAP_KU_rt_current.png','catalog':'aircraft.NASA_ER2.<datetime>.HIWRAP_Ku_dBZ_vel.png'}
 radarList = ['CRS','EXRAD','HIWRAP_KA','HIWRAP_KU']
+#radarList = ['HIWRAP_KA','HIWRAP_KU']
 mergeFile = 'radars_rt_current_merge.png'
 rawFileSuffix = '_rt_current.png'
 catFilePrefix = 'aircraft.NASA_ER2'

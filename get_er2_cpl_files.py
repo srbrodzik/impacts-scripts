@@ -22,14 +22,14 @@ else:
     dateID = sys.argv[4]
 
 # User inputs
-test = False
+test = True
 debug = True
 segDelta = 30   #minutes
 tempDir = '/tmp'
 #holdDir = '/home/disk/bob/impacts/er2/CPL'
 holdDirBase = '/home/disk/bob/impacts/lidar/er2'
-url_trk = 'https://cpl.gsfc.nasa.gov/impacts22/Support_data'
-urlBase = 'https://cpl.gsfc.nasa.gov/impacts22/Analy_quick'
+url_trk = 'https://cpl.gsfc.nasa.gov/impacts23/Support_data'
+urlBase = 'https://cpl.gsfc.nasa.gov/impacts23/Analy_quick'
 catalogPrefix = 'aircraft.NASA_ER2'
 sumDict = {'1064':'CPL_1064nm',
            '355':'CPL_355nm',
@@ -90,10 +90,10 @@ for val in range(1,20):
         shutil.move(tempDir+'/'+file,
                     holdDir+'/'+catFile)   
 
-        #ftp file & remove
-        ftpFile = open(os.path.join(holdDir,catFile),'rb')
-        catalogFTP.storbinary('STOR '+catFile,ftpFile)
-        ftpFile.close()
+        ##ftp file
+        #ftpFile = open(os.path.join(holdDir,catFile),'rb')
+        #catalogFTP.storbinary('STOR '+catFile,ftpFile)
+        #ftpFile.close()
     except:
         print('file =',file,'unavailable')
         continue
@@ -119,10 +119,10 @@ for val in sumDict.keys():
         shutil.move(tempDir+'/'+file,
                     holdDir+'/'+catFile)
 
-        #ftp file & remove
-        ftpFile = open(os.path.join(holdDir,catFile),'rb')
-        catalogFTP.storbinary('STOR '+catFile,ftpFile)
-        ftpFile.close()
+        ##ftp file
+        #ftpFile = open(os.path.join(holdDir,catFile),'rb')
+        #catalogFTP.storbinary('STOR '+catFile,ftpFile)
+        #ftpFile.close()
     except:
         print('file =',file,'unavailable')
 
@@ -140,12 +140,13 @@ try:
     shutil.move(tempDir+'/'+file,
                 holdDir+'/'+catFile)
 
-    #ftp file & remove
-    ftpFile = open(os.path.join(holdDir,catFile),'rb')
-    catalogFTP.storbinary('STOR '+catFile,ftpFile)
-    ftpFile.close()
+    ##ftp file
+    #ftpFile = open(os.path.join(holdDir,catFile),'rb')
+    #catalogFTP.storbinary('STOR '+catFile,ftpFile)
+    #ftpFile.close()
 except:
     print('file =',file,'unavailable')
  
-
+# Close ftp connection
+catalogFTP.quit()
     

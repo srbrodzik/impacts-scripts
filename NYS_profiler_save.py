@@ -10,7 +10,7 @@ from datetime import timedelta
 
 binDir = '/home/disk/bob/impacts/bin'
 ldmDirBase = '/home/disk/data/albany/profiler'
-siteNcDirBase = '/home/disk/bob/impacts/raw/nys_profiler_2022'
+siteNcDirBase = '/home/disk/bob/impacts/raw/nys_profiler_2023'
 ncPrefix = 'nysm_profiler'
 floatMissingValue = -996.
 ubyteMissingValue = 255

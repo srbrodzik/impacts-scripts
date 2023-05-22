@@ -17,8 +17,8 @@ def listFD(url, ext=''):
     return [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href').endswith(ext)]
 
 # User inputs
-debug = 1
-test = 0
+debug = True
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay/4   # 6 hours
 secsPerRun = secsPerDay/24
@@ -85,110 +85,112 @@ if debug:
 
 for t in range(0,nRuns):
     currentModelRun = dateHourStrList[t]
-    for prod in products:
-        if debug:
-            print("Processing", currentModelRun, "run for", prod, "data")
+    url = hrrrUrl+'/'+currentModelRun+'/'
+    get = requests.get(url)
 
-        # get list of files on server for this run and this product
-        # only interested in forecasts up to and including 'lastForecastHour'
-        urlFileList = []
-        #urlDateList = []
-        #urlDateTimeList = []
-        url = hrrrUrl+'/'+dateHourStrList[t]+'/'
-        ext = 'png'
-        for file in listFD(url, ext):
-            tmp = os.path.basename(file)
-            (base,ext) = os.path.splitext(tmp)
-            parts = base.split('_')
-            forecast_num = parts[-1]
-            if len(forecast_num) < 2:
-                forecast_num = '0'+forecast_num
-            if products[prod]['has_anal_prod']:
-                last_forecast_num = str(lastForecastHour/deltaBetweenForecastHours + 1)
-            else:
-                last_forecast_num = str(lastForecastHour/deltaBetweenForecastHours)
-            if prod in tmp and int(forecast_num) <= int(float(last_forecast_num)):
-                urlFileList.append(tmp)
-        #if debug:
-        #    print("urlFileList = ", urlFileList)
-    
-        if len(urlFileList) == 0:
+    # if url exists, continue
+    if get.status_code == 200:
+        for prod in products:
             if debug:
-                print("WARNING: ignoring run and product - no data on server")
-                print("  for model run time: ", currentModelRun)
-                print("  for product       : ", prod)
+                print("Processing", currentModelRun, "run for", prod, "data")
 
-        else:
-            # make target directory, if necessary, and cd to it
-            #targetDir = targetDirBase+'/'+dateHourStrList[i]+'/'+products[i]
-            targetDir = targetDirBase+'/'+currentModelRun
-            if not os.path.exists(targetDir):
-                os.makedirs(targetDir)
-                os.chdir(targetDir)
-                
-            # get local file list - i.e. those which have already been downloaded
-            localFileList = os.listdir('.')
-            #localFileList.reverse()
+            # get list of files on server for this run and this product
+            # only interested in forecasts up to and including 'lastForecastHour'
+            urlFileList = []
+            ext = 'png'
+            for file in listFD(url, ext):
+                tmp = os.path.basename(file)
+                (base,ext) = os.path.splitext(tmp)
+                parts = base.split('_')
+                forecast_num = parts[-1]
+                if len(forecast_num) < 2:
+                    forecast_num = '0'+forecast_num
+                if products[prod]['has_anal_prod']:
+                    last_forecast_num = str(lastForecastHour/deltaBetweenForecastHours + 1)
+                else:
+                    last_forecast_num = str(lastForecastHour/deltaBetweenForecastHours)
+                if prod in tmp and int(forecast_num) <= int(float(last_forecast_num)):
+                    urlFileList.append(tmp)
             #if debug:
-            #    print >>sys.stderr, "  localFileList: ", localFileList
-
-            # get url file list (not sure I need this)
-            #urlFileList.sort()
-            #urlFileList.reverse()
-
-            # loop through the url file list, downloading those that have
-            # not yet been downloaded
-            if debug:
-                print("Starting to loop through url file list")
-            
-            for idx,urlFileName in enumerate(urlFileList,0):
+            #    print("urlFileList = ", urlFileList)
+    
+            if len(urlFileList) == 0:
                 if debug:
-                    print("  idx = ", idx)
-                    print("  urlFileName = ", urlFileName)
-                    #print("  urlDateList[",idx,"] = ", urlDateList[idx])
-                    #print("  dateStr = ", dateStr)
+                    print("WARNING: ignoring run and product - no data on server")
+                    print("  for model run time: ", currentModelRun)
+                    print("  for product       : ", prod)
 
-                if urlFileName not in localFileList:
+            else:
+                # make target directory, if necessary, and cd to it
+                #targetDir = targetDirBase+'/'+dateHourStrList[i]+'/'+products[i]
+                targetDir = targetDirBase+'/'+currentModelRun
+                if not os.path.exists(targetDir):
+                    os.makedirs(targetDir)
+                    os.chdir(targetDir)
+                
+                # get local file list - i.e. those which have already been downloaded
+                localFileList = os.listdir('.')
+                #localFileList.reverse()
+                #if debug:
+                #    print >>sys.stderr, "  localFileList: ", localFileList
+
+                # get url file list (not sure I need this)
+                #urlFileList.sort()
+                #urlFileList.reverse()
+
+                # loop through the url file list, downloading those that have
+                # not yet been downloaded
+                if debug:
+                    print("Starting to loop through url file list")
+            
+                for idx,urlFileName in enumerate(urlFileList,0):
                     if debug:
-                        print("    ",urlFileName,"not in localFileList -- get file")
-                    try:
-                        command = 'wget '+hrrrUrl+'/'+currentModelRun+'/'+urlFileName
-                        os.system(command)
-                    except Exception as e:
-                        print("    wget failed, exception: ", e)
-                        continue
+                        print("  idx = ", idx)
+                        print("  urlFileName = ", urlFileName)
+                        #print("  urlDateList[",idx,"] = ", urlDateList[idx])
+                        #print("  dateStr = ", dateStr)
 
-                    # rename file and move to web server
-                    # first get forecast_hour
-                    (base,ext) = os.path.splitext(urlFileName)
-                    parts = base.split('_')
-                    if products[prod]['has_anal_prod']:
-                        forecast_hour = str( (int(parts[-1])-1) * deltaBetweenForecastHours)
-                    else:
-                        forecast_hour = str(int(parts[-1])*deltaBetweenForecastHours)
-                    if len(forecast_hour) == 1:
-                        forecast_hour = '00'+forecast_hour
-                    elif len(forecast_hour) == 2:
-                        forecast_hour = '0'+forecast_hour
-                    if debug:
-                        print("    forecast_hour = ", forecast_hour)
+                    if urlFileName not in localFileList:
+                        if debug:
+                            print("    ",urlFileName,"not in localFileList -- get file")
+                        try:
+                            command = 'wget '+hrrrUrl+'/'+currentModelRun+'/'+urlFileName
+                            os.system(command)
+                        except Exception as e:
+                            print("    wget failed, exception: ", e)
+                            continue
 
-                    # create full file name
-                    catalogName = catalogPrefix+'.'+currentModelRun+'00.'+forecast_hour+'_'+products[prod]['suffix']+'.png'
-                    if debug:
-                        print ("    catalogName = ", catalogName)
+                        # rename file and move to web server
+                        # first get forecast_hour
+                        (base,ext) = os.path.splitext(urlFileName)
+                        parts = base.split('_')
+                        if products[prod]['has_anal_prod']:
+                            forecast_hour = str( (int(parts[-1])-1) * deltaBetweenForecastHours)
+                        else:
+                            forecast_hour = str(int(parts[-1])*deltaBetweenForecastHours)
+                        if len(forecast_hour) == 1:
+                            forecast_hour = '00'+forecast_hour
+                        elif len(forecast_hour) == 2:
+                            forecast_hour = '0'+forecast_hour
+                        if debug:
+                            print("    forecast_hour = ", forecast_hour)
 
-                    # copy file to tempDir and rename
-                    shutil.copy(targetDir+'/'+urlFileName,
-                                tempDir+'/'+catalogName)
+                        # create full file name
+                        catalogName = catalogPrefix+'.'+currentModelRun+'00.'+forecast_hour+'_'+products[prod]['suffix']+'.png'
+                        if debug:
+                            print ("    catalogName = ", catalogName)
 
-                    # ftp file to catalog location
-                    ftpFile = open(os.path.join(tempDir,catalogName),'rb')
-                    catalogFTP.storbinary('STOR '+catalogName,ftpFile)
-                    ftpFile.close()
+                        # copy file to tempDir and rename
+                        shutil.copy(targetDir+'/'+urlFileName,
+                                    tempDir+'/'+catalogName)
 
-                    # remove file from tempDir
-                    os.remove(os.path.join(tempDir,catalogName))
+                        # ftp file to catalog location
+                        ftpFile = open(os.path.join(tempDir,catalogName),'rb')
+                        catalogFTP.storbinary('STOR '+catalogName,ftpFile)
+                        ftpFile.close()
+
+                        # remove file from tempDir
+                        os.remove(os.path.join(tempDir,catalogName))
 
 # Close ftp connection
 catalogFTP.quit()

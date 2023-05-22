@@ -42,7 +42,8 @@ os.chdir(tempDir)
 # images created for prior day
 dateStr = datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d')
 #dateStr = now.strftime("%Y%m%d")
-#dateStr = '20220114'
+# ARCHIVE MODE
+#dateStr = '20230115'
 if debug:
     print("dateStr = ", dateStr)
 

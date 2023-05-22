@@ -1,1 +1,0 @@
-2022_VERSIONS/get.skewt.new.py

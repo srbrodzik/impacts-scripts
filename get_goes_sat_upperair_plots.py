@@ -13,9 +13,10 @@ import shutil
 from ftplib import FTP
 
 # User inputs
-debug = 1
+debug = True
+test = False
 secsPerDay = 86400
-pastSecs = secsPerDay/6   # check data from last 4 hours
+pastSecs = secsPerDay/4   # check data from last 6 hours
 #pastSecs = 360   # check data from last 6 minutes
 #pastSecs = 600   # check data from last 10 minutes
 basePath = '/home/disk/data/images/sat_east_impacts_obs'
@@ -26,14 +27,15 @@ tempDir = '/tmp'
 catalog_prefix = 'satellite.GOES-16'
 
 # Field Catalog inputs
-ftpCatalogServer = 'catalog.eol.ucar.edu'
-ftpCatalogUser = 'anonymous'
-catalogDestDir = '/pub/incoming/catalog/impacts'
-# for testing
-#ftpCatalogServer = 'ftp.atmos.washington.edu'
-#ftpCatalogUser = 'anonymous'
-#ftpCatalogPassword = 'brodzik@uw.edu'
-#catalogDestDir = 'brodzik/incoming/impacts'
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
 
 # getdate and time - are now and nowObj the same thing??
 nowTime = time.gmtime()
@@ -55,11 +57,12 @@ if debug:
     print("startStr = ", startStr)
 
 # Open ftp connection to NCAR sever
-catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-catalogFTP.cwd(catalogDestDir)
-# for testing
-#catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-#catalogFTP.cwd(catalogDestDir)
+if test:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+    catalogFTP.cwd(catalogDestDir)
+else:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+    catalogFTP.cwd(catalogDestDir)
 
 for product in productList.keys():
     print("product = ", product)

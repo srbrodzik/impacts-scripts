@@ -47,3 +47,16 @@ to create multiple plots for catalog:
 /home/disk/funnel/impacts/archive/ops/nys_mwr_ts
 
 
+2021 Data
+---------
+Processing Steps
+
+1. Original daily files are in csv
+2. Break them into daily files by site:
+
+   /home/disk/bob/impacts/bin/NYS_mesonet/NYS_mesonet_save_2021.py
+
+3. Create netcdf files:
+
+   /home/disk/bob/impacts/bin/NYS_mesonet/nys_ground_to_nc_2021.py
+

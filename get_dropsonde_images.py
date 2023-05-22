@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import sys
@@ -6,14 +6,14 @@ import shutil
 from ftplib import FTP
 #import fnmatch
 
-debug = 1
+debug = True
 test = False
 url = "https://asp-interface.arc.nasa.gov/API/parameter_data/N426NA/AVAPS_QuickLook"
 tempDir = "/tmp"
 targetBaseDir = "/home/disk/bob/impacts/sonde"
 #catalogBaseDir = "/home/disk/funnel/impacts/archive/research/p3"
 sondeInfoFile = targetBaseDir+'/sonde_info'
-catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/aircraft/nasa_p3'
+catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2023/aircraft/nasa_p3'
 
 # Field Catalog inputs
 if test:
@@ -49,7 +49,12 @@ record = recordWithEOL.strip()
 f.close()
 os.remove('AVAPS_QuickLook')
 
+# record is in this format:
+# AVAPS_QuickLook,2023-01-23T18:10:09.005000,43.219871521,-69.889011383,,220.84,1.13,0.75,https://asp-interface.arc.nasa.gov/cameras/filehomeavapsdataskewtD20230123_180403_P.1.svg
+
 # parse record to get filename & dropsonde date and time
+# this data is actually the datetime, lat, lon, alt, pitch, roll WHEN THE P3 TRANSMITS
+#   THE FILE (useless); also the time,lat,lon on the plot is the LAUNCH point
 (junk1,datetime,latOrig,lonOrig,junk2,junk3,junk4,junk5,fileUrl) = record.split(',')
 sondeFile = os.path.basename(fileUrl)
 temp = sondeFile.replace('filehomeavapsdataskewtD','')

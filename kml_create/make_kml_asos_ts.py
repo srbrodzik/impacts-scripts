@@ -15,7 +15,7 @@ siteLocs = '/home/disk/bob/impacts/bin/ASOS_sites.csv'
 #indir = '/home/disk/funnel/impacts-website/archive_ncar/surface/Meteogram'
 indir = '/home/disk/bob/impacts/images/asos_isu'
 outdir = '/home/disk/funnel/impacts-website/archive_ncar/gis/Meteogram'
-catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/surface/meteogram'
+catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2023/surface/meteogram'
 
 # Field Catalog inputs
 if test:

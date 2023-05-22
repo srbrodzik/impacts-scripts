@@ -314,7 +314,7 @@ binDir = '/home/disk/bob/impacts/bin'
 # file containing lat/lon/alt of stations to plot
 station_file = '/home/disk/funnel/impacts/data_archive/nys_ground/meta_nysm_catalog.csv'
 # directory for daily, site-specific netcdf data
-ncDir = '/home/disk/bob/impacts/raw/nys_ground_2022'
+ncDir = '/home/disk/bob/impacts/raw/nys_ground_2023'
 # plot stuff
 plot_dir = '/home/disk/bob/impacts/images/NYSM_standard'
 logo_path = '/home/disk/bob/impacts/bin/NYS_mesonet/NYSM_logo_96x96.png'

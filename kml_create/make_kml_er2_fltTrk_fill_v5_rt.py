@@ -3,7 +3,8 @@
 # adds temp and aircraft name and removes redundant time to/from clickable info
 # color codes track so last hour is blue and older track is light cyan
 # color codes 5-minute dots so last hour is blue and older is light_cyan
-# ICONS: http://catalog.eol.ucar.edu/kmlicons/ ... scout_blank.png, green_dot.png, blue_dot.png, yellow_dot.png, cyan_dot.png, orange_dot.png, light_cyan_dot.png
+# ICONS: http://catalog.eol.ucar.edu/kmlicons/ ... scout_blank.png, green_dot.png, blue_dot.png, yellow_dot.png,
+#    cyan_dot.png, orange_dot.png, light_cyan_dot.png
 # v3 changed color of old data from yellow to light cyan
 
 import os
@@ -16,21 +17,28 @@ from ftplib import FTP
 
 # Read input args
 numargs = len(sys.argv)
-if numargs != 2:
-    print("Usage: %s [takeoffDate]" % (sys.argv[0]))
+if numargs != 3:
+    print('Usage: {} [takeoffDate] [imageIntervalMinutes(mult of 5)]'.format(sys.argv[0]))
     exit()
 else:
     takeoffDate = sys.argv[1]
-print('{} {}'.format('takeoffDate = ',takeoffDate))
-    
+    imageIntervalMinutes = sys.argv[2]
+    print('takeoffDate = {}'.format(takeoffDate))
+    print('imageIntervalMinutes = {}'.format(imageIntervalMinutes))
+
 # User inputs
 test = False
+
 inDirBase = '/home/disk/bob/impacts/raw/aircraft'
+imageDirBase = '/home/disk/bob/impacts/radar/er2'
+
 outDirBase = '/home/disk/funnel/impacts-website/archive_ncar/gis/aircraft'
+catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/aircraft/nasa_er2'
+
 missingValue = -999
 kmlPrefix = 'gis.'
-planes = {'N809NA':'NASA_ER2'}
-missingValue = -999
+kmlSuffix = 'flight_track'
+planes = {'N806NA':'NASA_ER2'}
 varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'lat':{'units':'degN','long_name':'latitude'},
            'lon':{'units':'degE','long_name':'longitude'},
@@ -64,10 +72,6 @@ varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'sun_az_grnd':{'units':'deg','long_name':'sun azimuth from ground'},
            'sun_az_ac':{'units':'deg','long_name':'sun azimuth from aircraft'} }
 
-#imageDirBase = '/home/disk/funnel/impacts-website/archive_ncar/aircraft/NASA_ER2/radar_all_refl'
-imageDirBase = '/home/disk/bob/impacts/radar/er2'
-catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/aircraft/nasa_er2'
-
 # Field Catalog inputs
 if test:
     ftpCatalogServer = 'ftp.atmos.washington.edu'
@@ -97,6 +101,7 @@ else:
     tomorrow = now + timedelta(days=1)
     tomorrow_date = tomorrow.strftime("%Y%m%d")
     flightDates = [now_date,tomorrow_date]
+    print('flightDates = {}'.format(flightDates))
 
 for plane in planes.keys():
     print(plane)
@@ -164,7 +169,7 @@ for plane in planes.keys():
             lastTime_str = lastTime_dt.strftime("%Y%m%d%H%M")
             lastDate_str = lastTime_dt.strftime("%Y%m%d")
             lastHrMin_str = lastTime_dt.strftime("%H:%M:%S")
-            kmlFile = kmlPrefix+planes[plane]+'.'+lastTime_str+'.flight_track.kml'
+            kmlFile = kmlPrefix+planes[plane]+'.'+lastTime_str+'.'+kmlSuffix+'.kml'
             fout = open(outDir+'/'+kmlFile,'w')
 
             # Write header info
@@ -270,12 +275,12 @@ for plane in planes.keys():
             fout.write('        </Point>\n')
             fout.write('      </Placemark>\n')
 
-            # Output all previous positions if minutes are multiples of 15
+            # Output all previous positions if minutes are multiples of imageIntervalMinutes
             lastMinUsed = -1
             for ind in range(0,len(df_sub.index)-1):
                 currTime_dt = df_sub.iloc[ind].time
                 currMinutes = int(currTime_dt.strftime("%M"))
-                if currMinutes%15 == 0 and currMinutes != lastMinUsed:
+                if currMinutes%int(imageIntervalMinutes) == 0 and currMinutes != lastMinUsed:
                     lastMinUsed = currMinutes
 
                     currDateTime_str = currTime_dt.strftime("%Y%m%d%H%M")

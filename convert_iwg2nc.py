@@ -60,7 +60,7 @@ varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'sun_az_ac':{'units':'deg','long_name':'sun azimuth from aircraft'} }
           
 if date in os.listdir(inDirBase):
-    if date.startswith('2022'):
+    if date.startswith('2023'):
         inDir = inDirBase+'/'+date
         for file in os.listdir(inDir):
             if file.endswith('csv'):

@@ -163,24 +163,15 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     
     ax1.set_title('{}, NY ({}) Meteogram\n{} - {}'.format(site_long, site,
                                                            time_start_string, time_end_string), fontsize=16)
-    #ax1.set_title('{}, NY ({}) Meteogram\n{} - {}'.format(site_data['name'][0], site,
-    #                                                       time_start_string, time_end_string), fontsize=16)
     
     #plot airT and dewT
-    #if 'temp_2m [degC]' in site_data.keys():
     if 'tair' in site_data.keys():
-        #airT = site_data['temp_2m [degC]']
         airT = site_data['tair']
         ax1.plot_date(dt, airT, 'o-', label="Temp", color="red", linewidth=linewidth, markersize=markersize)
         ax1.set_xlim(time_start, time_end)
-    #if 'dew_point_temp_2m [degC]' in site_data.keys():
-    #if 'dew_point_temp_2m [degC]' in site_data.keys():
     if 'dewpt_temp' in site_data.keys():
-        #Td = site_data['dew_point_temp_2m [degC]']
         Td = site_data['dewpt_temp']
         ax1.plot_date(dt,Td,'o-',label="Dew Point",color="forestgreen",linewidth=linewidth,markersize=markersize)
-        # REDUNDANT??
-        #ax1.set_xlim(time_start, time_end)
     # draw 0 degC line if y limits go from negative to positive values
     if ax1.get_ylim()[0] < 0 < ax1.get_ylim()[1]:
         ax1.axhline(0, linestyle='-', linewidth = 1.0, color='deepskyblue')
@@ -192,14 +183,10 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     axes = [ax1]                                                #begin axes list
 
     #plot wind speed and gust
-    #if 'avg_wind_speed_merge [m/s]' in site_data.keys():
     if 'wspd_merge' in site_data.keys():
-        #wnd_spd = site_data['avg_wind_speed_merge [m/s]'] * 1.94384 #convert to knots
         wnd_spd = mps_to_kts(site_data['wspd_merge'])  #convert to knots
         ax2.plot_date(dt,wnd_spd,'o-',label='Speed',color="black",linewidth=linewidth,markersize=markersize)
-    #if 'max_wind_speed_merge [m/s]' in site_data.keys():
     if 'wmax_merge' in site_data.keys():
-        #wnd_gst = site_data['max_wind_speed_merge [m/s]'] * 1.94384 #convert to knots
         wnd_gst = mps_to_kts(site_data['wmax_merge'])  #convert to knots
         max_wnd_gst = wnd_gst.max(skipna=True)
         ax2.plot_date(dt,wnd_gst,'o-',label='Gust [Max=' + str(round(max_wnd_gst,1)) + ' kt]',color="blue",linewidth=linewidth,markersize=markersize)
@@ -208,9 +195,7 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     axes.append(ax2)
     
     #plot wind direction
-    #if 'wind_direction_merge [degree]' in site_data.keys():
     if 'wdir_merge' in site_data.keys():
-        #wnd_dir = site_data['wind_direction_merge [degree]']
         wnd_dir = site_data['wdir_merge']
         ax3.plot_date(dt,wnd_dir,'o-',label='Direction',color="purple",linewidth=0.2, markersize=markersize)
     ax3.set_ylim(-10,370)
@@ -219,18 +204,14 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     axes.append(ax3)
     
     #plot MSLP (or station pressure, if MSLP unavailable)
-    #if 'mean_sea_level_pressure [mbar]' in site_data.keys():
     if 'mslp' in site_data.keys():
-        #mslp = site_data['mean_sea_level_pressure [mbar]']
         mslp = site_data['mslp']
         min_mslp = mslp.min(skipna=True)                        #min 3-day mslp value
         max_mslp = mslp.max(skipna=True)                        #max 3-day mslp value
         labelname = 'Min=' + str(round(min_mslp,1)) + ' | Max=' + str(round(max_mslp,1)) + ' hPa'
         ax4.plot_date(dt,mslp,'o-',label=labelname,color='darkorange',linewidth=linewidth,markersize=markersize)
         ax4.set_ylabel('MSLP (hPa)')
-    #elif 'station_pressure [mbar]' in site_data.keys():                                                   
     elif 'pres' in site_data.keys():                                                   
-        #sp = site_data['station_pressure [mbar]']
         sp = site_data['pres']
         min_sp = sp.min(skipna=True)                            #min 3-day station pressure value
         max_sp = sp.max(skipna=True)                            #max 3-day station pressure value
@@ -242,10 +223,7 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     axes.append(ax4)
 
     #plot precip accum
-    #if 'precip_incremental [mm]' in site_data.keys():
     if 'precip' in site_data.keys() and 'precip_total' in site_data.keys():
-        #precip_inc = site_data['precip_incremental [mm]']
-        #precip_accum = np.nancumsum(precip_inc)
         precip_offset = site_data['precip_total'][0]
         precip_accum = site_data['precip_total'] - precip_offset
         labelname = 'Max=' + str(round(precip_accum[-1],2)) + ' mm'
@@ -259,9 +237,7 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     axes.append(ax5)
     
     #plot snow depth
-    #if 'snow_depth [cm]' in site_data.keys():
     if 'snow_depth' in site_data.keys():
-        #snow_depth_mm = site_data['snow_depth [cm]'] * 10         # input data in cm; convert to mm
         snow_depth_mm = site_data['snow_depth'] * 1000             # input data in m; convert to mm
         max_snow_depth_mm = snow_depth_mm.max(skipna=True)
         min_snow_depth_mm = snow_depth_mm.min(skipna=True)
@@ -319,6 +295,8 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
         catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
         catalogFTP.cwd(catalogDestDir)
 
+    catalogFTP.set_pasv(False)
+        
     # ftp plot to catalog
     ftpFile = open(plot_path+'/'+catName,'rb')
     catalogFTP.storbinary('STOR '+catName,ftpFile)
@@ -328,7 +306,6 @@ def plot_station_data(site, site_long, dt, time_start, time_end, site_data, logo
     catalogFTP.quit()
 
     
-    
 ### MAIN CODE ###
 
 # set paths
@@ -337,16 +314,15 @@ binDir = '/home/disk/bob/impacts/bin'
 # file containing lat/lon/alt of stations to plot
 station_file = '/home/disk/funnel/impacts/data_archive/nys_ground/meta_nysm_catalog.csv'
 # directory for daily, site-specific netcdf data
-ncDir = '/home/disk/bob/impacts/raw/nys_ground_2022'
+ncDir = '/home/disk/bob/impacts/raw/nys_ground_2023'
 # plot stuff
-tempDir = '/tmp'
 plot_dir = '/home/disk/bob/impacts/images/NYSM_standard'
 logo_path = '/home/disk/bob/impacts/bin/NYS_mesonet/NYSM_logo_96x96.png'
 
 catalogPrefix = 'surface.Meteogram'
 ext = 'nc'
 debug = True
-test = True
+test = False
 
 # Field Catalog inputs
 if test:
@@ -365,13 +341,12 @@ station_info_data = station_info_data.set_index('stid') # index by station id
 station_list = list(station_info_data.index)
 station_list_long = list(station_info_data['nearest_city'])   # NEED TO REPLACE SPACES WITH UNDERSCORES
 
-# get current date and time and list of dates to plot
-# FOR REAL TIME USE
-#current_dt = datetime.utcnow()
-
-for month in range(1,2):  # January
-    for day in range(11,19):  # January
-        for hour in range(0,24):
+# Process data
+for month in range(12,13):  # December
+    #for day in range(11,19):  # January
+    for day in [16]:
+        #for hour in range(0,24):
+        for hour in [0,1,11,12,13,14,15,16,17]:
             current_dt = datetime(2022,month,day,hour,0)
             print(current_dt)
             
@@ -417,13 +392,9 @@ for month in range(1,2):  # January
 
                 data_temp = df_all.loc[df_all.index > first_time]
                 data_3day = data_temp.loc[data_temp.index <= last_time]
-                #data_3day = df_all.loc[df_all.index > (df_all.index[-1]-timedelta(hours=72))] # time indices w/i past 72 hrs
                 dt = data_3day.index
                 time_start = dt[0] # first datapoint is HH:55...start plotting at HH+1:00
                 time_end = dt[-1]
-                print('{} {}'.format('      site =',site))
-                print('{} {}'.format('time_start =',time_start))
-                print('{} {}'.format('  time_end =',time_end))
                     
                 # Add dewpoint temp
                 data_3day['dewpt_temp'] = np.nan

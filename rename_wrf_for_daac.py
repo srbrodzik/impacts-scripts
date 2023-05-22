@@ -6,6 +6,7 @@ from datetime import datetime
 from datetime import timedelta
 
 wrfDir = '/home/disk/bob/impacts/raw/wrf_from_colle'
+outDirBase = '/home/disk/bob/impacts/daac/WRF'
 initModel = ['GFS','NAM']
 secsPerHour = 3600
 prefix_out = 'IMPACTS_wrfout'
@@ -25,5 +26,8 @@ for init in initModel:
                     deltaHours = '0'+deltaHours
                 fname_out = prefix_out+'_'+domain+'_'+runTime+'_'+deltaHours+'_'+init+'.'+suffix_out
                 print('fname_out = ',fname_out)
-                shutil.move(wrfDir+'/'+init+'/'+runTime+'/'+fname_in,
-                            wrfDir+'/'+init+'/'+runTime+'/'+fname_out)
+                outDir = outDirBase+'/'+init+'/'+runTime
+                if not os.path.isdir(outDir):
+                    os.makedirs(outDir)
+                shutil.copy(wrfDir+'/'+init+'/'+runTime+'/'+fname_in,
+                            outDir+'/'+fname_out)

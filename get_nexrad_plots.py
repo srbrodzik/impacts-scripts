@@ -9,7 +9,8 @@ import shutil
 from ftplib import FTP
 
 # User inputs
-debug = 0
+debug = False
+test = False
 secsPerDay = 86400
 #pastSecs = secsPerDay*6    # check data from last six days
 #pastSecs = secsPerDay/12   # check data from last two hours
@@ -24,16 +25,17 @@ tempDir = '/tmp'
 suffix = 'gif'
 
 # Field Catalog inputs
-ftpCatalogServer = 'catalog.eol.ucar.edu'
-ftpCatalogUser = 'anonymous'
-catalogDestDir = '/pub/incoming/catalog/impacts'
-catalog_category = 'radar'
-# For testing
-#ftpCatalogServer = 'ftp.atmos.washington.edu'
-#ftpCatalogUser = 'anonymous'
-#ftpCatalogPassword = 'brodzik@uw.edu'
-#catalogDestDir = 'brodzik/incoming/impacts'
-#catalog_category = 'radar'
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+    catalog_category = 'radar'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
+    catalog_category = 'radar'
 
 # getdate and time - are now and nowObj the same thing??
 nowTime = time.gmtime()
@@ -42,8 +44,7 @@ nowObj = datetime(nowTime.tm_year, nowTime.tm_mon, nowTime.tm_mday,
 nowUnixTime = int(nowObj.strftime("%s"))
 nowStr = nowObj.strftime("%Y%m%d%H%M%S")
 nowDateStr = nowObj.strftime("%Y%m%d")
-if debug:
-    print("nowStr = ", nowStr)
+print("nowStr = ", nowStr)
 
 # compute start time
 pastDelta = timedelta(0, pastSecs)

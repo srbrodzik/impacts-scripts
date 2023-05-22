@@ -1255,6 +1255,47 @@ class Sounding(UserDict):
 
             self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct, 'lat': lat, 'lon': lon}
 
+        # Added by S Brodzik (Feb 2022)
+        elif self.fmt == 'albany': #used for UAlbany soundings
+
+            #with open(fname, encoding="latin1", errors='ignore') as f:  # for python3
+            with open(fname) as f:
+                line = f.readline()
+                line = line.strip()
+                columns = line.split()
+
+            df = pd.read_csv(fname, skiprows=3, encoding="latin1", delim_whitespace=True, header=None)
+            #columns = list(columns)
+            columns.insert(2,'AM-PM')
+            df.columns = columns
+            
+            for key in df.keys():
+	        # if missing values in data, have to replace with NaNs and then convet to numeric as it
+                # originaly is read strings instead of float64; coerce flag nicely takes anything that
+                # cannot be converted and puts NaN
+                if df[key].dtype.name != 'float64':
+                    df[key] = pd.to_numeric(df[key], errors='coerce')
+                if key == 'Alt_AGL':
+                    height = (df[key][0:])
+                elif key == 'Press':
+                    pres = (df[key][0:])
+                elif key == 'Temp':
+                    temp = (df[key][0:])
+                elif key == 'DP':
+                    dew = (df[key][0:])
+                elif key == 'WSpeed':
+                    df[key].values[df[key] < 0] = 0
+                    wspd = mpers2knots(df[key][0:])
+                elif 'WDirn' in key:
+                    drct = (df[key][0:])
+                #elif 'Lat' in key:
+                #    lat = (df[key][0:])
+                #elif 'Long' in key:
+                #    lon = (df[key][0:])
+                    
+            #self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct, 'lat': lat, 'lon': lon}
+            self.data = {'hght': height, 'pres': pres, 'temp': temp, 'dwpt': dew, 'sknt': wspd, 'drct': drct}
+
         # Added by S Brodzik (Feb 2020)
         elif self.fmt == 'NCSU' or self.fmt == 'Purdue': #used for NCSU & Purdue sharppy soundings (YYYY-MM-DD_hhmm.sounding.csv)
 

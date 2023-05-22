@@ -32,7 +32,8 @@ else:
     print("initHour = ",initHour)
 
 # User inputs
-debug = 1
+debug = True
+test = False
 hrrrBaseUrl = 'https://rapidrefresh.noaa.gov/hrrr/NEST/for_web/hrrr_nest2_jet'
 hrrrUrl = hrrrBaseUrl+'/'+modelInitTime+'/full'
 products = ['cref_sfc','G114bt_sat','ctop','temp_925','temp_850','temp_700',
@@ -45,14 +46,15 @@ tempDir = '/tmp'
 catalogPrefix = 'model.HRRR_01km'
 
 # Field Catalog inputs
-ftpCatalogServer = 'catalog.eol.ucar.edu'
-ftpCatalogUser = 'anonymous'
-catalogDestDir = '/pub/incoming/catalog/impacts'
-# for testing
-#ftpCatalogServer = 'ftp.atmos.washington.edu'
-#ftpCatalogUser = 'anonymous'
-#ftpCatalogPassword = 'brodzik@uw.edu'
-#catalogDestDir = 'brodzik/incoming/impacts'
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
 
 # go to tempDir
 os.chdir(tempDir)
@@ -92,11 +94,12 @@ for idx,prod in enumerate(products,0):
             shutil.move(tempDir+'/'+baseFile,tempDir+'/'+catalogName)
             
             # Open ftp connection to NCAR sever
-            catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-            catalogFTP.cwd(catalogDestDir)
-            # for testing
-            #catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-            #catalogFTP.cwd(catalogDestDir)
+            if test:
+                catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+                catalogFTP.cwd(catalogDestDir)
+            else:
+                catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+                catalogFTP.cwd(catalogDestDir)
 
             # ftp file to catalog
             ftpFile = open(os.path.join(tempDir,catalogName),'rb')

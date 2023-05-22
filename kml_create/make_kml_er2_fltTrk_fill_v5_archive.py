@@ -3,7 +3,8 @@
 # adds temp and aircraft name and removes redundant time to/from clickable info
 # color codes track so last hour is blue and older track is light cyan
 # color codes 5-minute dots so last hour is blue and older is light_cyan
-# ICONS: http://catalog.eol.ucar.edu/kmlicons/ ... scout_blank.png, green_dot.png, blue_dot.png, yellow_dot.png, cyan_dot.png, orange_dot.png, light_cyan_dot.png
+# ICONS: http://catalog.eol.ucar.edu/kmlicons/ ... scout_blank.png, green_dot.png, blue_dot.png, yellow_dot.png,
+#    cyan_dot.png, orange_dot.png, light_cyan_dot.png
 # v3 changed color of old data from yellow to light cyan
 
 import os
@@ -15,26 +16,27 @@ import pandas as pd
 
 # Read input args
 numargs = len(sys.argv)
-if numargs != 2:
-    print('Usage: {} [takeoffDate]'.format(sys.argv[0]))
+if numargs != 3:
+    print('Usage: {} [takeoffDate] [imageIntervalMinutes(mult of 5)]'.format(sys.argv[0]))
     exit()
 else:
     takeoffDate = sys.argv[1]
+    imageIntervalMinutes = sys.argv[2]
     print('takeoffDate = {}'.format(takeoffDate))
+    print('imageIntervalMinutes = {}'.format(imageIntervalMinutes))
     
 inDirBase = '/home/disk/bob/impacts/raw/aircraft'
 # Use this path if we've gotten post flight tar files from Peter
 #imageDirBase = '/home/disk/bob/impacts/radar/er2/postFlight/realtime/radar_merge'
 # Use this path if we only have realtime image downloads
 imageDirBase = '/home/disk/bob/impacts/radar/er2'
-imageInterval = 10    # minutes
 # Create file in outDirBase and then ftp the result to NCAR catalog site on a cron
 outDirBase = '/home/disk/funnel/impacts-website/archive_ncar/gis/aircraft'
 catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/aircraft/nasa_er2'
 
 missingValue = -999
 kmlPrefix = 'gis.'
-planes = {'N809NA':'NASA_ER2'}
+planes = {'N806NA':'NASA_ER2'}
 missingValue = -999
 varDict = {'time':{'units':'seconds','long_name':'seconds since 1970-01-01'},
            'lat':{'units':'degN','long_name':'latitude'},
@@ -248,12 +250,12 @@ for plane in planes.keys():
             fout.write('        </Point>\n')
             fout.write('      </Placemark>\n')
 
-            # Output all previous positions if minutes are multiples of imageInterval
+            # Output all previous positions if minutes are multiples of imageIntervalMinutes
             lastMinUsed = -1
             for ind in range(0,len(df_sub.index)-1):
                 currTime_dt = df_sub.iloc[ind].time
                 currMinutes = int(currTime_dt.strftime("%M"))
-                if currMinutes%imageInterval == 0 and currMinutes != lastMinUsed:
+                if currMinutes%int(imageIntervalMinutes) == 0 and currMinutes != lastMinUsed:
                     lastMinUsed = currMinutes
 
                     currDateTime_str = currTime_dt.strftime("%Y%m%d%H%M")

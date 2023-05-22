@@ -71,36 +71,37 @@ for i in range(0,len(products)):
             raw_date = parts[4]
             raw_time = parts[5]
             (year,month,day) = raw_date.split('-')
-            (hour,minute,second) = raw_time.split('-')
-            date = year+month+day
-            time = hour+minute+second
+            if (year == '2022' and month == '12') or (year == '2023'):
+                (hour,minute,second) = raw_time.split('-')
+                date = year+month+day
+                time = hour+minute+second
 
-            # make target directory, if necessary, and cd to it
-            targetDir = targetDirBase+'/'+date
-            if not os.path.exists(targetDir):
-                os.makedirs(targetDir)
-            os.chdir(targetDir)
+                # make target directory, if necessary, and cd to it
+                targetDir = targetDirBase+'/'+date
+                if not os.path.exists(targetDir):
+                    os.makedirs(targetDir)
+                os.chdir(targetDir)
 
-            # get local file list - i.e. those which have already been downloaded
-            localFileList = os.listdir('.')
+                # get local file list - i.e. those which have already been downloaded
+                localFileList = os.listdir('.')
 
-            if baseFileName not in localFileList:
-                if debug:
-                    print(baseFileName,'not in localFileList -- get file')
-                try:
-                    command = 'wget '+url+'/'+baseFileName
-                    os.system(command)
-                except Exception as e:
-                    print('    wget failed, exception: ', e)
-                    continue
+                if baseFileName not in localFileList:
+                    if debug:
+                        print(baseFileName,'not in localFileList -- get file')
+                    try:
+                        command = 'wget '+url+'/'+baseFileName
+                        os.system(command)
+                    except Exception as e:
+                        print('    wget failed, exception: ', e)
+                        continue
             
-                # copy to cat file name and ftp to catalog
-                catFile = catalogFilePrefix+'.'+date+time+'.'+suffix+ext
-                if debug:
-                    print('    catFile =', catFile)
-                shutil.copy(targetDir+'/'+baseFileName,
-                            tempDir+'/'+catFile)
-                ftpFile = open(os.path.join(tempDir,catFile),'rb')
-                catalogFTP.storbinary('STOR '+catFile,ftpFile)
-                ftpFile.close()
-                os.remove(tempDir+'/'+catFile)
+                    # copy to cat file name and ftp to catalog
+                    catFile = catalogFilePrefix+'.'+date+time+'.'+suffix+ext
+                    if debug:
+                        print('    catFile =', catFile)
+                    shutil.copy(targetDir+'/'+baseFileName,
+                                tempDir+'/'+catFile)
+                    ftpFile = open(os.path.join(tempDir,catFile),'rb')
+                    catalogFTP.storbinary('STOR '+catFile,ftpFile)
+                    ftpFile.close()
+                    os.remove(tempDir+'/'+catFile)

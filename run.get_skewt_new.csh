@@ -2,5 +2,5 @@
 
 source /home/disk/meso-home/meso/.cshrc
 
-exec /home/disk/bob/impacts/bin/get_skewt_new.py
+exec /home/disk/bob/impacts/bin/get_skewt_new.py3
 

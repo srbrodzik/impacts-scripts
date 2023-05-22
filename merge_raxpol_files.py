@@ -5,9 +5,9 @@ import netCDF4 as nc
 import glob
 from copyRaxpolAttsDimsVarsToNewFile import copyRaxpolAttsDimsVarsToNewFile
 
-inDirBase = '/home/disk/bob/impacts/raw/raxpol'
-outDirBase = '/home/disk/bob/impacts/raw/raxpol/volumes'
-dateStr = '20211013'
+inDirBase = '/home/disk/bob/impacts/raw/radar/raxpol/sur'
+outDirBase = '/home/disk/bob/impacts/raw/radar/raxpol/sur/volumes'
+dateStr = '20230125'
 fields = {'D':{'inName':'Differential_Reflectivity','outName':'ZDR'},
           'P':{'inName':'PhiDP','outName':'PHIDP'},
           'R':{'inName':'RhoHV','outName':'RHOHV'},

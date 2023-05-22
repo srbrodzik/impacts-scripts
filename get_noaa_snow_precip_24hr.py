@@ -10,6 +10,7 @@ from ftplib import FTP
 
 # User inputs
 debug = 1
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay
 deltaBetweenFiles = secsPerDay
@@ -20,21 +21,23 @@ catalogPrefix = 'surface.NOAA_WPC'
 tempDir = '/tmp'
 
 # Field Catalog inputs
-ftpCatalogServer = 'catalog.eol.ucar.edu'
-ftpCatalogUser = 'anonymous'
-catalogDestDir = '/pub/incoming/catalog/impacts'
-# for testing
-#ftpCatalogServer = 'ftp.atmos.washington.edu'
-#ftpCatalogUser = 'anonymous'
-#ftpCatalogPassword = 'brodzik@uw.edu'
-#catalogDestDir = 'brodzik/incoming/impacts'
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
 
 # Open ftp connection to NCAR sever
-catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-catalogFTP.cwd(catalogDestDir)
-# For testing
-#catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-#catalogFTP.cwd(catalogDestDir)
+if test:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+    catalogFTP.cwd(catalogDestDir)
+else:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+    catalogFTP.cwd(catalogDestDir)
 
 # get current date and hour
 nowTime = time.gmtime()

@@ -11,13 +11,13 @@ from ftplib import FTP
 # Read input args
 numargs = len(sys.argv) - 1
 if numargs != 1:
-    print("Usage: %s [sector(1 or 2)]" % (sys.argv[0]))
+    print('Usage: {} [sector(1 or 2)]'.format(sys.argv[0]))
     exit()
 sector = sys.argv[1]
 
 # User inputs
-test = False
 debug = True
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay
 #pastSecs = secsPerDay/12   # check data from last 2 hours
@@ -56,7 +56,7 @@ nowUnixTime = int(nowObj.strftime("%s"))
 nowStr = nowObj.strftime("%Y%m%d%H%M%S")
 nowDateStr = nowObj.strftime("%Y%m%d")
 if debug:
-    print('nowStr =', nowStr)
+    print('nowStr = {}'.format(nowStr))
 
 # compute start time
 pastDelta = timedelta(0, pastSecs)
@@ -65,14 +65,14 @@ startUnixTime = int(startObj.strftime("%s"))
 startStr = startObj.strftime("%Y%m%d%H%M%S")
 startDateStr = startObj.strftime("%Y%m%d")
 if debug:
-    print('startStr =', startStr)
+    print('startStr = {}'.format(startStr))
 
-print('product =', product)
+print('product = {}'.format(product))
     
 # get list of files from last 5 minutes
 for file in os.listdir(basePath):
     if debug:
-        print('file = ', file)
+        print('file = {}'.format(file))
     if file.endswith(product+'.'+ext):
         #(base,ext) = os.path.splitext(file)
         (fileTimeStr,junk,ext) = file.split('.')

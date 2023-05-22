@@ -17,9 +17,9 @@ def listFD(url, ext=''):
     return [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href').endswith(ext)]
 
 # User inputs
-debug = 1
-debug2 = 1
-test = 0
+debug = True
+debug2 = True
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay
 secsPerRun = secsPerDay/4

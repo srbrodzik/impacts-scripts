@@ -19,7 +19,7 @@ sector = sys.argv[1]
 test = False
 debug = True
 secsPerDay = 86400
-pastSecs = secsPerDay*25
+pastSecs = secsPerDay/12
 #pastSecs = secsPerDay/12   # check data from last 2 hours
 #pastSecs = 300   # check data from last 5 minutes
 basePath = '/home/disk/data/images/sat_east_meso_impacts'
@@ -49,12 +49,20 @@ else:
     catalogFTP.cwd(catalogDestDir)
 
 # getdate and time - are now and nowObj the same thing??
+# REAL TIME
 nowTime = time.gmtime()
 nowObj = datetime(nowTime.tm_year, nowTime.tm_mon, nowTime.tm_mday,
                   nowTime.tm_hour, nowTime.tm_min, nowTime.tm_sec)
 nowUnixTime = int(nowObj.strftime("%s"))
 nowStr = nowObj.strftime("%Y%m%d%H%M%S")
 nowDateStr = nowObj.strftime("%Y%m%d")
+
+# ARCHIVE MODE
+nowStr = '202301150700'
+nowObj = datetime.strptime(nowStr,'%Y%m%d%H%M')
+nowUnixTime = int(nowObj.strftime("%s"))
+nowDateStr = nowObj.strftime("%Y%m%d")
+
 if debug:
     print('nowStr =', nowStr)
 

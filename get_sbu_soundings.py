@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# NOTE: Check what actual rawPrefix values will be for Truck and South Park
+# Previously used 'rawPrefix':type+'_RTS' for RadarTruck
+
 import os
 import shutil
 from datetime import timedelta
@@ -19,18 +22,18 @@ def listFD(url, ext='', user='', pw=''):
 # infile = GrawSonde_RadarTruck_RTS_YYYYMMDD_hhmmss.nc
 # outfile = 'upperair.SBU_sonde.YYYYMMDDhhmmss.skewT.png'
 
-# Static soundings
+# Static soundings - none for 2023
 # file = GrawSonde_SBUSouthP_RTS_YYYYMMDD_hhmmss.nc
 # outfile = 'upperair.SBU_sonde.YYYYMMDDhhmmss.Stonybrook_NY_skewT.png'
 
 type = 'GrawSonde'
 sndgDict = {'RadarTruck':{'url':'http://doppler.somas.stonybrook.edu/IMPACTS/RadarTruck/grawmetsounding/netcdf',
-                          'format':'SBUnc',
-                          'rawPrefix':type+'_RTS',
+                          'format':'SBUnc_mobile',
+                          'rawPrefix':type+'_RadarTruck_RTS',
                           'ncSuffix':'Mobile',
                           'catalogSuffix':'skewT'},
             'SBUSouthP':{'url':'http://doppler.somas.stonybrook.edu/IMPACTS/grawmetsounding/netcdf',
-                         'format':'SBUnc_static',
+                         'format':'SBUnc',
                          'rawPrefix':type+'_SBUSouthP_RTS',
                          'ncSuffix':'Fixed',
                          'catalogSuffix':'Stonybrook_NY_skewT'}
@@ -39,13 +42,14 @@ sndgDict = {'RadarTruck':{'url':'http://doppler.somas.stonybrook.edu/IMPACTS/Rad
 sbuUser = 'DataAccess'
 sbuPassword = 'WinterAtSBU'
 
-binDir = '/home/disk/bob/impacts/bin'
+#binDir = '/home/disk/bob/impacts/bin'
+binDir = '/home/disk/meso-home/brodzik/python/metpy/skewt'
 localDirBase = '/home/disk/bob/impacts/upperair/sbu'
 tempDir = '/tmp'
 catalogPrefix = 'upperair.SBU_sonde'
 ext = 'nc'
 debug = True
-test = False
+test = True
 
 # Field Catalog inputs
 if test:
@@ -70,7 +74,7 @@ else:
 now = datetime.utcnow()
 nowDateStr = now.strftime("%Y%m%d")
 nowDateTimeStr = now.strftime("%Y%m%d%H%M%S")
-startTime = now - timedelta(2)
+startTime = now - timedelta(1)
 startDateStr = startTime.strftime("%Y%m%d")
 startDateTimeStr = startTime.strftime("%Y%m%d%H%M%S")
 if debug:
@@ -79,8 +83,8 @@ if debug:
     
 # List of dates to check for new data
 if test:
-    dateStrList = ['20210207']
-    startDateStr = '20210207'
+    dateStrList = ['20220517']
+    startDateStr = '20220517'
 else:
     dateStrList = [startDateStr,nowDateStr]
 
@@ -123,7 +127,7 @@ for sndg in sndgDict.keys():
             # Rename netcdf file upon download - maybe don't do this???
             if sndg =='RadarTruck':
                 ncFileName = catalogPrefix+'.'+sbuFileDate[idx]+sbuFileTime[idx][0:4]+'.RadarTruck.nc'
-            else if sndg == 'SBUSouthP':
+            elif sndg == 'SBUSouthP':
                 ncFileName = catalogPrefix+'.'+sbuFileDate[idx]+sbuFileTime[idx][0:4]+'.Stonybrook_NY.nc'
             
             if ncFileName not in localFileList:
@@ -134,7 +138,8 @@ for sndg in sndgDict.keys():
                 os.system(command)
 
                 # create skewt - modify code for new infile format
-                command = binDir+'/skewplot.py --file '+ncFileName+' --outpath '+tempDir+' --format '+sndgDict[sndg]['format']+' --parcel False --hodograph False'
+                command = binDir+'/plot_skewt.py --inpath '+localDir+' --infile '+ncFileName+' --outpath '+tempDir+' --fmt '+sndgDict[sndg]['format']+' --hodo False'
+                print(command)
                 os.system(command)
                 plots = glob.glob(tempDir+'/'+catalogPrefix+'.'+date+'*.png')
                 catalogName = os.path.basename(plots[0])

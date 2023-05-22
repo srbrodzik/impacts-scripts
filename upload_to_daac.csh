@@ -15,3 +15,6 @@ or
 
 mirror -R '*ch01*'
 
+
+# Non-interactive command
+lftp -c "open ftp://impacts:snowfallATLANTIC2020\!@ghrc.nsstc.nasa.gov; cd MRMS; cd BaseDBZ; mirror -R"

@@ -19,8 +19,8 @@ def listFD_new(url, prefix='', ext='', substr=''):
     return list
 
 # User inputs
-debug = 1
-test = 0
+debug = True
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay/2
 secsPerRun = secsPerDay/2

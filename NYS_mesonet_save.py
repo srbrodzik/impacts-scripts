@@ -9,7 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 
 ldmDirBase = '/home/disk/data/albany/standard'
-siteNcDirBase = '/home/disk/bob/impacts/raw/nys_ground_2022'
+siteNcDirBase = '/home/disk/bob/impacts/raw/nys_ground_2023'
 ncPrefix = 'nysm_standard'
 missingValue = -996.
 # get dates for today and yesterday

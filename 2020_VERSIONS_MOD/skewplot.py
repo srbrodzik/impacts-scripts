@@ -27,7 +27,13 @@ import glob
 import argparse
 import xarray as xr
 import linecache
+import pandas as pd
 
+def dirMinSec2deg(deg,min,sec,dir):
+    val = deg+((min+(sec/60))/60)
+    if dir == 'W' or dir == 'S':
+        val = -val
+    return val
 
 ### FORMAT FOR NEW UIUC NC FILES
 uiuc_fmt = 'UIUCnc' 
@@ -204,6 +210,49 @@ for fname in sounding_files:
         out_fname = 'upperair.SkewT.{dt}.{stn}.png'.format(dt = file_time.strftime(file_out_dt_fmt), stn = stn_id_file)
         figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id_plot, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
 
+    ##Added by Stacy Brodzik (Feb 2022)
+    elif pargs.format == 'albany':
+
+        # parse file name
+        (base,ext) = os.path.splitext(fname)
+        (category,platform,datetimeStr,product) = base.split('.')
+        (stn_id_plot,location) = product.split('-')
+
+        stn_id_plot = 'UAlbany'
+        stn_id_file = 'UALB'
+
+        # get file time
+        file_time = datetime.datetime.strptime(datetimeStr,'%Y%m%d%H%M')
+
+        # get lat/lon from file
+        #with open(fname, encoding="utf8", errors='ignore') as f:   # for python3
+        with open(fname, 'r') as f:
+            line = f.readline()
+            line = line.strip()
+            columns = line.split()
+        df = pd.read_csv(fname, skiprows=3, encoding="latin1", delim_whitespace=True, header=None)
+        #columns = list(columns)
+        columns.insert(2,'AM-PM')
+        df.columns = columns
+        
+        latStr = df.iloc[0]['Lat/N']
+        deg = int(latStr[0:2])
+        min = int(latStr[3:5])
+        sec = float(latStr[6:10])
+        dir = latStr[-1]
+        lat = dirMinSec2deg(deg,min,sec,dir)
+
+        lonStr = df.iloc[0]['Long/E']
+        deg = int(lonStr[0:3])
+        min = int(lonStr[4:6])
+        sec = float(lonStr[7:11])
+        dir = lonStr[-1]
+        lon = dirMinSec2deg(deg,min,sec,dir)
+
+        # define out_fname and figtitle
+        out_fname = 'upperair.{id}_sonde.{dt}.skewT.png'.format(id = stn_id_file, dt = file_time.strftime(file_out_dt_fmt))
+        figtitle = '{stn} {dt} sounding ({lati:.3f}, {long:.3f})'.format(stn = stn_id_plot, dt = file_time.strftime(title_dt_fmt), lati=lat, long=lon)
+
     ##Added by Stacy Brodzik (Feb 2020 & Feb 2022)
     elif pargs.format == 'NCSU' or pargs.format == 'Purdue':
 
@@ -339,6 +388,8 @@ for fname in sounding_files:
         if len(saveLine) > 0:
             latLonStr = saveLine.strip()
             (site,latStr,lonStr) = latLonStr.split(' ')
+            if latStr.endswith(','):
+                latStr = latStr[:-1]
             lat = float(latStr.replace('lat=',''))
             lon = float(lonStr.replace('lon=',''))
         else:

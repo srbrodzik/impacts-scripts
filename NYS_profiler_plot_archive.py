@@ -745,7 +745,7 @@ def  plot_cloud_liquid(df_site,station,station_name_file,station_name_plot,logo_
 ### MAIN CODE ###
 
 # Set paths
-ncDirBase = '/home/disk/bob/impacts/raw/nys_profiler_2022'
+ncDirBase = '/home/disk/bob/impacts/raw/nys_profiler_2023'
 # plot stuff
 plotDirBase = '/home/disk/bob/impacts/images/NYSM_profiler'
 logo_path = '/home/disk/bob/impacts/bin/NYS_mesonet/NYSM_logo_96x96.png'
@@ -757,7 +757,7 @@ bin_number = 20.
 min_times = 35
 
 # Field Catalog inputs
-test = False
+test = True
 if test:
     ftpCatalogServer = 'ftp.atmos.washington.edu'
     ftpCatalogUser = 'anonymous'
@@ -788,15 +788,16 @@ station_dict = {'ALBA': {'forFilename':'Albany_NY','forPlot':'Albany, NY'},
                 'WEBS': {'forFilename':'Webster_NY','forPlot':'Webster, NY'} }
 
 # Go through each hour of each day and month
-for month in range(2,3):  # January
-    if month == 1:
-        minDate = 11
-        maxDate = 31
+for month in range(12,13):  # December
+    if month == 12:
+        minDate = 16
+        maxDate = 16
     elif month == 2:
-        minDate = 15
-        maxDate = 18
+        minDate = 20
+        maxDate = 22
     for day in range(minDate,maxDate+1):
-        for hour in range(0,24):
+        #for hour in range(0,24):
+        for hour in range(11,18):
             # Get date and time
             current_dt = datetime(2022,month,day,hour,0)
             current_dt_string = datetime.strftime(current_dt, '%Y%m%d%H%M')

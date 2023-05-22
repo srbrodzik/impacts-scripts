@@ -16,9 +16,11 @@ from datetime import timedelta
 from datetime import datetime
 import shutil
 from ftplib import FTP
+import requests
 
 # User inputs
-debug = 1
+debug = True
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay
 secsPerRun = secsPerDay/4
@@ -36,21 +38,23 @@ ext = 'gif'
 tempDir = '/tmp'
 
 # Field Catalog inputs
-ftpCatalogServer = 'catalog.eol.ucar.edu'
-ftpCatalogUser = 'anonymous'
-catalogDestDir = '/pub/incoming/catalog/impacts'
-# for testing
-#ftpCatalogServer = 'ftp.atmos.washington.edu'
-#ftpCatalogUser = 'anonymous'
-#ftpCatalogPassword = 'brodzik@uw.edu'
-#catalogDestDir = 'brodzik/incoming/impacts'
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
 
 # Open ftp connection to NCAR sever
-catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-catalogFTP.cwd(catalogDestDir)
-# For testing
-#catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-#catalogFTP.cwd(catalogDestDir)
+if test:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+    catalogFTP.cwd(catalogDestDir)
+else:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+    catalogFTP.cwd(catalogDestDir)
 
 # get model date and time closest to current time
 nowTime = time.gmtime()
@@ -80,21 +84,26 @@ for product in productList.keys():
         # download file into tempDir
         file = platform+'_'+product+'__f'+hour+'.gif'
         urlStr = srefUrl+'/'+file
-        command = "lwp-request '"+urlStr+"' > "+tempDir+'/'+file
-        os.system(command)
+        get = requests.get(urlStr)
+        if get.status_code == 200:
+            command = "lwp-request '"+urlStr+"' > "+tempDir+'/'+file
+            os.system(command)
         
-        # rename file and copy to tempDir
-        catalogName = category+'.'+platform+'.'+lastModelDateTimeStr+'.'+hour+'_'+productList[product]+'.'+ext
-        shutil.move(tempDir+'/'+file,tempDir+'/'+catalogName)
+            # rename file and copy to tempDir
+            catalogName = category+'.'+platform+'.'+lastModelDateTimeStr+'.'+hour+'_'+productList[product]+'.'+ext
+            shutil.move(tempDir+'/'+file,tempDir+'/'+catalogName)
                 
-        # ftp file to catalog location
-        ftpFile = open(os.path.join(tempDir,catalogName),'rb')
-        catalogFTP.storbinary('STOR '+catalogName,ftpFile)
-        ftpFile.close()
-        print("ftp'd ", file, " to field catalog")
+            # ftp file to catalog location
+            ftpFile = open(os.path.join(tempDir,catalogName),'rb')
+            catalogFTP.storbinary('STOR '+catalogName,ftpFile)
+            ftpFile.close()
+            print("ftp'd ", file, " to field catalog")
 
-        # remove file from tempDir
-        os.remove(os.path.join(tempDir,catalogName))
+            # remove file from tempDir
+            os.remove(os.path.join(tempDir,catalogName))
+
+        else:
+            print('urlStr =',urlStr,'does not exist')
 
 # Close ftp connection
 catalogFTP.quit()

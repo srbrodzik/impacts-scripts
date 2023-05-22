@@ -14,19 +14,19 @@ else:
     print("You are good to go")
     
 start = sys.argv[1]
-startObj = datetime.datetime.strptime(start,'%Y%m%d%H%M%S')
-startUnix = int(startObj.strftime("%s"))
+startObj = datetime.datetime.strptime(start,'%Y%m%d%H%M')
+#startUnix = int(startObj.strftime("%s"))
 startDate = startObj.strftime("%Y%m%d")
 startYear = startObj.strftime("%Y")
 end = sys.argv[2]
-endObj = datetime.datetime.strptime(end,'%Y%m%d%H%M%S')
-endUnix = int(endObj.strftime("%s"))
+endObj = datetime.datetime.strptime(end,'%Y%m%d%H%M')
+#endUnix = int(endObj.strftime("%s"))
 endDate = endObj.strftime("%Y%m%d")
 sector = sys.argv[3]    
-print("startUnix = %s, endUnix = %s, sector = %s" % (startUnix,endUnix,sector))
+print("startObj = %s, endObj = %s, sector = %s" % (startObj,endObj,sector))
 
 base_in_dir = '/home/disk/data/satellite/GOES/GRB16/ABI/Mesoscale-'+sector
-base_save_dir = '/home/disk/bob/impacts/goes-meso/Mesoscale-'+sector
+base_save_dir = '/home/disk/bob/impacts/raw/goes16/Mesoscale-'+sector
 #channels = ['Channel01','Channel13']
 channels = ['Channel01','Channel02','Channel03','Channel04','Channel05','Channel06','Channel07','Channel08','Channel09','Channel10','Channel11','Channel12','Channel13','Channel14','Channel15','Channel16']
 #channels = ['Channel09','Channel10','Channel11','Channel12','Channel14','Channel15','Channel16']
@@ -56,9 +56,14 @@ for ichan in range(0,len(channels)):
                             if part.startswith('s'):
                                 fileDateTime = part[1:-1]  # format sYYYYJJJHHMMSSs
                                 fileDateTimeObj = datetime.datetime.strptime(fileDateTime,'%Y%j%H%M%S')
-                                fileDateTimeUnix = int(fileDateTimeObj.strftime("%s"))
-                                if fileDateTimeUnix >= startUnix and  fileDateTimeUnix <= endUnix:
-                                    shutil.copy(file,outdir+'/'+dirDate)
-                                
+                                #fileDateTimeUnix = int(fileDateTimeObj.strftime("%s"))
+                                #if fileDateTimeUnix >= startUnix and  fileDateTimeUnix <= endUnix:
+                                if fileDateTimeObj >= startObj and  fileDateTimeObj <= endObj:
+                                    if file not in os.listdir(outdir+'/'+dirDate):
+                                        shutil.copy(file,outdir+'/'+dirDate)
+                                        print(file,'copied')
+                                    else:
+                                        print(file,'already copied')
+                                        
                         
     

@@ -745,7 +745,7 @@ def  plot_cloud_liquid(df_site,station,station_name_file,station_name_plot,logo_
 ### MAIN CODE ###
 
 # Set paths
-ncDirBase = '/home/disk/bob/impacts/raw/nys_profiler_2022'
+ncDirBase = '/home/disk/bob/impacts/raw/nys_profiler_2023'
 # plot stuff
 plotDirBase = '/home/disk/bob/impacts/images/NYSM_profiler'
 logo_path = '/home/disk/bob/impacts/bin/NYS_mesonet/NYSM_logo_96x96.png'

@@ -2,7 +2,7 @@
 
 cd /home/disk/bob/impacts/radar/sbu
 
-wget -r --user DataAccess --password WinterAtSBU --no-parent -nH --cut-dirs=1 -A 'Feb_27*' http://doppler.somas.stonybrook.edu/IMPACTS/RadarTruck/airmarweather/netcdf/
+wget -r --user DataAccess --password WinterAtSBU --no-parent -nH --cut-dirs=1 -A 'Jan_01' http://doppler.somas.stonybrook.edu/IMPACTS/RadarTruck/airmarweather/netcdf/
 
 wget -r --user DataAccess --password WinterAtSBU --no-parent -nH --cut-dirs=1 -A '*20200227*' http://doppler.somas.stonybrook.edu/IMPACTS/RadarTruck/chm15k/netcdf/2020/
 

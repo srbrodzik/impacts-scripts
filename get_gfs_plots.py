@@ -17,8 +17,8 @@ def listFD(url, ext=''):
     return [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href').endswith(ext)]
 
 # User inputs
-debug = 1
-test = 0
+debug = True
+test = False
 secsPerDay = 86400
 pastSecs = secsPerDay
 secsPerRun = secsPerDay/4
@@ -60,20 +60,26 @@ else:
     #if debug:
         #print('opened catalogFTP in real-time mode')
 
-# get model date and time closest to current time
+# get model date and time closest to current time with actual data
+# since data is available every 6 hours, use this info to home in on
+# correct url
 nowTime = time.gmtime()
 now = datetime(nowTime.tm_year, nowTime.tm_mon, nowTime.tm_mday,
                nowTime.tm_hour, nowTime.tm_min, nowTime.tm_sec)
-nowDateStr = now.strftime("%Y%m%d")
-nowHourStr = now.strftime("%H")
-if nowHourStr >= '00' and nowHourStr < '06':
-    lastModelDateTimeStr = nowDateStr+'00'
-elif nowHourStr >= '06' and nowHourStr < '12':
-    lastModelDateTimeStr = nowDateStr+'06'
-elif nowHourStr >= '12' and nowHourStr < '18':
-    lastModelDateTimeStr = nowDateStr+'12'
-elif nowHourStr >= '18':
-    lastModelDateTimeStr = nowDateStr+'18'
+lastModelDateTimeStr = now.strftime("%Y%m%d%H")
+lastModelHour = lastModelDateTimeStr[-2:]
+url = gfsUrl+'/'+lastModelDateTimeStr+'/'
+get = requests.get(url)
+while get.status_code != 200:
+    if int(lastModelHour)%6 == 0:
+        now = now - timedelta(hours=6)
+    else:
+        now = now - timedelta(hours=1)
+    lastModelDateTimeStr = now.strftime("%Y%m%d%H")
+    lastModelHour = lastModelDateTimeStr[-2:]
+    url = gfsUrl+'/'+lastModelDateTimeStr+'/'
+    get = requests.get(url)
+    
 if debug:
     print("lastModelDateTimeStr = ", lastModelDateTimeStr)
 

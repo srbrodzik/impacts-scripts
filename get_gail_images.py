@@ -7,7 +7,7 @@ from datetime import timedelta
 import time
 from ftplib import FTP
 
-test = False
+test = True
 tempDir = '/tmp'
 product = 'NASA_GAIL_UConn'
 # set startFlag

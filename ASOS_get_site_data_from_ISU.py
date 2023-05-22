@@ -59,7 +59,7 @@ for i in range(0,total_days):
     new_date_str = new_date_obj.strftime('%Y%m%d')
     datelist.append( new_date_str  )
 #FOR TESTING
-#datelist = ['20200925']
+#datelist = ['20221127','20221126']
 
 def load_and_save_station_data(site):
     '''Given a site station ID, returns 3-day DataFrame of specified weather variables. Also saves a each day's

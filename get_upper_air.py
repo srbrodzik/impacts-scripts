@@ -31,24 +31,27 @@ tempDir = '/tmp'
 catalogPrefix = 'upperair.Constant_Pressure'
 catalogSuffix = '_mb_chart'
 ext = 'gif'
-debug = 1
+debug = True
+test = False
 
 # Field Catalog inputs
-ftpCatalogServer = 'catalog.eol.ucar.edu'
-ftpCatalogUser = 'anonymous'
-catalogDestDir = '/pub/incoming/catalog/impacts'
-# for testing
-#ftpCatalogServer = 'ftp.atmos.washington.edu'
-#ftpCatalogUser = 'anonymous'
-#ftpCatalogPassword = 'brodzik@uw.edu'
-#catalogDestDir = 'brodzik/incoming/impacts'
+if test:
+    ftpCatalogServer = 'ftp.atmos.washington.edu'
+    ftpCatalogUser = 'anonymous'
+    ftpCatalogPassword = 'brodzik@uw.edu'
+    catalogDestDir = 'brodzik/incoming/impacts'
+else:
+    ftpCatalogServer = 'catalog.eol.ucar.edu'
+    ftpCatalogUser = 'anonymous'
+    catalogDestDir = '/pub/incoming/catalog/impacts'
 
 # Open ftp connection to NCAR sever
-catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
-catalogFTP.cwd(catalogDestDir)
-# For testing
-#catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
-#catalogFTP.cwd(catalogDestDir)
+if test:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser,ftpCatalogPassword)
+    catalogFTP.cwd(catalogDestDir)
+else:
+    catalogFTP = FTP(ftpCatalogServer,ftpCatalogUser)
+    catalogFTP.cwd(catalogDestDir)
 
 # Get current date and time
 now = datetime.utcnow()

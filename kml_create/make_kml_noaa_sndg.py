@@ -15,7 +15,7 @@ siteLocs = '/home/disk/bob/impacts/bin/NOAA_sounding_sites.csv'
 #indir = '/home/disk/funnel/impacts-website/archive_ncar/upperair/SkewT'
 indir = '/home/disk/bob/impacts/upperair/nws'
 outdir = '/home/disk/funnel/impacts-website/archive_ncar/gis/SkewT'
-catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2022/upperair/skewt'
+catalogBaseUrl = 'http://catalog.eol.ucar.edu/impacts_2023/upperair/skewt'
 secsPerDay = 86400
 
 # set startFlag

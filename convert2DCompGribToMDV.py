@@ -16,7 +16,7 @@ ncDirBase = '/home/disk/bob/impacts/netcdf/mrms/2DCompRefl'
 mdvDirBase = '/home/disk/bob/impacts/mdv/mrms/2DCompRefl'
 paramsDir = '/home/disk/bob/impacts/git/lrose-impacts/projDir/ingest/params'
 ncVarName = 'DBZ_comp'
-domain = ['32.','-100.','48.','-66.']   # [minLat,minLon,maxLat,maxLon]
+domain = ['32.','-105.','50.','-65.']   # [minLat,minLon,maxLat,maxLon]
 
 # get current date
 dt = datetime.datetime.now(timezone.utc)

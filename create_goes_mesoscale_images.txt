@@ -12,12 +12,12 @@ Change start and stop time and sector (1 or 2) and it should run.
 To run an hours worth of images, just run this as user ldm.  Edit sector, date,
 hour and output directory:
 
-/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20200125 14 /home/disk/bob/impacts/sat/M1colorTest
+/home/disk/ldm/local/bin/new_sat/testmeso.csh true_color_night 2 20200125 14 /home/disk/data/images/sat_east_meso_impacts
 
 
 
 Rename files to
 
-ops.goes_east.<datetime>.M1color.jpg
+satellite.GOES-16.<datetime>.meso_sector_1_color.jpg
 
 for IMPACTS field catalog.
